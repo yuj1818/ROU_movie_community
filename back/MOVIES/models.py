@@ -20,7 +20,21 @@ class Trend(models.Model):
   title = models.CharField(max_length=100)
   poster_path = models.CharField(max_length=60, blank=True, null=True)
   videos = models.TextField(null=True, blank=True)
-  def create(self, validated_data):
-    movie_id = validated_data.pop('movie_id', None)
-    instance = Trend.objects.create(**validated_data, movie_id=movie_id)
-    return instance
+
+# TMDB Popular 영화 목록
+class Movie(models.Model):
+  movie_id = models.IntegerField(primary_key=True)
+  title = models.CharField(max_length=100)
+  adult = models.BooleanField()
+  backdrop_path = models.CharField(max_length=60, blank=True, null=True)
+  release_date = models.DateField(blank=True, null=True)
+  vote_average = models.FloatField()
+  vote_count = models.IntegerField()
+  poster_path = models.CharField(max_length=60, blank=True, null=True)
+  popularity = models.FloatField()
+  overview = models.TextField(null=True, blank=True)
+  genres = models.ManyToManyField(Genre, blank=True)
+  runtime = models.IntegerField(null=True, blank=True)
+  actors = models.ManyToManyField(Actor, blank=True)
+  director = models.CharField(max_length=50, null=True, blank=True)
+  videos = models.TextField(null=True, blank=True)
