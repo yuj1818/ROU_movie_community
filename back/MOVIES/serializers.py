@@ -52,7 +52,7 @@ class MovieSerializer(serializers.ModelSerializer):
   
   genres = serializers.PrimaryKeyRelatedField(
     many = True,
-    queryset = Genre.object.all(),
+    queryset = Genre.objects.all(),
     required = False
   )
 

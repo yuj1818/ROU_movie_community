@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'MOVIES',
 
     'rest_framework',
+    'django_extensions',
 
     'django.contrib.admin',
     'django.contrib.auth',
