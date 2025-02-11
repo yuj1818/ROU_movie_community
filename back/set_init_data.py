@@ -4,6 +4,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ROU.settings")
 django.setup()
 
+import traceback
 import asyncio
 import aiohttp
 from asgiref.sync import sync_to_async
@@ -84,12 +85,12 @@ def process_movie_orm(movie, movie_detail):
   actor_instances_dict = {}
 
   for actor in cast_list:
-      if actor["id"] not in actor_instances_dict:
-          actor_instance, created = Actor.objects.get_or_create(
-              person_id=actor["id"], 
-              defaults={"name": actor["name"], "profile_path": actor.get("profile_path")}
-          )
-          actor_instances_dict[actor["id"]] = actor_instance
+      if actor["known_for_department"] == "Acting" and actor["id"] not in actor_instances_dict:
+        actor_instance, created = Actor.objects.get_or_create(
+            person_id=actor["id"], 
+            defaults={"name": actor["name"], "profile_path": actor.get("profile_path")}
+        )
+        actor_instances_dict[actor["id"]] = actor_instance
 
   director_name = next((crew["name"] for crew in crew_list if crew["job"] == "Director"), None)
 
@@ -118,43 +119,31 @@ def process_movie_orm(movie, movie_detail):
     "adult": movie.get("adult", False)
   }
 
-  movie_serializer = MovieSerializer(data=movie_data)
-  if movie_serializer.is_valid(raise_exception=True):
-    movie_instance = movie_serializer.save()
-    
-    return movie_instance, genre_instances_dict.values(), actor_instances_dict.values()
-  return None, genre_instances_dict.values(), actor_instances_dict.values()
+  movie_instance, _ = Movie.objects.update_or_create(
+    movie_id=movie["id"],
+    release_date=movie.get("release_date") or None,
+    defaults=movie_data
+  )
+  return movie_instance, genre_instances_dict.keys(), actor_instances_dict.keys()
 
 def save_movies_to_db(movies):
   try:
     with transaction.atomic():
-      genre_instances_dict = {}
-      actor_instances_dict = {}
-      movie_instances = []
-
       for movie, movie_detail in movies:
-        print(movie_detail)
         movie_instance, genres, actors = process_movie_orm(movie, movie_detail)
         if movie_instance:
-          movie_instances.append(movie_instance)
-          for genre in genres:
-            genre_instances_dict[genre.genre_id] = genre
-          for actor in actors:
-            actor_instances_dict[actor.person_id] = actor
-      
-      Actor.objects.bulk_create(actor_instances_dict.values(), ignore_conflicts=True)
-      Movie.objects.bulk_create(movie_instance)
+          genres = Genre.objects.filter(genre_id__in=genres)
+          actors = Actor.objects.filter(person_id__in=actors)
+          movie_instance.actors.set(actors)
+          movie_instance.genres.set(genres)
+          movie_instance.save()
 
-      for movie_instance in movie_instances:
-        actors = Actor.objects.filter(person_id__in=[actor["id"] for actor in actor_instances_dict.values()])
-        genres = Genre.objects.filter(genre_id__in=[g.genre_id for g in genre_instances_dict.values()])
-        movie_instance.actors.set(actors)
-        movie_instance.genres.set(genres)
-        movie_instance.save()
   except DatabaseError as e:
     print(f'데이터베이스 오류 발생: {e}')
+    traceback.print_exc()
   except Exception as e:
     print(f'예기치 않은 오류 발생: {e}')
+    traceback.print_exc()
 
 def run():
   async def main():
@@ -162,7 +151,7 @@ def run():
       genre_data = await fetch_genres(session)
       await sync_to_async(process_genres)(genre_data)
 
-      movie_tasks = [fetch_movies(session, page) for page in range(1, 501)]
+      movie_tasks = [fetch_movies(session, page) for page in range(2, 501)]
       movie_results = await asyncio.gather(*movie_tasks)
 
       all_movies = [movie for page in movie_results for movie in page.get("results", [])]
