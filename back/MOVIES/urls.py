@@ -5,5 +5,5 @@ from .views import *
 app_name = 'MOVIES'
 
 urlpatterns = [
-    path('', views.main),
+    path('updateDB/', views.update_DB),
 ]
