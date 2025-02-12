@@ -3,7 +3,7 @@ import aiohttp
 from django.conf import settings
 from django.db import transaction
 from MOVIES.models import *
-from datetime import datetime
+from datetime import datetime, timedelta
 from asgiref.sync import sync_to_async
 
 API_KEY = settings.API_KEY
@@ -48,17 +48,26 @@ def save_movie(movie):
       for g in movie.get("genres", [])
     ]
     
-    actors = [
-      Actor.objects.get_or_create(
-        person_id=a["id"],
-        defaults={
-          "name": a["name"],
-          "profile_path": a.get("profile_path")
-        }
-      )[0]
-      for a in movie.get("credits", {}).get("cast", [])
-      if a["known_for_department"] == "Acting"
-    ]
+    actors = []
+    for actor_data in movie.get("credits", {}).get("cast", []):
+      if actor_data["known_for_department"] == "Acting":
+        actor, created = Actor.objects.get_or_create(
+          person_id=actor_data["id"],
+          defaults={
+            "name": actor_data["name"],
+            "profile_path": actor_data.get("profile_path")
+          }
+        )
+
+        Cast.objects.get_or_create(
+          movie_id=movie["id"],
+          actor=actor,
+          defaults={
+            "cast_order": actor_data.get("order")
+          }
+        )
+
+        actors.append(actor)
 
     director = next((c["name"] for c in movie.get("credits", {}).get("crew", []) if c["job"] == "Director"), None)
     videos = next((v["key"] for v in movie.get("videos", {}).get("results", []) if "key" in v), None)
@@ -89,7 +98,7 @@ def save_movie(movie):
 
 def updateDB(request):
   async def main():
-    start_date = datetime.today().strftime("%Y-%m-%d")
+    start_date = (datetime.today() - timedelta(weeks=1)).strftime("%Y-%m-%d")
     async with aiohttp.ClientSession() as session:
       new_movie_ids = await get_new_movie_ids(session, start_date)
       if not new_movie_ids:

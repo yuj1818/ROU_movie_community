@@ -14,13 +14,6 @@ class Genre(models.Model):
   genre_id = models.IntegerField()
   name = models.CharField(max_length=10)
 
-# TMDB Trend 목록
-class Trend(models.Model):
-  movie_id = models.IntegerField(primary_key=True)
-  title = models.CharField(max_length=100)
-  poster_path = models.CharField(max_length=60, blank=True, null=True)
-  videos = models.TextField(null=True, blank=True)
-
 # TMDB Popular 영화 목록
 class Movie(models.Model):
   movie_id = models.IntegerField(primary_key=True)
@@ -38,3 +31,11 @@ class Movie(models.Model):
   actors = models.ManyToManyField(Actor, blank=True)
   director = models.CharField(max_length=50, null=True, blank=True)
   videos = models.TextField(null=True, blank=True)
+
+class Cast(models.Model):
+  movie = models.ForeignKey(Movie, related_name='movie_actors', on_delete=models.CASCADE)
+  actor = models.ForeignKey(Actor, related_name='actor_movies', on_delete=models.CASCADE)
+  cast_order = models.IntegerField(null=True, blank=True)
+
+  class Meta:
+    unique_together = ('movie', 'actor')

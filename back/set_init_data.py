@@ -92,6 +92,12 @@ def process_movie_orm(movie, movie_detail):
         )
         actor_instances_dict[actor["id"]] = actor_instance
 
+        Cast.objects.get_or_create(
+          movie_id=movie["id"],
+          actor=actor_instance,
+          defaults={"cast_order": actor.get("order")}
+        )
+
   director_name = next((crew["name"] for crew in crew_list if crew["job"] == "Director"), None)
 
   genre_instances_dict = {}
