@@ -8,6 +8,7 @@ from django.views.decorators.http import require_http_methods
 from .update_data import updateDB
 from django.http import HttpResponse
 from django.conf import settings
+from django.db.models import Avg, F, ExpressionWrapper, FloatField
 import requests
 from datetime import date
 from .serializers import *
@@ -53,7 +54,19 @@ def movie_sort(request, key):
   elif key == "upcoming":
     sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("release_date")[:30]
   elif key == "rate":
-    sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-vote_average")[:30]
+    C = Movie.objects.aggregate(Avg("vote_average"))["vote_average__avg"] or 0
+    m = 5000
+
+    sort_movies = Movie.objects.filter(
+      release_date__lte=date.today(),
+      vote_count__gte=m
+    ).annotate(
+      weighted_rating=ExpressionWrapper(
+        (F("vote_count") / (F("vote_count") + m) * F("vote_average")) + 
+        (m / (F("vote_count") + m) * C)
+        , output_field=FloatField()
+      )
+    ).order_by("-weighted_rating")[:30]
   else:
     return Response({"error": "Invalid sort number"}, status=status.HTTP_400_BAD_REQUEST)
   return Response(MovieSimpleSerializer(sort_movies, many=True).data)
