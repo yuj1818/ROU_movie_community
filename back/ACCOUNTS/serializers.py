@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model
 from MOVIES.serializers import GenreSerializer
 from MOVIES.models import Movie
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -44,6 +46,18 @@ class CustomRegisterSerializer(RegisterSerializer):
     data = super().get_cleaned_data()
     data['region'] = self.validated_data.get('region', '')
     data['birth'] = self.validated_data.get('birth', '')
+
+    password1 = data.get('password1', '')
+    username = data.get('username', '')
+
+    if username and password1 and username.lower() in password1.lower():
+      raise serializers.ValidationError("비밀번호가 아이디와 너무 유사합니다.")
+    
+    try:
+      validate_password(password1)
+    except ValidationError as e:
+      raise serializers.ValidationError(f"Password validation error: {', '.join(e.messages)}")
+
     return data
 
 # 프로필 조회 / 프로필 이미지, 지역, 생년월일 수정
