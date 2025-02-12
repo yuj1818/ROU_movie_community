@@ -23,6 +23,7 @@ urlpatterns = [
     path('genre/<int:genre_id>/', views.movie_genre),
     path('<int:movie_id>/', views.movie_detail),
     path('sort/<str:key>/', views.movie_sort),
+    path('search/', views.search),
 
     path('swagger/', schema_view.with_ui('swagger'))
 ]

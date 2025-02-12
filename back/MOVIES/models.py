@@ -31,6 +31,11 @@ class Movie(models.Model):
   actors = models.ManyToManyField(Actor, blank=True)
   director = models.CharField(max_length=50, null=True, blank=True)
   videos = models.TextField(null=True, blank=True)
+  normalized_title = models.CharField(max_length=100, blank=True)
+
+  def save(self, *args, **kwargs):
+    self.normalized_title = self.title.replace(" ", "")
+    super().save(*args, **kwargs)
 
 class Cast(models.Model):
   movie = models.ForeignKey(Movie, related_name='movie_actors', on_delete=models.CASCADE)

@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from .update_data import updateDB
 from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Avg, F, ExpressionWrapper, FloatField
+from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q
 import requests
 from datetime import date
 from .serializers import *
@@ -70,6 +70,18 @@ def movie_sort(request, key):
   else:
     return Response({"error": "Invalid sort number"}, status=status.HTTP_400_BAD_REQUEST)
   return Response(MovieSimpleSerializer(sort_movies, many=True).data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def search(request):
+  query = request.GET.get("q", "").strip()
+  queryset = Movie.objects.all()
+  if query:
+    queryset = queryset.filter(
+      Q(title__icontains=query) | Q(normalized_title__icontains=query) | Q(overview__icontains=query)
+    )
+  serializer = MovieSimpleSerializer(queryset, many=True)
+  return JsonResponse(serializer.data, safe=False)
 
 def update_DB(request):
   try:
