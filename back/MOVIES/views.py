@@ -12,6 +12,7 @@ from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q, Count
 import requests
 from datetime import date
 from .serializers import *
+from .recommend import recommend_movies
 
 API_KEY = settings.API_KEY
 TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/movie/day"
@@ -104,8 +105,8 @@ def movie_like(request, movie_id):
   else:
     movie.like_movie_users.add(user)
 
-  serializers = MovieLikeSerializer(movie)
-  return Response(serializers.data)
+  serializer = MovieLikeSerializer(movie)
+  return Response(serializer.data)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -118,8 +119,8 @@ def movie_dislike(request, movie_id):
   else:
     movie.dislike_movie_users.add(user)
 
-  serializers = MovieDislikeSerializer(movie)
-  return Response(serializers.data)
+  serializer = MovieDislikeSerializer(movie)
+  return Response(serializer.data)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -145,8 +146,16 @@ def movie_favorite(request, movie_id):
   else:
     movie.favorite_movie_users.add(user)
   
-  serializers = MovieFavoriteSerializer(movie)
-  return Response(serializers.data)
+  serializer = MovieFavoriteSerializer(movie)
+  return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def movie_recommend(request):
+  title = request.GET.get("title", "")
+  movies = recommend_movies(request.user.id, title)
+  serializer = MovieSimpleSerializer(movies, many=True)
+  return Response(serializer.data)
 
 def update_DB(request):
   try:

@@ -46,7 +46,7 @@ def preference(request, pType):
       serializer = HateGenreSerializer(user)
     return Response(serializer.data)
   elif request.method == 'PUT':
-    genres = request.data['genres'].split(',')
+    genres = request.data['genres'].split(',') if request.data['genres'] else []
     if pType == 'like':
       user.like_genres.clear()
       for genre_name in genres:
