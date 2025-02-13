@@ -134,6 +134,20 @@ def movie_watch(request, movie_id):
 
   return JsonResponse({"message": "Success"}, status=status.HTTP_200_OK)
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def movie_favorite(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  user = request.user
+
+  if movie.favorite_movie_users.filter(pk=user.pk).exists():
+    movie.favorite_movie_users.remove(user)
+  else:
+    movie.favorite_movie_users.add(user)
+  
+  serializers = MovieFavoriteSerializer(movie)
+  return Response(serializers.data)
+
 def update_DB(request):
   try:
     updateDB(request)

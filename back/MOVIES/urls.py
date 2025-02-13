@@ -14,4 +14,5 @@ urlpatterns = [
     path('like/<int:movie_id>/', views.movie_like),
     path('dislike/<int:movie_id>/', views.movie_dislike),
     path('watch/<int:movie_id>/', views.movie_watch),
+    path('favorite/<int:movie_id>/', views.movie_favorite),
 ]
