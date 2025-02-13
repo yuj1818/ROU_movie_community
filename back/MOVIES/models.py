@@ -33,6 +33,19 @@ class Movie(models.Model):
   videos = models.TextField(null=True, blank=True)
   normalized_title = models.CharField(max_length=100, blank=True)
 
+  like_movie_users = models.ManyToManyField(
+    settings.AUTH_USER_MODEL, related_name='like_movies', blank=True
+  )
+  dislike_movie_users = models.ManyToManyField(
+    settings.AUTH_USER_MODEL, related_name='dislike_movies', blank=True
+  )
+  watching_movie_users = models.ManyToManyField(
+    settings.AUTH_USER_MODEL, related_name='watching_movies', blank=True
+  )
+  favorite_movie_users = models.ManyToManyField(
+    settings.AUTH_USER_MODEL, related_name='favorite_movies', blank=True
+  )
+
   def save(self, *args, **kwargs):
     self.normalized_title = self.title.replace(" ", "")
     super().save(*args, **kwargs)

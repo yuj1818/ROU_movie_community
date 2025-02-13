@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from .update_data import updateDB
 from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q
+from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q, Count
 import requests
 from datetime import date
 from .serializers import *
@@ -43,8 +43,18 @@ def movie_genre(request, genre_id):
 @permission_classes([IsAuthenticatedOrReadOnly])
 def movie_detail(request, movie_id):
   movie = Movie.objects.get(pk=movie_id)
-  serializer = MovieDetailSerializer(movie)
-  return Response(serializer.data)
+  serializer = MovieSerializer(movie)
+
+  data = {
+    'isLike': movie.like_movie_users.filter(pk=request.user.pk).exists(),
+    'isFavorite': movie.favorite_movie_users.filter(pk=request.user.pk).exists(),
+    'isDislike': movie.dislike_movie_users.filter(pk=request.user.pk).exists(),
+    'isWatch': movie.watching_movie_users.filter(pk=request.user.pk).exists()
+  }
+
+  data.update(serializer.data)
+
+  return Response(data)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticatedOrReadOnly])
@@ -82,6 +92,47 @@ def search(request):
     )
   serializer = MovieSimpleSerializer(queryset, many=True)
   return JsonResponse(serializer.data, safe=False)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def movie_like(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  user = request.user
+
+  if movie.like_movie_users.filter(pk=user.pk).exists():
+    movie.like_movie_users.remove(user)
+  else:
+    movie.like_movie_users.add(user)
+
+  serializers = MovieLikeSerializer(movie)
+  return Response(serializers.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def movie_dislike(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  user = request.user
+
+  if movie.dislike_movie_users.filter(pk=user.pk).exists():
+    movie.dislike_movie_users.remove(user)
+  else:
+    movie.dislike_movie_users.add(user)
+
+  serializers = MovieDislikeSerializer(movie)
+  return Response(serializers.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def movie_watch(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  user = request.user
+
+  if movie.watching_movie_users.filter(pk=user.pk).exists():
+    movie.watching_movie_users.remove(user)
+  else:
+    movie.watching_movie_users.add(user)
+
+  return JsonResponse({"message": "Success"}, status=status.HTTP_200_OK)
 
 def update_DB(request):
   try:

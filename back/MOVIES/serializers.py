@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import *
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ActorSerializer(serializers.ModelSerializer):
   cast_order = serializers.IntegerField(source='movie_actors__cast_order', read_only=True)
@@ -15,13 +18,18 @@ class GenreSerializer(serializers.ModelSerializer):
     fields = '__all__'
     read_only_fields = ('genre_id',)
 
-class MovieDetailSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.ModelSerializer):
   actors = serializers.SerializerMethodField()
   genres = GenreSerializer(many=True)
+  like_movie_users_count = serializers.IntegerField(source='like_movie_users.count', read_only=True)
+  dislike_movie_users_count = serializers.IntegerField(source='dislike_movie_users.count', read_only=True)
+  favorite_movie_users_count = serializers.IntegerField(source='favorite_movie_users.count', read_only=True)
   
   class Meta:
     model = Movie
-    fields = '__all__'
+    read_only_fields = ('movie_id', 'release_date')
+    exclude = ('like_movie_users', 'dislike_movie_users', 'favorite_movie_users', 'watching_movie_users')
+    
 
   def get_actors(self, obj):
     cast_list = Cast.objects.filter(movie=obj).order_by('cast_order')
@@ -33,25 +41,23 @@ class MovieSimpleSerializer(serializers.ModelSerializer):
     model = Movie
     fields = ('movie_id', 'title', 'poster_path', 'backdrop_path', 'videos', 'overview',)
 
-class MovieSerializer(serializers.ModelSerializer):
-  class GenreSerializer(serializers.ModelSerializer):
-    class Meta:
-      model = Genre
-      fields = '__all__'
-  
-  genres = serializers.PrimaryKeyRelatedField(
-    many = True,
-    queryset = Genre.objects.all(),
-    required = False
-  )
+class UserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ('id', 'username',)
 
-  actors = serializers.PrimaryKeyRelatedField(
-    many = True,
-    queryset = Actor.objects.all(),
-    required = False
-  )
+class MovieLikeSerializer(serializers.ModelSerializer):
+  like_movie_users = UserSerializer(many=True, read_only=True)
+  like_movie_users_count = serializers.IntegerField(source='like_movie_users.count', read_only=True)
 
   class Meta:
     model = Movie
-    fields = '__all__'
-    read_only_fields = ('movie_id', 'release_date')
+    fields = ('movie_id', 'like_movie_users', 'like_movie_users_count')
+
+class MovieDislikeSerializer(serializers.ModelSerializer):
+  dislike_movie_users = UserSerializer(many=True, read_only=True)
+  dislike_movie_users_count = serializers.IntegerField(source='dislike_movie_users.count', read_only=True)
+
+  class Meta:
+    model = Movie
+    fields = ('movie_id', 'dislike_movie_users', 'dislike_movie_users_count')
