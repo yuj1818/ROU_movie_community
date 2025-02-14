@@ -119,3 +119,10 @@ class ReviewDisLikeSerializer(serializers.ModelSerializer):
     model = Review
     # 게시글 id, 싫어요한 사용자 목록
     fields = ('id', 'dislike_count')
+
+class CommentLikeSerializer(serializers.ModelSerializer):
+  like_count = serializers.IntegerField(source='like_comment_users.count', read_only=True)
+
+  class Meta:
+    model = Comment
+    fields = ('id', 'like_count')

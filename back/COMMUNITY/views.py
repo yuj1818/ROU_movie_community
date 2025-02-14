@@ -145,3 +145,15 @@ def review_recomment(request, review_id, comment_id):
       return Response({"message": f"댓글 {comment_id}번이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def comment_like(request, comment_id):
+  comment = get_object_or_404(Comment, pk=comment_id)
+  user = request.user
+  if comment.like_comment_users.filter(pk=user.pk).exists():
+    comment.like_comment_users.remove(user)
+  else:
+    comment.like_comment_users.add(user)
+  serializer = CommentLikeSerializer(comment)
+  return Response(serializer.data)
