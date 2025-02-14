@@ -1,5 +1,19 @@
+import styled from 'styled-components';
+import MovieCarousel from '../components/home/MovieCarousel';
+
+const Container = styled.div`
+  flex-grow: 1;
+  display: flex;
+  width: 100%;
+  padding: 1rem;
+`;
+
 const HomePage = () => {
-  return <div>나는야 홈페이지</div>;
+  return (
+    <Container>
+      <MovieCarousel />
+    </Container>
+  );
 };
 
 export default HomePage;
