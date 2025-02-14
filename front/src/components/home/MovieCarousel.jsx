@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/react';
+import { getTrendMovieList } from '../../utils/movieApi';
 
 const Container = styled.div`
   height: 30rem;
@@ -21,9 +22,11 @@ const Slide = styled.div`
 const MovieCarousel = () => {
   const intervalRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [trendData, setTrendData] = useState([]);
 
   const [sliderRef, slider] = useKeenSlider({
     loop: true,
+    renderMode: 'performance',
     slides: {
       origin: 'center',
       perView: 1.1,
@@ -44,6 +47,15 @@ const MovieCarousel = () => {
       }
     };
   }, [isPlaying, slider]);
+
+  const getTrendData = async () => {
+    const res = await getTrendMovieList();
+    console.log(res);
+  };
+
+  useEffect(() => {
+    getTrendData();
+  }, []);
 
   return (
     <Container
