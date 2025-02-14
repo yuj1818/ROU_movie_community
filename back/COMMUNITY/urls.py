@@ -10,4 +10,5 @@ urlpatterns = [
   path('like/<int:review_id>/', views.review_like),
   path('dislike/<int:review_id>/', views.review_dislike),
   path('comment/<int:review_id>/', views.review_comment),
+  path('comment/<int:review_id>/<int:comment_id>/', views.review_recomment),
 ]
