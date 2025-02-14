@@ -52,7 +52,7 @@ def review(request):
       serializer.save(review_writor=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-@api_view(["GET", "PATCH", "DELETE"])
+@api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def review_detail(request, review_id):
   review = get_object_or_404(Review, pk=review_id)
@@ -64,7 +64,7 @@ def review_detail(request, review_id):
     }
     data.update(serializer.data)
     return Response(data)
-  elif request.method == "PATCH":
+  elif request.method == "PUT":
     if request.user == review.review_writor:
       serializer = ReviewSerializer(review, data=request.data, partial=True)
       if serializer.is_valid(raise_exception=True):
@@ -119,14 +119,18 @@ def review_comment(request, review_id):
       serializer = CommentListSerializer(review)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(["POST", "PATCH", "DELETE"])
+@api_view(["POST", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
 def review_recomment(request, review_id, comment_id):
   review = get_object_or_404(Review, pk=review_id)
   comment = get_object_or_404(Comment, pk=comment_id)
-  if request.method == "GET":
-    pass
-  elif request.method == "PATCH":
+  if request.method == "POST":
+    serializer = CommentSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save(commented_review=review, comment_writor=request.user, super_comment=comment)
+      serializer = CommentListSerializer(review)
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+  elif request.method == "PUT":
     if request.user == comment.comment_writor:
       serializer = CommentSerializer(comment, data=request.data)
       if serializer.is_valid(raise_exception=True):
@@ -135,4 +139,9 @@ def review_recomment(request, review_id, comment_id):
         return Response(serializer.data)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
-  
+  elif request.method == "DELETE":
+    if request.user == comment.comment_writor:
+      comment.delete()
+      return Response({"message": f"댓글 {comment_id}번이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+    else:
+      return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
