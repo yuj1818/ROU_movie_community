@@ -104,3 +104,17 @@ def review_dislike(request, review_id):
   
   serializer = ReviewDisLikeSerializer(review)
   return Response(serializer.data)
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def review_comment(request, review_id):
+  review = get_object_or_404(Review, pk=review_id)
+  if request.method == "GET":
+    serializer = CommentListSerializer(review)
+    return Response(serializer.data)
+  if request.method == "POST":
+    serializer = CommentSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save(commented_review=review, comment_writor=request.user)
+      serializer = CommentListSerializer(review)
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
