@@ -13,6 +13,7 @@ import requests
 from datetime import date
 from .serializers import *
 from .recommend import recommend_movies
+from COMMUNITY.serializers import ReviewSerializer
 
 API_KEY = settings.API_KEY
 TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/movie/day"
@@ -156,6 +157,19 @@ def movie_recommend(request):
   movies = recommend_movies(request.user.id, title)
   serializer = MovieSimpleSerializer(movies, many=True)
   return Response(serializer.data)
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def movie_review(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  if request.method == "GET":
+    serializer = MovieReviewSerializer(movie)
+    return Response(serializer.data)
+  elif request.method == "POST":
+    serializer = ReviewSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save(review_writor=request.user, review_movie=movie)
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 def update_DB(request):
   try:
