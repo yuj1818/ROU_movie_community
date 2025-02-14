@@ -67,4 +67,9 @@ def review_detail(request, review_id):
         return Response(serializer.data)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
-  
+  elif request.method == "DELETE":
+    if request.user == review.review_writor:
+      review.delete()
+      return Response({"message": f"게시글 {review_id}번이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+    else:
+      return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
