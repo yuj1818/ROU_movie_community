@@ -41,6 +41,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'MOVIES',
     'ACCOUNTS',
+    'COMMUNITY',
 
     'rest_framework',
     'rest_framework.authtoken',
