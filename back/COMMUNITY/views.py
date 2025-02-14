@@ -51,3 +51,20 @@ def review(request):
     if serializer.is_valid(raise_exception=True):
       serializer.save(review_writor=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+@api_view(["GET", "PATCH", "DELETE"])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def review_detail(request, review_id):
+  review = get_object_or_404(Review, pk=review_id)
+  if request.method == "GET":
+    serializer = ReviewSerializer(review)
+    return Response(serializer.data)
+  elif request.method == "PATCH":
+    if request.user == review.review_writor:
+      serializer = ReviewSerializer(review, data=request.data, partial=True)
+      if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data)
+    else:
+      return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
+  

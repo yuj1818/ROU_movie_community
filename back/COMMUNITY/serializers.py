@@ -51,7 +51,7 @@ class NewSuperCommentSerializer(serializers.ModelSerializer):
     return serializer.data
 
 # 댓글 조회(대댓글 포함)
-class ReivewOnlySerializer(serializers.ModelSerializer):
+class CommentListSerializer(serializers.ModelSerializer):
   reply_comments = serializers.SerializerMethodField()
 
   class Meta:
