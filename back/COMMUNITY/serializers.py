@@ -73,9 +73,9 @@ class MovieSerializer(serializers.ModelSerializer):
 class ReviewListSerializer(serializers.ModelSerializer):
   review_movie = MovieSerializer(read_only=True)  # 게시글이 달린 영화
   review_writor = UserSerializer(read_only=True)  # 게시글 작성자
-  comment_count = serializers.IntegerField(read_only=True)  # 댓글 수
-  like_count = serializers.IntegerField(read_only=True)  # 좋아요 수
-  dislike_count = serializers.IntegerField(read_only=True)  # 싫어요 수
+  comment_count = serializers.IntegerField(source='review_comment.count', read_only=True)  # 댓글 수
+  like_count = serializers.IntegerField(source='like_review_users.count', read_only=True)  # 좋아요 수
+  dislike_count = serializers.IntegerField(source='dislike_review_users.count', read_only=True)  # 싫어요 수
 
   class Meta:
     model = Review
@@ -89,9 +89,9 @@ class ReviewListSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
   review_movie = MovieSerializer(read_only=True)  # 게시글이 달린 영화
   review_writor = UserSerializer(read_only=True)  # 게시글 작성자
-  like_count = serializers.IntegerField(read_only=True)  # 좋아요 수
-  dislike_count = serializers.IntegerField(read_only=True)
-  comment_count = serializers.IntegerField(read_only=True)  # 댓글 수
+  like_count = serializers.IntegerField(source='like_review_users.count', read_only=True)  # 좋아요 수
+  dislike_count = serializers.IntegerField(source='dislike_review_users.count', read_only=True)
+  comment_count = serializers.IntegerField(source='review_comment.count', read_only=True)  # 댓글 수
 
   class Meta:
     model = Review
@@ -103,19 +103,19 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 # 게시글 좋아요 등록 및 해제
 class ReviewLikeSerializer(serializers.ModelSerializer):
-  like_review_users = UserSerializer(many=True, read_only=True)  # 좋아요한 작성자
+  like_count = serializers.IntegerField(source='like_review_users.count', read_only=True)
 
   class Meta:
     model = Review
     # 게시글 id, 좋아요한 사용자 목록
-    fields = ('id', 'like_review_users')
+    fields = ('id', 'like_count',)
 
 
 # 게시글 싫어요 등록 및 해제
 class ReviewDisLikeSerializer(serializers.ModelSerializer):
-  dislike_review_users = UserSerializer(many=True, read_only=True)  # 싫어요한 작성자
+  dislike_count = serializers.IntegerField(source='dislike_review_users.count', read_only=True)
 
   class Meta:
     model = Review
     # 게시글 id, 싫어요한 사용자 목록
-    fields = ('id', 'dislike_review_users')
+    fields = ('id', 'dislike_count')

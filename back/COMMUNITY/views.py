@@ -58,7 +58,12 @@ def review_detail(request, review_id):
   review = get_object_or_404(Review, pk=review_id)
   if request.method == "GET":
     serializer = ReviewSerializer(review)
-    return Response(serializer.data)
+    data = {
+      'isLike': review.like_review_users.filter(pk=request.user.pk).exists(),
+      'isDislike': review.dislike_review_users.filter(pk=request.user.pk).exists(),
+    }
+    data.update(serializer.data)
+    return Response(data)
   elif request.method == "PATCH":
     if request.user == review.review_writor:
       serializer = ReviewSerializer(review, data=request.data, partial=True)
@@ -73,3 +78,29 @@ def review_detail(request, review_id):
       return Response({"message": f"게시글 {review_id}번이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def review_like(request, review_id):
+  review = get_object_or_404(Review, pk=review_id)
+  user = request.user
+  if review.like_review_users.filter(pk=user.pk).exists():
+    review.like_review_users.remove(user)
+  else:
+    review.like_review_users.add(user)
+
+  serializer = ReviewLikeSerializer(review)
+  return Response(serializer.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def review_dislike(request, review_id):
+  review = get_object_or_404(Review, pk=review_id)
+  user = request.user
+  if review.dislike_review_users.filter(pk=user.pk).exists():
+    review.dislike_review_users.remove(user)
+  else:
+    review.dislike_review_users.add(user)
+  
+  serializer = ReviewDisLikeSerializer(review)
+  return Response(serializer.data)
