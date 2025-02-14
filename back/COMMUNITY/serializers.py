@@ -21,7 +21,7 @@ class SuperCommentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('id', 'username',)
+    fields = ('id', 'username', 'profile_image')
 
 class CommentSerializer(serializers.ModelSerializer):
   comment_writor = UserSerializer(read_only=True)
@@ -64,16 +64,6 @@ class ReivewOnlySerializer(serializers.ModelSerializer):
     serializer = NewSuperCommentSerializer(reply_comments, many=True)
     return serializer.data
 
-
-# 댓글별 좋아요 수 출력
-class CommentLikeSerializer(serializers.ModelSerializer):
-  like_comment_users_count = serializers.IntegerField()
-
-  class Meta:
-    model = Comment
-    # 댓글 id, 댓글의 좋아요 개수, 댓글 내용
-    fields = ('id', 'like_comment_users_count', 'content')
-
 class MovieSerializer(serializers.ModelSerializer):
   class Meta:
     model = Movie
@@ -83,15 +73,15 @@ class MovieSerializer(serializers.ModelSerializer):
 class ReviewListSerializer(serializers.ModelSerializer):
   review_movie = MovieSerializer(read_only=True)  # 게시글이 달린 영화
   review_writor = UserSerializer(read_only=True)  # 게시글 작성자
-  comment_count = serializers.IntegerField()  # 댓글 수
-  like_count = serializers.IntegerField()  # 좋아요 수
-  dislike_count = serializers.IntegerField()  # 싫어요 수
+  comment_count = serializers.IntegerField(read_only=True)  # 댓글 수
+  like_count = serializers.IntegerField(read_only=True)  # 좋아요 수
+  dislike_count = serializers.IntegerField(read_only=True)  # 싫어요 수
 
   class Meta:
     model = Review
     # 전체 게시글 출력 필드
     # id, 제목, 생성 시간, 좋아요 수, 댓글 수, 작성자, 리뷰한 영화 제목
-    fields = ('id', 'title', 'content', 'created_at', 'updated_at', 'like_count', 'dislike_count',
+    fields = ('id', 'title', 'content', 'created_at', 'like_count', 'dislike_count',
               'comment_count', 'review_writor', 'review_movie')
 
 
