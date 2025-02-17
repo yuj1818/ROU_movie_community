@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 import MovieCarousel from '../components/home/MovieCarousel';
+import tw from 'tailwind-styled-components';
 
-const Container = styled.div`
-  flex-grow: 1;
-  display: flex;
-  width: 100%;
-  padding: 1rem;
+const Container = tw.div`
+  grow flex w-full p-4
 `;
 
 const HomePage = () => {

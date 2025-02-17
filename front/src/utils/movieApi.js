@@ -7,3 +7,9 @@ export const getTrendMovieList = () => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getMovieDetail = (movie_id) => {
+  return API.get(URL + movie_id)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
