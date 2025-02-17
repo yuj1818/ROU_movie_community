@@ -13,6 +13,7 @@ import requests
 from datetime import date
 from .serializers import *
 from .recommend import recommend_movies
+from .update_selected_data import updateTrendDB
 from COMMUNITY.serializers import ReviewSerializer
 
 API_KEY = settings.API_KEY
@@ -27,7 +28,10 @@ def movie_trend(request):
   }
   response = requests.get(TMDB_TRENDING_URL, params=params).json()
   trend_ids = [res["id"] for res in response["results"]]
-  trends = Movie.objects.filter(movie_id__in=trend_ids)
+  trends = Movie.objects.filter(movie_id__in=trend_ids).order_by('-popularity')
+  if len(trend_ids) != len(trends):
+    updateTrendDB(request, response["results"])
+    trends = Movie.objects.filter(movie_id__in=trend_ids).order_by('-popularity')
   serializer = MovieSimpleSerializer(trends, many=True)
   return Response(serializer.data)
 
