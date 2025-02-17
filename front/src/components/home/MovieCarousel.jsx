@@ -110,7 +110,8 @@ const MovieCarousel = () => {
             {hoveredIdx === idx ? (
               <iframe
                 className="media"
-                src={`${Url.youtubePath}${data.videos}?autoplay=1&mute=0&loop=1&controls=0`}
+                loading="lazy"
+                src={`${Url.youtubePath}${data.videos}?autoplay=1&mute=0&loop=1&controls=0&rel=0&modestbranding=1`}
                 allow="autoplay; encrypted-media"
               />
             ) : (

@@ -18,6 +18,7 @@ const Content = styled.div`
   padding-left: 213px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const Layout = () => {
