@@ -63,8 +63,8 @@ const MovieCarousel = () => {
     renderMode: 'performance',
     slides: {
       origin: 'center',
-      perView: 1.1,
-      spacing: 10,
+      perView: 1.2,
+      spacing: 20,
     },
   });
 
