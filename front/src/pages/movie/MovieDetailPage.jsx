@@ -9,7 +9,7 @@ import { setMovieInfo } from '../../stores/movie';
 import CastList from '../../components/movie/CastList';
 
 const Container = tw.div`
-  w-4/5 flex flex-col gap-4 text-white pt-8
+  w-4/5 flex flex-col gap-8 text-white pt-8
 `;
 
 const MovieDetailPage = () => {

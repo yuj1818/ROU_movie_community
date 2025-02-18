@@ -3,7 +3,7 @@ import CastInfo from './CastInfo';
 import styled from 'styled-components';
 import Colors from '../../constants/Colors';
 
-const Container = styled.div`
+const CastContainer = styled.div`
   width: 100%;
   background-color: white;
   display: flex;
@@ -12,7 +12,7 @@ const Container = styled.div`
   overflow-y: auto;
   border-radius: 0.25rem;
   color: black;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 
   &::-webkit-scrollbar {
     width: 15px;
@@ -35,10 +35,15 @@ const CastList = () => {
   const { movieInfo } = useSelector((state) => state.movie);
 
   return (
-    <Container>
-      {movieInfo.actors &&
-        movieInfo.actors.map((actor) => <CastInfo actorInfo={actor} />)}
-    </Container>
+    <div className="flex w-full flex-col gap-2">
+      <p className="font-pretendard_semibold text-xl text-white">출연진</p>
+      <CastContainer>
+        {movieInfo.actors &&
+          movieInfo.actors.map((actor) => (
+            <CastInfo key={actor.id} actorInfo={actor} />
+          ))}
+      </CastContainer>
+    </div>
   );
 };
 
