@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import CastInfo from './CastInfo';
 import styled from 'styled-components';
 import Colors from '../../constants/Colors';
+import { SubTitle } from './SubTitle';
 
 const CastContainer = styled.div`
   width: 100%;
@@ -36,9 +37,9 @@ const CastList = () => {
 
   return (
     <div className="flex w-full flex-col gap-2">
-      <p className="font-pretendard_semibold text-xl text-white">출연진</p>
+      <SubTitle>출연진</SubTitle>
       <CastContainer>
-        {movieInfo.actors &&
+        {movieInfo.actors.slice(0, 18) &&
           movieInfo.actors.map((actor) => (
             <CastInfo key={actor.id} actorInfo={actor} />
           ))}
