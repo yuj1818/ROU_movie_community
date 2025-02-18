@@ -13,3 +13,9 @@ export const getMovieDetail = (movie_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getMovieReviewList = (movie_id) => {
+  return API.get(URL + `review/${movie_id}`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
