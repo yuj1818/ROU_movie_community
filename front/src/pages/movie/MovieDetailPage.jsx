@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMovieInfo } from '../../stores/movie';
 import CastList from '../../components/movie/CastList';
 import ReviewList from '../../components/movie/ReviewList';
+import RecommendList from '../../components/movie/RecommendList';
 
 const Container = tw.div`
   w-4/5 flex flex-col gap-8 text-white py-8
@@ -33,6 +34,7 @@ const MovieDetailPage = () => {
         <MovieInfo />
         <CastList />
         <ReviewList />
+        <RecommendList />
       </Container>
     )
   );
