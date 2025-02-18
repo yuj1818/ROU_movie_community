@@ -16,8 +16,7 @@ const ReviewList = () => {
     };
 
     getReviewData();
-    console.log(reviewData);
-  }, []);
+  }, [params.movie_id]);
 
   return (
     reviewData && (
