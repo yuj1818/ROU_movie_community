@@ -4,6 +4,7 @@ import Layout from './components/common/Layout';
 import MovieDetailPage from './pages/movie/MovieDetailPage';
 import { Provider } from 'react-redux';
 import { store } from './stores/store';
+import LoginPage from './pages/auth/LoginPage';
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
       },
       {
         path: 'movie',
