@@ -31,7 +31,7 @@ const ReviewList = () => {
             <Button $background={Colors.btnPurple}>리뷰 작성</Button>
           )}
         </div>
-        <div className="flex flex-col w-full p-6 gap-2 rounded-sm border border-solid border-white">
+        <div className="flex flex-col w-full p-6 gap-2 rounded-md border border-solid border-white">
           {reviewData.movie_review?.length ? (
             <>
               {reviewData.movie_review.length > 2 && (
