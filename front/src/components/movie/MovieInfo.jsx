@@ -41,8 +41,7 @@ const MovieInfo = () => {
           <Title>감독</Title>
           <Content>{movieInfo.director}</Content>
         </FlexRowContainer>
-        <div className="flex flex-col gap-2">
-          <Title>영화 줄거리</Title>
+        <div className="flex">
           <Content>{movieInfo.overview}</Content>
         </div>
         <div className="flex gap-4 h-[1.5rem]">
