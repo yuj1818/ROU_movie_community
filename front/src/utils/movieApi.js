@@ -20,12 +20,8 @@ export const getMovieReviewList = (movie_id) => {
     .catch((err) => console.error(err));
 };
 
-export const getRecommendMovieList = (title) => {
-  return API.get(URL + 'recommend', {
-    params: {
-      title,
-    },
-  })
+export const getRecommendMovieList = (params) => {
+  return API.get(URL + 'recommend/', { params })
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
