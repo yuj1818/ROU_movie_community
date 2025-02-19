@@ -4,7 +4,9 @@ import Colors from '../../constants/Colors';
 import { Button } from '../common/Button';
 import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
-import { signIn } from '../../utils/authApi';
+import { logIn } from '../../utils/authApi';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../stores/auth';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -15,6 +17,7 @@ const Label = tw.label`
 `;
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,11 +25,12 @@ const LoginForm = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const res = await signIn({
+    const res = await logIn({
       username,
       password,
     });
     if (res.status === 200) {
+      dispatch(setLogin());
       navigate('/');
     } else {
       setErrMsg('아이디와 비밀번호를 다시 확인해주세요');
