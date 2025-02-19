@@ -11,7 +11,7 @@ import ReviewList from '../../components/movie/ReviewList';
 import RecommendList from '../../components/movie/RecommendList';
 
 const Container = tw.div`
-  w-4/5 flex flex-col gap-8 text-white py-8
+  w-4/5 flex flex-col gap-8 text-white py-8 h-fit
 `;
 
 const MovieDetailPage = () => {
