@@ -54,7 +54,7 @@ def recommend_movies(user_id, title):
       if any(genre in movie_genres for genre in user_hate_genres):
         sim_scores[i] *= 0.5
 
-    movie_indices = np.argsort(sim_scores)[::-1][1:21]
+    movie_indices = np.argsort(sim_scores)[::-1][1:19]
     recommended_titles = df['title'].iloc[movie_indices]
     recommended_movies = Movie.objects.filter(title__in=recommended_titles)
     return recommended_movies
