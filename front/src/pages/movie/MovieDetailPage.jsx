@@ -34,7 +34,7 @@ const MovieDetailPage = () => {
         <MovieInfo />
         <CastList />
         <ReviewList />
-        <RecommendList />
+        <RecommendList title={movieInfo.title} />
       </Container>
     )
   );

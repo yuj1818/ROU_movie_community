@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import Url from '../../constants/URL';
 
 const Container = styled.div`
-  width: 16.5%;
-  aspect-ratio: 9 / 16;
+  width: 16%;
+  aspect-ratio: 3 /4;
+  margin: 0.25%;
 `;
 
 const RecommendInfo = ({ data }) => {
