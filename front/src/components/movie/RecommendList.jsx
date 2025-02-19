@@ -42,7 +42,7 @@ const RecommendList = ({ title }) => {
             <p className="text-gray-600 text-center">추천 영화가 없습니다</p>
           )
         ) : (
-          <p className="text-gray-600 text-center">추천 영화가 없습니다</p>
+          <p className="text-gray-600 text-center">로그인해 주세요</p>
         )}
       </InfoContainer>
     </div>
