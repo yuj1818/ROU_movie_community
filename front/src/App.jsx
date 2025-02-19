@@ -3,7 +3,9 @@ import HomePage from './pages/HomePage';
 import Layout from './components/common/Layout';
 import MovieDetailPage from './pages/movie/MovieDetailPage';
 import { Provider } from 'react-redux';
-import { store } from './stores/store';
+import { CookiesProvider } from 'react-cookie';
+import { store, persistor } from './stores/store';
+import { PersistGate } from 'redux-persist/integration/react';
 import LoginPage from './pages/auth/LoginPage';
 
 const router = createBrowserRouter([
@@ -35,7 +37,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <PersistGate loading={null} persistor={persistor}>
+        <CookiesProvider>
+          <RouterProvider router={router} />
+        </CookiesProvider>
+      </PersistGate>
     </Provider>
   );
 }
