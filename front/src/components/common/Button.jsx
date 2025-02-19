@@ -32,12 +32,12 @@ export const Button = styled.button`
   margin-left: ${(props) =>
     props.$marginLeft === undefined ? 'auto' : `${props.$marginLeft}rem`};
   background-color: ${(props) => props.$background || 'black'};
-  font-family: ${(props) => props.$fontFamily || 'GmarketSansMedium'};
+  font-family: ${(props) => props.$fontFamily || 'Pretendard-Regular'};
   opacity: ${(props) =>
     props.$selected === undefined ? 'none' : props.$selected ? 'none' : '0.6'};
 
   &:disabled {
-    background-color: #d9d9d9;
+    background-color: #9e9e9e;
     cursor: not-allowed;
     color: white;
   }
