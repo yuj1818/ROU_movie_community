@@ -17,6 +17,14 @@ const Content = tw.p`
   font-pretendard_exlight
 `;
 
+const Line = tw.hr`
+  border-t border-solid border-gray-700 w-full
+`;
+
+const IconContainer = tw.div`
+  h-full flex items-center text-sm text-white font-pretendard_exlight gap-1
+`;
+
 const MovieInfo = () => {
   const { movieInfo } = useSelector((state) => state.movie);
 
@@ -30,6 +38,7 @@ const MovieInfo = () => {
             <Content className="text-sm">{movieInfo.vote_average}</Content>
           </div>
         </FlexRowContainer>
+        <Line />
         <FlexRowContainer>
           <Title>상영일</Title>
           <Content>{movieInfo.release_date}</Content>
@@ -44,15 +53,37 @@ const MovieInfo = () => {
         <div className="flex">
           <Content>{movieInfo.overview}</Content>
         </div>
+        <Line />
         <div className="flex gap-4 h-[1.5rem]">
-          <TvMinimal color={movieInfo.isWatch ? 'red' : 'white'} />
-          <ThumbsUp fill={movieInfo.isLike ? 'white' : 'none'} color="white" />
-          <ThumbsDown
-            fill={movieInfo.isDislike ? 'white' : 'none'}
-            color="white"
+          <TvMinimal
+            className="cursor-pointer"
+            color={movieInfo.isWatch ? 'red' : 'white'}
           />
-          <Star fill={movieInfo.isFavorite ? 'yellow' : 'none'} color="white" />
-          <Youtube height="1.5rem" width="2rem" />
+          <IconContainer>
+            <ThumbsUp
+              className="h-full cursor-pointer"
+              fill={movieInfo.isLike ? 'white' : 'none'}
+              color="white"
+            />
+            <p>{movieInfo.like_movie_users_count}</p>
+          </IconContainer>
+          <IconContainer>
+            <ThumbsDown
+              className="h-full cursor-pointer"
+              fill={movieInfo.isDislike ? 'white' : 'none'}
+              color="white"
+            />
+            <p>{movieInfo.dislike_movie_users_count}</p>
+          </IconContainer>
+          <IconContainer>
+            <Star
+              className="h-full cursor-pointer"
+              fill={movieInfo.isFavorite ? 'yellow' : 'none'}
+              color="white"
+            />
+            <p>{movieInfo.favorite_movie_users_count}</p>
+          </IconContainer>
+          <Youtube className="cursor-pointer" height="1.5rem" width="2rem" />
         </div>
       </div>
       <div className="w-1/4">
