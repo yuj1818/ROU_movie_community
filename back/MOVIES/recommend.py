@@ -7,6 +7,7 @@ import numpy as np
 from kiwipiepy import Kiwi
 from django.core.cache import cache
 from django.db import connection
+from django.db.models import Max
 import traceback
 
 query = """
@@ -57,7 +58,18 @@ def recommend_movies(user_id, title):
     movie_indices = np.argsort(sim_scores)[::-1][1:19]
     recommended_titles = df['title'].iloc[movie_indices]
     recommended_movies = Movie.objects.filter(title__in=recommended_titles)
-    return recommended_movies
+    highest_popularity_movies = recommended_movies.values('title').annotate(max_popularity=Max('popularity'))
+    
+    final_recommended_movies = []
+    for movie in recommended_titles:
+      # 각 추천 제목에 대해 가장 인기 있는 영화 필터링
+      highest_popularity_movie = highest_popularity_movies.filter(title=movie)\
+        .order_by('-max_popularity').first()
+      if highest_popularity_movie:
+        movie_instance = recommended_movies.filter(title=movie, popularity=highest_popularity_movie['max_popularity']).first()
+        final_recommended_movies.append(movie_instance)
+
+    return final_recommended_movies
   except User.DoesNotExist:
     return []
   except Exception as e:
