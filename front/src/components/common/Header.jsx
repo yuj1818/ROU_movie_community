@@ -31,12 +31,7 @@ const Header = () => {
 
   return (
     <Container>
-      <Button
-        onClick={onClickBtn}
-        $paddingX={1}
-        $paddingY={0.25}
-        $background={Colors.btnPurple}
-      >
+      <Button onClick={onClickBtn} $background={Colors.btnPurple}>
         {isLoggedIn ? '로그아웃' : '로그인'}
       </Button>
     </Container>

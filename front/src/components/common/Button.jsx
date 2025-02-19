@@ -8,19 +8,19 @@ export const Button = styled.button`
   padding-top: ${(props) =>
     props.$paddingY === 0 || props.$paddingY
       ? `${props.$paddingY}rem`
-      : '0.4rem'};
+      : '0.25rem'};
   padding-bottom: ${(props) =>
     props.$paddingY === 0 || props.$paddingY
       ? `${props.$paddingY}rem`
-      : '0.4rem'};
+      : '0.25rem'};
   padding-left: ${(props) =>
     props.$paddingX === 0 || props.$paddingX
       ? `${props.$paddingX}rem`
-      : '0.4rem'};
+      : '0.75rem'};
   padding-right: ${(props) =>
     props.$paddingX === 0 || props.$paddingX
       ? `${props.$paddingX}rem`
-      : '0.4rem'};
+      : '0.75rem'};
   white-space: nowrap;
   height: ${(props) => (props.$height ? `${props.$height}rem` : 'auto')};
   width: ${(props) =>

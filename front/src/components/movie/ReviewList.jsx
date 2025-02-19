@@ -3,8 +3,12 @@ import { getMovieReviewList } from '../../utils/movieApi';
 import { useParams } from 'react-router-dom';
 import ReviewInfo from './ReviewInfo';
 import { SubTitle } from './SubTitle';
+import { useSelector } from 'react-redux';
+import { Button } from '../common/Button';
+import Colors from '../../constants/Colors';
 
 const ReviewList = () => {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [reviewData, setReviewData] = useState([]);
   const [isAll, setIsAll] = useState(false);
   const params = useParams();
@@ -21,8 +25,13 @@ const ReviewList = () => {
   return (
     reviewData && (
       <div className="flex flex-col w-full gap-2">
-        <SubTitle>사용자 리뷰</SubTitle>
-        <div className="flex flex-col w-full p-6 bg-white gap-2 rounded-sm">
+        <div className="flex w-full justify-between items-center">
+          <SubTitle>사용자 리뷰</SubTitle>
+          {isLoggedIn && (
+            <Button $background={Colors.btnPurple}>리뷰 작성</Button>
+          )}
+        </div>
+        <div className="flex flex-col w-full p-6 gap-2 rounded-sm border border-solid border-white">
           {reviewData.movie_review?.length ? (
             <>
               {reviewData.movie_review.length > 2 && (
