@@ -11,8 +11,12 @@ const movieSlice = createSlice({
     setMovieInfo(state, action) {
       state.movieInfo = action.payload;
     },
+    toggleLikeMovie(state, action) {
+      state.movieInfo.isLike = !state.movieInfo.isLike;
+      state.movieInfo.like_movie_users_count = action.payload;
+    },
   },
 });
 
-export const { setMovieInfo } = movieSlice.actions;
+export const { setMovieInfo, toggleLikeMovie } = movieSlice.actions;
 export default movieSlice.reducer;
