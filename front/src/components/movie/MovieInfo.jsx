@@ -5,6 +5,7 @@ import Youtube from '../../assets/youtube.svg?react';
 import tw from 'tailwind-styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from '../common/Badge';
+import { Line } from '../common/Line';
 import {
   dislikeMovie,
   favoriteMovie,
@@ -17,6 +18,7 @@ import {
   toggleLikeMovie,
   toggleWatchMovie,
 } from '../../stores/movie';
+import { openModal } from '../../stores/modal';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -28,10 +30,6 @@ const Title = tw.p`
 
 const Content = tw.p`
   font-pretendard_exlight
-`;
-
-const Line = tw.hr`
-  border-t border-solid border-gray-700 w-full
 `;
 
 const IconContainer = tw.div`
@@ -126,7 +124,12 @@ const MovieInfo = () => {
             />
             <p>{movieInfo.favorite_movie_users_count}</p>
           </IconContainer>
-          <Youtube className="cursor-pointer" height="1.5rem" width="2rem" />
+          <Youtube
+            className="cursor-pointer"
+            height="1.5rem"
+            width="2rem"
+            onClick={() => dispatch(openModal('trailer'))}
+          />
         </div>
       </div>
       <div className="w-1/4">
