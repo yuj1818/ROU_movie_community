@@ -9,13 +9,13 @@ export const getTrendMovieList = () => {
 };
 
 export const getMovieDetail = (movie_id) => {
-  return API.get(URL + movie_id)
+  return API.get(URL + `${movie_id}/`)
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
 
 export const getMovieReviewList = (movie_id) => {
-  return API.get(URL + `review/${movie_id}`)
+  return API.get(URL + `review/${movie_id}/`)
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
@@ -27,7 +27,7 @@ export const getRecommendMovieList = (params) => {
 };
 
 export const likeMovie = (movie_id) => {
-  return API.post(URL + `like/${movie_id}`)
+  return API.post(URL + `like/${movie_id}/`)
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };

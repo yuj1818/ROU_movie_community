@@ -3,8 +3,10 @@ import Url from '../../constants/URL';
 import { Star, TvMinimal, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Youtube from '../../assets/youtube.svg?react';
 import tw from 'tailwind-styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from '../common/Badge';
+import { likeMovie } from '../../utils/movieApi';
+import { toggleLikeMovie } from '../../stores/movie';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -28,6 +30,12 @@ const IconContainer = tw.div`
 
 const MovieInfo = () => {
   const { movieInfo } = useSelector((state) => state.movie);
+  const dispatch = useDispatch();
+
+  const onClickLike = async () => {
+    const res = await likeMovie(movieInfo.movie_id);
+    dispatch(toggleLikeMovie(res.like_movie_users_count));
+  };
 
   return (
     <div className="flex w-full max-h-min">
@@ -70,6 +78,7 @@ const MovieInfo = () => {
               className="h-full cursor-pointer"
               fill={movieInfo.isLike ? 'white' : 'none'}
               color="white"
+              onClick={onClickLike}
             />
             <p>{movieInfo.like_movie_users_count}</p>
           </IconContainer>
