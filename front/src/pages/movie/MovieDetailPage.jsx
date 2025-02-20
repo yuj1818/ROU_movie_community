@@ -26,7 +26,7 @@ const MovieDetailPage = () => {
     };
 
     getMovieData();
-  }, []);
+  }, [params.movie_id]);
 
   return (
     movieInfo && (

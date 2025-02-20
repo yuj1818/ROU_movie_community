@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import SideBar from './SideBar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
+import { useEffect, useRef } from 'react';
 
 const Container = styled.div`
   display: block;
@@ -33,12 +34,19 @@ const OutletContainer = styled.div`
 `;
 
 const Layout = () => {
+  const outletRef = useRef();
+  const location = useLocation();
+
+  useEffect(() => {
+    outletRef.current?.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <Container>
       <SideBar />
       <Content>
         <Header />
-        <OutletContainer>
+        <OutletContainer ref={outletRef}>
           <Outlet />
         </OutletContainer>
       </Content>
