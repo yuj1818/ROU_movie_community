@@ -31,3 +31,21 @@ export const likeMovie = (movie_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const dislikeMovie = (movie_id) => {
+  return API.post(URL + `dislike/${movie_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
+
+export const watchMovie = (movie_id) => {
+  return API.post(URL + `wtach/${movie_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
+
+export const favoriteMovie = (movie_id) => {
+  return API.post(URL + `favorite/${movie_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
