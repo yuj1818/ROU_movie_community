@@ -8,7 +8,7 @@ const Container = styled.div`
   margin: 0.25%;
 `;
 
-const RecommendInfo = ({ data }) => {
+const MovieCard = ({ data }) => {
   const navigate = useNavigate();
 
   return (
@@ -22,4 +22,4 @@ const RecommendInfo = ({ data }) => {
   );
 };
 
-export default RecommendInfo;
+export default MovieCard;

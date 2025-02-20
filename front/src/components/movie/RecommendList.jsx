@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { getRecommendMovieList } from '../../utils/movieApi';
 import { SubTitle } from './SubTitle';
 import styled from 'styled-components';
-import RecommendInfo from './RecommendInfo';
 import { useSelector } from 'react-redux';
+import MovieCard from './MovieCard';
 
 const InfoContainer = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ const RecommendList = ({ title }) => {
         {isLoggedIn ? (
           movieData && movieData.length ? (
             movieData.map((data) => (
-              <RecommendInfo key={data.movie_id} data={data} />
+              <MovieCard key={data.movie_id} data={data} />
             ))
           ) : (
             <p className="text-gray-600 text-center">추천 영화가 없습니다</p>

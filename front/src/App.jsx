@@ -7,7 +7,7 @@ import { CookiesProvider } from 'react-cookie';
 import { store, persistor } from './stores/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import LoginPage from './pages/auth/LoginPage';
-import MovieSearchPage from './pages/movie/MovieSearchPage';
+import SearchPage from './pages/SearchPage';
 
 const router = createBrowserRouter([
   {
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'search',
-        element: <MovieSearchPage />,
+        element: <SearchPage />,
       },
     ],
   },
