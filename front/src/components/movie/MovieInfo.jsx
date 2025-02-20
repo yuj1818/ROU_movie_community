@@ -5,8 +5,18 @@ import Youtube from '../../assets/youtube.svg?react';
 import tw from 'tailwind-styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from '../common/Badge';
-import { likeMovie } from '../../utils/movieApi';
-import { toggleLikeMovie } from '../../stores/movie';
+import {
+  dislikeMovie,
+  favoriteMovie,
+  likeMovie,
+  watchMovie,
+} from '../../utils/movieApi';
+import {
+  toggleDislikeMovie,
+  toggleFavoriteMovie,
+  toggleLikeMovie,
+  toggleWatchMovie,
+} from '../../stores/movie';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -35,6 +45,21 @@ const MovieInfo = () => {
   const onClickLike = async () => {
     const res = await likeMovie(movieInfo.movie_id);
     dispatch(toggleLikeMovie(res.like_movie_users_count));
+  };
+
+  const onClickDislike = async () => {
+    const res = await dislikeMovie(movieInfo.movie_id);
+    dispatch(toggleDislikeMovie(res.dislike_movie_users_count));
+  };
+
+  const onClickFavorite = async () => {
+    const res = await favoriteMovie(movieInfo.movie_id);
+    dispatch(toggleFavoriteMovie(res.favorite_movie_users_count));
+  };
+
+  const onClickWatch = async () => {
+    await watchMovie(movieInfo.movie_id);
+    dispatch(toggleWatchMovie());
   };
 
   return (
@@ -72,6 +97,7 @@ const MovieInfo = () => {
           <TvMinimal
             className="cursor-pointer"
             color={movieInfo.isWatch ? 'red' : 'white'}
+            onClick={onClickWatch}
           />
           <IconContainer>
             <ThumbsUp
@@ -87,6 +113,7 @@ const MovieInfo = () => {
               className="h-full cursor-pointer"
               fill={movieInfo.isDislike ? 'white' : 'none'}
               color="white"
+              onClick={onClickDislike}
             />
             <p>{movieInfo.dislike_movie_users_count}</p>
           </IconContainer>
@@ -95,6 +122,7 @@ const MovieInfo = () => {
               className="h-full cursor-pointer"
               fill={movieInfo.isFavorite ? 'yellow' : 'none'}
               color="white"
+              onClick={onClickFavorite}
             />
             <p>{movieInfo.favorite_movie_users_count}</p>
           </IconContainer>

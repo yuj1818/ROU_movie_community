@@ -39,7 +39,7 @@ export const dislikeMovie = (movie_id) => {
 };
 
 export const watchMovie = (movie_id) => {
-  return API.post(URL + `wtach/${movie_id}/`)
+  return API.post(URL + `watch/${movie_id}/`)
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
