@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Url from '../../constants/URL';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 16%;
@@ -8,8 +9,10 @@ const Container = styled.div`
 `;
 
 const RecommendInfo = ({ data }) => {
+  const navigate = useNavigate();
+
   return (
-    <Container>
+    <Container onClick={() => navigate(`/movie/${data.movie_id}`)}>
       <img
         className="w-full h-full"
         src={Url.tmdbImgPath + data.poster_path}

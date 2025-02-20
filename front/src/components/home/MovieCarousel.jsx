@@ -4,6 +4,7 @@ import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/react';
 import { getTrendMovieList } from '../../utils/movieApi';
 import Url from '../../constants/URL';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   height: 30rem;
@@ -53,6 +54,7 @@ const Description = styled.div`
 `;
 
 const MovieCarousel = () => {
+  const navigate = useNavigate();
   const intervalRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [trendData, setTrendData] = useState();
@@ -106,6 +108,7 @@ const MovieCarousel = () => {
               setHoveredIdx(null);
               setIsPlaying(true);
             }}
+            onClick={() => navigate(`/movie/${data.movie_id}`)}
           >
             {hoveredIdx === idx ? (
               <iframe
