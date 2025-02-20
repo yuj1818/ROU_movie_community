@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { searchMovie } from '../../utils/movieApi';
+import { searchMovie } from '../utils/movieApi';
+import SearchList from '../components/search/SearchList';
 
-const MovieSearchPage = () => {
+const SearchPage = () => {
   const [searchData, setSearchData] = useState([]);
   const [query, setQuery] = useState();
   const location = useLocation();
@@ -25,14 +26,15 @@ const MovieSearchPage = () => {
           <p className="font-pretendard_semibold text-2xl">"{query}"</p>
           <p className="text-md">에 대한 검색 결과</p>
           {searchData.length > 0 ? (
-            <p className="text-sm">({searchData.length})</p>
+            <p className="text-sm ml-2">({searchData.length})</p>
           ) : (
             <p className="text-md">가 없습니다.</p>
           )}
         </div>
+        {searchData && <SearchList searchData={searchData} />}
       </div>
     )
   );
 };
 
-export default MovieSearchPage;
+export default SearchPage;
