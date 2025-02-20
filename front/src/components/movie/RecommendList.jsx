@@ -21,17 +21,19 @@ const RecommendList = ({ title }) => {
   const [movieData, setMovieData] = useState([]);
 
   useEffect(() => {
-    const getMovieData = async () => {
-      const res = await getRecommendMovieList({ title: title });
-      setMovieData(res);
-    };
+    if (isLoggedIn) {
+      const getMovieData = async () => {
+        const res = await getRecommendMovieList({ title: title });
+        setMovieData(res);
+      };
 
-    getMovieData();
+      getMovieData();
+    }
   }, [title]);
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <SubTitle>추천 영화</SubTitle>
+      <SubTitle>"{title}" 와(과) 비슷한 영화</SubTitle>
       <InfoContainer>
         {isLoggedIn ? (
           movieData && movieData.length ? (
@@ -42,7 +44,7 @@ const RecommendList = ({ title }) => {
             <p className="text-gray-600 text-center">추천 영화가 없습니다</p>
           )
         ) : (
-          <p className="text-gray-600 text-center">로그인해 주세요</p>
+          <p className="text-gray-600 text-center">회원 전용 서비스입니다</p>
         )}
       </InfoContainer>
     </div>
