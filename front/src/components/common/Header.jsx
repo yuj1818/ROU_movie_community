@@ -5,6 +5,7 @@ import { logout } from '../../utils/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLogout } from '../../stores/auth';
 import { useNavigate } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
 const Container = styled.div`
   width: 100%;
@@ -13,6 +14,7 @@ const Container = styled.div`
   justify-content: flex-end;
   background-color: ${Colors.headerBlack};
   padding: 1rem;
+  gap: 0.75rem;
 `;
 
 const Header = () => {
@@ -34,6 +36,7 @@ const Header = () => {
       <Button onClick={onClickBtn} $background={Colors.btnPurple}>
         {isLoggedIn ? '로그아웃' : '로그인'}
       </Button>
+      <SearchBar />
     </Container>
   );
 };
