@@ -12,6 +12,7 @@ import {
 import sessionStorage from 'redux-persist/lib/storage/session';
 import movieSlice from './movie';
 import authSlice from './auth';
+import modalSlice from './modal';
 
 const persistConfig = {
   key: 'root',
@@ -22,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   movie: movieSlice,
   auth: authSlice,
+  modal: modalSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

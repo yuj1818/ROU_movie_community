@@ -3,6 +3,7 @@ import SideBar from './SideBar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import { useEffect, useRef } from 'react';
+import Modal from './Modal';
 
 const Container = styled.div`
   display: block;
@@ -43,6 +44,7 @@ const Layout = () => {
 
   return (
     <Container>
+      <Modal />
       <SideBar />
       <Content>
         <Header />
