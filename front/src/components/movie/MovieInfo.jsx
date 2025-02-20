@@ -4,6 +4,7 @@ import { Star, TvMinimal, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Youtube from '../../assets/youtube.svg?react';
 import tw from 'tailwind-styled-components';
 import { useSelector } from 'react-redux';
+import { Badge } from '../common/Badge';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -31,13 +32,13 @@ const MovieInfo = () => {
   return (
     <div className="flex w-full max-h-min">
       <div className="flex flex-col w-3/4 gap-4 pr-8">
-        <FlexRowContainer>
+        <div className="flex text-base items-end">
           <Title className="text-2xl w-fit">{movieInfo.title}</Title>
           <div className="flex gap-1 items-center">
             <Star className="w-4 h-4" fill="yellow" />
             <Content className="text-sm">{movieInfo.vote_average}</Content>
           </div>
-        </FlexRowContainer>
+        </div>
         <Line />
         <FlexRowContainer>
           <Title>상영일</Title>
@@ -45,6 +46,11 @@ const MovieInfo = () => {
         </FlexRowContainer>
         <FlexRowContainer>
           <Title>장르</Title>
+          <div className="flex gap-1">
+            {movieInfo.genres.map((genre) => (
+              <Badge key={genre.id}>{genre.name}</Badge>
+            ))}
+          </div>
         </FlexRowContainer>
         <FlexRowContainer>
           <Title>감독</Title>
