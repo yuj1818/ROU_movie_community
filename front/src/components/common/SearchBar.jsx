@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Colors from '../../constants/Colors';
 import { Search, CircleX } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -28,15 +29,28 @@ const Input = styled.input`
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState('');
+  const navigate = useNavigate();
+
+  const onSearch = () => {
+    if (keyword.trim()) {
+      navigate({ pathname: '/search', search: `?q=${keyword.trim()}` });
+      setKeyword('');
+    }
+  };
 
   return (
     <Container>
-      <Search size="1.15rem" color={Colors.bgDarkGray} />
+      <Search size="1.15rem" color={Colors.bgDarkGray} onClick={onSearch} />
       <Input
         type="text"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         placeholder="검색어를 입력해주세요"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onSearch();
+          }
+        }}
       />
       {keyword.length > 0 && (
         <CircleX
