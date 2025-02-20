@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import logo from '../../assets/logo.png';
 import Colors from '../../constants/Colors';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   position: fixed;
@@ -18,6 +19,7 @@ const Container = styled.div`
 
   .logo {
     width: 90%;
+    cursor: pointer;
   }
 `;
 
@@ -31,6 +33,7 @@ const MenuContainer = styled.div`
 const Menu = styled.span`
   font-size: 1.75rem;
   color: white;
+  cursor: pointer;
 
   &:hover {
     color: ${Colors.btnPurple};
@@ -38,11 +41,13 @@ const Menu = styled.span`
 `;
 
 const SideBar = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
-      <img className="logo" src={logo} />
+      <img className="logo" src={logo} onClick={() => navigate('/')} />
       <MenuContainer>
-        <Menu>Home</Menu>
+        <Menu onClick={() => navigate('/')}>Home</Menu>
         <Menu>Profile</Menu>
         <Menu>Review</Menu>
       </MenuContainer>
