@@ -49,3 +49,9 @@ export const favoriteMovie = (movie_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const searchMovie = (params) => {
+  return API.get(URL + 'search/', { params })
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
