@@ -25,3 +25,9 @@ export const getRecommendMovieList = (params) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const likeMovie = (movie_id) => {
+  return API.post(URL + `like/${movie_id}`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
