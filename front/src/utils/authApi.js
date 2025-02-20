@@ -4,7 +4,7 @@ import { getCookie, removeCookie, setCookie } from './cookie';
 const URL = 'accounts/';
 
 export const logIn = (data) => {
-  return API.post(URL + 'login', data)
+  return API.post(URL + 'login/', data)
     .then((res) => {
       const token = res.data.key;
       const user = res.data.user;
@@ -16,7 +16,7 @@ export const logIn = (data) => {
 };
 
 export const logout = () => {
-  return API.post(URL + 'logout')
+  return API.post(URL + 'logout/')
     .then(() => {
       removeCookie('token', { path: '/' });
       removeCookie('userId', { path: '/' });
