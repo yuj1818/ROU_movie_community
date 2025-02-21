@@ -1,15 +1,17 @@
 import styled from 'styled-components';
 import MovieCarousel from '../components/home/MovieCarousel';
 import tw from 'tailwind-styled-components';
+import TagList from '../components/home/TagList';
 
 const Container = tw.div`
-  grow flex w-full p-4
+  grow flex flex-col w-full p-4 gap-8
 `;
 
 const HomePage = () => {
   return (
     <Container>
       <MovieCarousel />
+      <TagList />
     </Container>
   );
 };
