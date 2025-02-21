@@ -5,14 +5,13 @@ import TagList from '../components/home/TagList';
 import MovieList from '../components/home/MovieList';
 
 const Container = tw.div`
-  grow flex flex-col w-full p-4 gap-8 h-fit items-center
+  grow flex flex-col w-full p-4 gap-8 h-fit items-center relative
 `;
 
 const HomePage = () => {
   return (
     <Container>
       <MovieCarousel />
-      <TagList />
       <MovieList />
     </Container>
   );

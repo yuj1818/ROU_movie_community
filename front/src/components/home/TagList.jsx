@@ -8,7 +8,16 @@ const TagList = () => {
   const dispatch = useDispatch();
   const { selectedTag, isTagOpen, tags } = useSelector((state) => state.home);
   return (
-    <div className="w-11/12 flex flex-wrap gap-2 items-center">
+    <div className="w-11/12 flex flex-wrap gap-2 items-center sticky top-4 z-10">
+      <Badge
+        $isPointer={true}
+        $background={selectedTag === 20 ? Colors.btnBlue : Colors.btnGray}
+        $fontSize={0.875}
+        $paddingY={0.1}
+        onClick={() => dispatch(selectTag(20))}
+      >
+        TOP 30
+      </Badge>
       {isTagOpen
         ? tags.map((tag) => (
             <Badge
@@ -24,7 +33,7 @@ const TagList = () => {
               {tag.name}
             </Badge>
           ))
-        : tags.slice(0, 5).map((tag) => (
+        : tags.slice(0, 4).map((tag) => (
             <Badge
               key={tag.id}
               $isPointer={true}
@@ -40,13 +49,13 @@ const TagList = () => {
           ))}
       {isTagOpen ? (
         <CircleX
-          className="h-4/5"
+          className="h-4/5 cursor-pointer"
           color="white"
           onClick={() => dispatch(toggleTag())}
         />
       ) : (
         <CircleChevronRight
-          className="h-4/5"
+          className="h-4/5 cursor-pointer"
           color="white"
           onClick={() => dispatch(toggleTag())}
         />

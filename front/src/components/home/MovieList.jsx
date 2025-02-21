@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getGenreMovieList, getSortedMovieList } from '../../utils/movieApi';
 import { setSortedMovies } from '../../stores/home';
 import SortedMovieCarousel from './SortedMovieCarousel';
 import tw from 'tailwind-styled-components';
+import TagList from './TagList';
 
 const ListContainer = tw.div`
   w-full h-fit flex flex-col items-center gap-2
@@ -16,6 +17,8 @@ const Title = tw.p`
 const MovieList = () => {
   const { tags, sortTitles, selectedTag } = useSelector((state) => state.home);
   const dispatch = useDispatch();
+
+  const listRefs = useRef({});
 
   const getGenreMovies = async (id) => {
     const res = await getGenreMovieList(id);
@@ -37,23 +40,43 @@ const MovieList = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (selectedTag) {
+      if (listRefs.current[selectedTag]) {
+        listRefs.current[selectedTag].scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    }
+  }, [selectedTag]);
+
   return (
-    <div className="w-full h-fit flex flex-col gap-8">
-      {sortTitles &&
-        sortTitles.map((item) => (
-          <ListContainer>
-            <Title>{item.name}</Title>
-            <SortedMovieCarousel key={item.id} id={item.id} />
-          </ListContainer>
-        ))}
-      {tags &&
-        tags.map((item) => (
-          <ListContainer>
-            <Title>{item.name}</Title>
-            <SortedMovieCarousel key={item.id} id={item.id} />
-          </ListContainer>
-        ))}
-    </div>
+    <>
+      <TagList />
+      <div className="w-full h-fit flex flex-col gap-8">
+        {sortTitles &&
+          sortTitles.map((item) => (
+            <ListContainer
+              ref={(el) => (listRefs.current[item.id] = el)}
+              key={item.id}
+            >
+              <Title>{item.name}</Title>
+              <SortedMovieCarousel id={item.id} />
+            </ListContainer>
+          ))}
+        {tags &&
+          tags.map((item) => (
+            <ListContainer
+              ref={(el) => (listRefs.current[item.id] = el)}
+              key={item.id}
+            >
+              <Title>{item.name}</Title>
+              <SortedMovieCarousel id={item.id} />
+            </ListContainer>
+          ))}
+      </div>
+    </>
   );
 };
 
