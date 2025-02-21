@@ -39,7 +39,7 @@ const Modal = () => {
   return (
     <div className="fixed z-5 inset-0">
       <div className="fixed inset-0" onClick={() => dispatch(closeModal())} />
-      <div className="ml-[213px] h-full flex justify-center items-center">
+      <div className="pl-[213px] w-full h-full flex justify-center items-center">
         {renderModal()}
       </div>
     </div>
