@@ -9,7 +9,7 @@ urlpatterns = [
   path('trends/', views.movie_trend),
   path('genre/<int:genre_id>/', views.movie_genre),
   path('<int:movie_id>/', views.movie_detail),
-  path('sort/<str:key>/', views.movie_sort),
+  path('sort/', views.movie_sort),
   path('search/', views.search),
   path('like/<int:movie_id>/', views.movie_like),
   path('dislike/<int:movie_id>/', views.movie_dislike),

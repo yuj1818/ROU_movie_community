@@ -64,11 +64,12 @@ def movie_detail(request, movie_id):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def movie_sort(request, key):
+def movie_sort(request):
+  key = request.GET.get("key", "").strip()
   if key == "latest":
-    sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date")[:30]
+    sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date", "popularity")[:30]
   elif key == "upcoming":
-    sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("release_date")[:30]
+    sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("release_date", "popularity")[:30]
   elif key == "rate":
     C = Movie.objects.aggregate(Avg("vote_average"))["vote_average__avg"] or 0
     m = 5000
