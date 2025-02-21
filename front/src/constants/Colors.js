@@ -5,6 +5,7 @@ const Colors = {
   headerBlack: '#222222',
   bgGrayOp: 'rgba(250, 250, 250, 0.93)',
   bgDarkGray: '#666666',
+  btnGray: '#6C757D',
 };
 
 export default Colors;
