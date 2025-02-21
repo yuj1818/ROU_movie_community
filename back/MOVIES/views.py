@@ -69,7 +69,7 @@ def movie_sort(request):
   if key == "latest":
     sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date", "popularity")[:30]
   elif key == "upcoming":
-    sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("release_date", "popularity")[:30]
+    sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("popularity")[:30]
   elif key == "rate":
     C = Movie.objects.aggregate(Avg("vote_average"))["vote_average__avg"] or 0
     m = 5000
