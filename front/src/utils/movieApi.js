@@ -55,3 +55,15 @@ export const searchMovie = (params) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getSortedMovieList = (params) => {
+  return API.get(URL + 'sort/', { params })
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
+
+export const getGenreMovieList = (genre_id) => {
+  return API.get(URL + `genre/${genre_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
