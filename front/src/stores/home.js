@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  selectedTag: 0,
+  selectedTag: 20,
   isTagOpen: false,
   tags: [
     { id: 1, name: '액션' },

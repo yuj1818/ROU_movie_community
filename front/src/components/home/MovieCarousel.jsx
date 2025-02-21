@@ -11,6 +11,7 @@ const Container = styled.div`
   width: 100%;
   overflow: hidden;
   max-width: 100%;
+  margin-bottom: 3rem;
 `;
 
 const Slide = styled.div`
