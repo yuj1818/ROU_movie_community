@@ -8,7 +8,7 @@ const TagList = () => {
   const dispatch = useDispatch();
   const { selectedTag, isTagOpen, tags } = useSelector((state) => state.home);
   return (
-    <div className="w-full flex flex-wrap gap-2 items-center">
+    <div className="w-11/12 flex flex-wrap gap-2 items-center">
       {isTagOpen
         ? tags.map((tag) => (
             <Badge
