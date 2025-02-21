@@ -18,18 +18,19 @@ const InfoContainer = styled.div`
 
 const RecommendList = ({ title }) => {
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const { movieInfo } = useSelector((state) => state.movie);
   const [movieData, setMovieData] = useState([]);
 
   useEffect(() => {
     if (isLoggedIn) {
       const getMovieData = async () => {
-        const res = await getRecommendMovieList({ title: title });
+        const res = await getRecommendMovieList({ title: movieInfo.title });
         setMovieData(res);
       };
 
       getMovieData();
     }
-  }, [title]);
+  }, [movieInfo]);
 
   return (
     <div className="flex flex-col gap-2 w-full">

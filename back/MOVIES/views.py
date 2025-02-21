@@ -66,7 +66,7 @@ def movie_detail(request, movie_id):
 @permission_classes([IsAuthenticatedOrReadOnly])
 def movie_sort(request):
   key = request.GET.get("key", "").strip()
-  if key == "popualr":
+  if key == "popular":
     sort_movies = Movie.objects.filter().order_by("-popularity")[:30]
   elif key == "latest":
     sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date", "popularity")[:30]

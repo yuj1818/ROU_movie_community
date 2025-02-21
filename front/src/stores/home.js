@@ -4,7 +4,6 @@ const initialState = {
   selectedTag: 0,
   isTagOpen: false,
   tags: [
-    { id: 0, name: 'TOP 30' },
     { id: 1, name: '액션' },
     { id: 2, name: '모험' },
     { id: 3, name: '애니메이션' },
@@ -25,6 +24,13 @@ const initialState = {
     { id: 18, name: '전쟁' },
     { id: 19, name: '서부' },
   ],
+  sortTitles: [
+    { id: 20, name: '인기 많은 영화 TOP 30', key: 'popular' },
+    { id: 21, name: '최신 개봉 영화 TOP 30', key: 'latest' },
+    { id: 22, name: '개봉 예정 영화 TOP 30', key: 'upcoming' },
+    { id: 23, name: '평점이 높은 영화 TOP 30', key: 'rate' },
+  ],
+  sortedMovies: {},
 };
 
 const homeSlice = createSlice({
@@ -37,8 +43,12 @@ const homeSlice = createSlice({
     toggleTag(state) {
       state.isTagOpen = !state.isTagOpen;
     },
+    setSortedMovies(state, action) {
+      const { id, data } = action.payload;
+      state.sortedMovies[id] = data;
+    },
   },
 });
 
-export const { selectTag, toggleTag } = homeSlice.actions;
+export const { selectTag, toggleTag, setSortedMovies } = homeSlice.actions;
 export default homeSlice.reducer;
