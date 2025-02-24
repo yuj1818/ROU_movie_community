@@ -26,9 +26,8 @@ const Header = () => {
     if (isLoggedIn) {
       await logout();
       dispatch(setLogout());
-    } else {
-      navigate('/login');
     }
+    navigate('/login');
   };
 
   return (
