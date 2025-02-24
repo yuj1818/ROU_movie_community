@@ -17,7 +17,7 @@ from .update_selected_data import updateTrendDB
 from COMMUNITY.serializers import ReviewSerializer
 
 API_KEY = settings.API_KEY
-TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/movie/day"
+TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/movie/week"
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticatedOrReadOnly])

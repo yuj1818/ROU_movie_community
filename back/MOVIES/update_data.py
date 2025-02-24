@@ -11,6 +11,30 @@ TMDB_DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie"
 TMDB_DETAIL_INFO_URL = "https://api.themoviedb.org/3/movie/"
 SEMAPHORE = asyncio.Semaphore(20)
 
+ADULT_CERTIFICATIONS = {
+  "KR": "19", "US": "NC-17", "GB": "18", "DE": "18", "FR": "18", "IT": "VM18",
+  "ES": "18", "JP": "R18+", "CN": "18+", "IN": "A", "RU": "18+", "BR": "18", "AU": "R18+"
+}
+
+def is_adult_movie(release_dates):
+  has_kr = False
+  is_adult = False
+  for entry in release_dates.get("results", []):
+    country_code = entry.get("iso_3166_1")
+    for release in entry.get("release_dates", []):
+      certification = release.get("certification")
+      if country_code == "KR":
+        has_kr = True
+        if certification == "19":
+          return True
+        else:
+          return False
+      if not certification:
+        continue
+      if certification == ADULT_CERTIFICATIONS.get(country_code, "19"):
+        is_adult = True
+  return is_adult if not has_kr else False
+
 async def fetch_json(session, url, params):
   async with SEMAPHORE:
     async with session.get(url, params=params) as response:
@@ -32,11 +56,14 @@ async def get_movie_details(session, movie_id):
   params = {
     "api_key": API_KEY,
     "language": "ko-KR",
-    "append_to_response": "videos,credits"
+    "append_to_response": "videos,credits,release_dates"
   }
   return await fetch_json(session, f'{TMDB_DETAIL_INFO_URL}{movie_id}', params)
 
 def save_movie(movie):
+  if is_adult_movie(movie.get("release_dates", {})):
+    return
+  
   with transaction.atomic():
     genres = [
       Genre.objects.get_or_create(
