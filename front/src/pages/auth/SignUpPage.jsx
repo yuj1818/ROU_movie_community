@@ -1,5 +1,11 @@
+import SignUpForm from '../../components/auth/SignUpForm';
+
 const SignUpPage = () => {
-  return <div className="text-white">내가 바로 회원가입</div>;
+  return (
+    <div className="grow flex w-full justify-center items-center">
+      <SignUpForm />
+    </div>
+  );
 };
 
 export default SignUpPage;

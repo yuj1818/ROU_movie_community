@@ -32,7 +32,7 @@ export const checkLogin = () => {
   return false;
 };
 
-export const signIn = (data) => {
+export const signUp = (data) => {
   return API.post(URL + 'signup/', data)
     .then((res) => res)
     .catch((err) => err);

@@ -66,7 +66,7 @@ const LoginForm = () => {
           $marginTop={1}
           $isFullWidth={true}
           $background={Colors.btnPurple}
-          disabled={username === '' || password === ''}
+          disabled={username.trim() === '' || password.trim() === ''}
         >
           로그인
         </Button>
