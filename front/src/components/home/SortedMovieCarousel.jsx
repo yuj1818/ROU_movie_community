@@ -5,6 +5,7 @@ import Url from '../../constants/URL';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight, ImageOff } from 'lucide-react';
+import LazyImg from '../common/LazyImg';
 
 const SortedMovieCarousel = ({ id }) => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const SortedMovieCarousel = ({ id }) => {
                 onClick={() => navigate(`/movie/${data.movie_id}`)}
               >
                 {data.poster_path ? (
-                  <img
+                  <LazyImg
                     src={Url.tmdbImgPath + data.poster_path}
                     alt="poster"
                     className="w-full h-full"

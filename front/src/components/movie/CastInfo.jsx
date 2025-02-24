@@ -1,10 +1,11 @@
 import Url from '../../constants/URL';
 import unknown from '../../assets/profile.png';
+import LazyImg from '../common/LazyImg';
 
 const CastInfo = ({ actorInfo }) => {
   return (
     <div className="w-1/2 h-[4rem] px-4 py-2 flex gap-4 items-center">
-      <img
+      <LazyImg
         src={
           actorInfo.profile_path
             ? Url.tmdbImgPath + actorInfo.profile_path

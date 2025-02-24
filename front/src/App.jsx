@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import { lazy, Suspense } from 'react';
 import Layout from './components/common/Layout';
-import MovieDetailPage from './pages/movie/MovieDetailPage';
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { store, persistor } from './stores/store';
@@ -10,6 +9,9 @@ import LoginPage from './pages/auth/LoginPage';
 import SearchPage from './pages/SearchPage';
 import SignUpPage from './pages/auth/SignUpPage';
 
+const HomePage = lazy(() => import('./pages/HomePage'));
+const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -17,7 +19,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <Suspense fallback={<p className="text-white">로딩...</p>}>
+            <HomePage />
+          </Suspense>
+        ),
       },
       {
         path: 'login',
@@ -32,7 +38,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: ':movie_id',
-            element: <MovieDetailPage />,
+            element: (
+              <Suspense fallback={<p className="text-white">로딩...</p>}>
+                <MovieDetailPage />
+              </Suspense>
+            ),
           },
         ],
       },

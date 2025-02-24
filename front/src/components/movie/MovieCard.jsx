@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Url from '../../constants/URL';
 import { useNavigate } from 'react-router-dom';
+import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
   width: 16%;
@@ -13,7 +14,7 @@ const MovieCard = ({ data }) => {
 
   return (
     <Container onClick={() => navigate(`/movie/${data.movie_id}`)}>
-      <img
+      <LazyImg
         className="w-full h-full"
         src={Url.tmdbImgPath + data.poster_path}
         alt="poster"

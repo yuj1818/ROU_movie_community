@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import logo from '../../assets/logo.png';
 import Colors from '../../constants/Colors';
 import { useNavigate } from 'react-router-dom';
+import LazyImg from './LazyImg';
 
 const Container = styled.div`
   position: fixed;
@@ -45,7 +46,7 @@ const SideBar = () => {
 
   return (
     <Container>
-      <img className="logo" src={logo} onClick={() => navigate('/')} />
+      <LazyImg className="logo" src={logo} onClick={() => navigate('/')} />
       <MenuContainer>
         <Menu onClick={() => navigate('/')}>Home</Menu>
         <Menu>Profile</Menu>
