@@ -55,7 +55,7 @@ def movie_genre(request, genre_id):
     genre_movie = Movie.objects.filter(
       genres=genre_id,
       release_date__lte=date.today()
-    ).order_by("-popularity")[:15]
+    ).order_by("-popularity")[:30]
     # 캐시 저장 (1일 동안 캐시)
     cache.set(cache_key, genre_movie, timeout=86400)
   serializer = MovieSimpleSerializer(genre_movie, many=True)
@@ -89,11 +89,11 @@ def movie_sort(request):
     sort_movies = cached_data
   else:
     if key == "popular":
-      sort_movies = Movie.objects.filter().order_by("-popularity")[:15]
+      sort_movies = Movie.objects.filter().order_by("-popularity")[:30]
     elif key == "latest":
-      sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date", "popularity")[:15]
+      sort_movies = Movie.objects.filter(release_date__lte=date.today()).order_by("-release_date", "popularity")[:30]
     elif key == "upcoming":
-      sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("popularity")[:15]
+      sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by("popularity")[:30]
     elif key == "rate":
       C = Movie.objects.aggregate(Avg("vote_average"))["vote_average__avg"] or 0
       m = 5000
@@ -107,7 +107,7 @@ def movie_sort(request):
           (m / (F("vote_count") + m) * C)
           , output_field=FloatField()
         )
-      ).order_by("-weighted_rating")[:15]
+      ).order_by("-weighted_rating")[:30]
     else:
       return Response({"error": "Invalid sort number"}, status=status.HTTP_400_BAD_REQUEST)
     # 캐시 저장 (1일 동안 캐시)
