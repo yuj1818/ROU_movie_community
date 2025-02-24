@@ -31,3 +31,9 @@ export const checkLogin = () => {
   }
   return false;
 };
+
+export const signIn = (data) => {
+  return API.post(URL + 'signup/', data)
+    .then((res) => res)
+    .catch((err) => err);
+};
