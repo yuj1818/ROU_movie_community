@@ -5,6 +5,7 @@ import { useKeenSlider } from 'keen-slider/react';
 import { getTrendMovieList } from '../../utils/movieApi';
 import Url from '../../constants/URL';
 import { useNavigate } from 'react-router-dom';
+import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
   height: 30rem;
@@ -119,7 +120,7 @@ const MovieCarousel = () => {
                 allow="autoplay; encrypted-media"
               />
             ) : (
-              <img
+              <LazyImg
                 className="media"
                 src={Url.tmdbImgPath + data.backdrop_path}
                 alt={data.title}

@@ -19,6 +19,7 @@ import {
   toggleWatchMovie,
 } from '../../stores/movie';
 import { openModal } from '../../stores/modal';
+import LazyImg from '../common/LazyImg';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -134,7 +135,7 @@ const MovieInfo = () => {
       </div>
       <div className="w-1/4">
         <div className="w-full aspect-3/4">
-          <img
+          <LazyImg
             className="w-full h-full"
             alt="poster"
             src={Url.tmdbImgPath + movieInfo.poster_path}
