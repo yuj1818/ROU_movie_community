@@ -71,6 +71,12 @@ const LoginForm = () => {
           로그인
         </Button>
       </form>
+      <a
+        className="text-xs mt-2 text-blue-500 underline underline-offset-2"
+        href="/signup"
+      >
+        회원가입
+      </a>
     </div>
   );
 };

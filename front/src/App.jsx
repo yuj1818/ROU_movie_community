@@ -8,6 +8,7 @@ import { store, persistor } from './stores/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import LoginPage from './pages/auth/LoginPage';
 import SearchPage from './pages/SearchPage';
+import SignUpPage from './pages/auth/SignUpPage';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginPage />,
+      },
+      {
+        path: 'signup',
+        element: <SignUpPage />,
       },
       {
         path: 'movie',
