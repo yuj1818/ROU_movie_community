@@ -12,7 +12,7 @@ from django.conf import settings
 from django.db import transaction
 from MOVIES.models import *
 from MOVIES.serializers import *
-from django.db import DatabaseError
+from django.db import DatabaseError, IntegrityError
 
 API_KEY = settings.API_KEY
 # TMDB API 인기있는 영화
@@ -23,7 +23,15 @@ TMDB_GENRE_BASE_URL = "https://api.themoviedb.org/3/genre/movie/list"
 TMDB_DETAIL_INFO_BASE_URL = "https://api.themoviedb.org/3/movie/"
 # TMDB API 현재 상영중인 영화
 TMDB_TRENDING_BASE_URL = "https://api.themoviedb.org/3/trending/movie/day"
+# TMDB API 평점 높은 영화
+TMDB_RATING_BASE_URL = "https://api.themoviedb.org/3/movie/top_rated"
+
 SEMAPHORE = asyncio.Semaphore(20)
+
+ADULT_CERTIFICATIONS = {
+  "KR": "19", "US": "NC-17", "GB": "18", "DE": "18", "FR": "18", "IT": "VM18",
+  "ES": "18", "JP": "R18+", "CN": "18+", "IN": "A", "RU": "18+", "BR": "18", "AU": "R18+"
+}
 
 async def fetch_genres(session):
   params = {
@@ -47,6 +55,25 @@ def process_genres(genres_data):
     genre_instances.append(genre_instance)
   return genre_instances
 
+def is_adult_movie(release_dates):
+  has_kr = False
+  is_adult = False
+  for entry in release_dates.get("results", []):
+    country_code = entry.get("iso_3166_1")
+    for release in entry.get("release_dates", []):
+      certification = release.get("certification")
+      if country_code == "KR":
+        has_kr = True
+        if certification == "19":
+          return True
+        else:
+          return False
+      if not certification:
+        continue
+      if certification == ADULT_CERTIFICATIONS.get(country_code, "19"):
+        is_adult = True
+  return is_adult if not has_kr else False
+
 async def fetch_movies(session, page):
   params = {
     "api_key": API_KEY,
@@ -54,7 +81,7 @@ async def fetch_movies(session, page):
     "page": page
   }
   async with SEMAPHORE:
-    async with session.get(TMDB_POPULAR_BASE_URL, params=params) as response:
+    async with session.get(TMDB_RATING_BASE_URL, params=params) as response:
       return await response.json()
     
 async def fetch_movie_details(session, movie):
@@ -63,12 +90,14 @@ async def fetch_movie_details(session, movie):
   params = {
     "api_key": API_KEY,
     "language": "ko-KR",
-    "append_to_response": "videos,credits"
+    "append_to_response": "videos,credits,release_dates"
   }
 
   async with SEMAPHORE:
     async with session.get(url, params=params) as response:
       movie_detail = await response.json()
+      if is_adult_movie(movie_detail.get("release_dates", {})):
+        return None
       videos = movie_detail.get("videos", {}).get("results", [])
       if videos:
         movie['videos'] = videos[0].get("key")
@@ -110,7 +139,6 @@ def process_movie_orm(movie, movie_detail):
           genre_instances_dict[genre_data["id"]] = genre_instance
 
   movie_data = {
-    "movie_id": movie["id"],
     "title": movie["title"],
     "overview": movie.get("overview", ""),
     "release_date": movie.get("release_date") or None,
@@ -125,18 +153,24 @@ def process_movie_orm(movie, movie_detail):
     "adult": movie.get("adult", False)
   }
 
-  movie_instance, _ = Movie.objects.update_or_create(
-    movie_id=movie["id"],
-    release_date=movie.get("release_date") or None,
-    defaults=movie_data
-  )
+  try:
+    movie_instance, _ = Movie.objects.update_or_create(
+      movie_id=movie["id"],
+      release_date=movie.get("release_date") or None,
+      defaults=movie_data
+    )
+  except IntegrityError:
+    return None
+
   return movie_instance, genre_instances_dict.keys(), actor_instances_dict.keys()
 
 def save_movies_to_db(movies):
   try:
     with transaction.atomic():
       for movie, movie_detail in movies:
-        movie_instance, genres, actors = process_movie_orm(movie, movie_detail)
+        result = process_movie_orm(movie, movie_detail)
+        if result is None: continue
+        movie_instance, genres, actors = result
         if movie_instance:
           genres = Genre.objects.filter(genre_id__in=genres)
           actors = Actor.objects.filter(person_id__in=actors)
@@ -163,7 +197,8 @@ def run():
       all_movies = [movie for page in movie_results for movie in page.get("results", [])]
       detail_tasks = [fetch_movie_details(session, movie) for movie in all_movies]
       movie_details = await asyncio.gather(*detail_tasks)
-      await sync_to_async(save_movies_to_db)(movie_details) 
+      filtered_movies = [m for m in movie_details if m]
+      await sync_to_async(save_movies_to_db)(filtered_movies) 
   
   asyncio.run(main())
 
