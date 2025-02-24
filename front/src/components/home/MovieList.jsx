@@ -19,6 +19,7 @@ const MovieList = () => {
   const dispatch = useDispatch();
 
   const listRefs = useRef({});
+  const tagListRef = useRef(null);
 
   const getGenreMovies = async (id) => {
     const res = await getGenreMovieList(id);
@@ -42,18 +43,25 @@ const MovieList = () => {
 
   useEffect(() => {
     if (selectedTag) {
-      if (listRefs.current[selectedTag]) {
-        listRefs.current[selectedTag].scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
+      const element = listRefs.current[selectedTag];
+      if (element) {
+        const offset = tagListRef.current ? tagListRef.current.offsetHeight : 0;
+        const elementPosition = element.offsetTop;
+
+        const parentElement = element.parentNode.parentNode.parentNode;
+        parentElement.scrollTop = elementPosition - offset - 24;
       }
     }
   }, [selectedTag]);
 
   return (
     <>
-      <TagList />
+      <div
+        className="w-11/12 flex flex-wrap gap-2 items-center sticky top-4 z-10"
+        ref={tagListRef}
+      >
+        <TagList />
+      </div>
       <div className="w-full h-fit flex flex-col gap-8">
         {sortTitles &&
           sortTitles.map((item) => (
