@@ -15,7 +15,9 @@ const Title = tw.p`
 `;
 
 const MovieList = () => {
-  const { tags, sortTitles, selectedTag } = useSelector((state) => state.home);
+  const { tags, sortTitles, selectedTag, sortedMovies } = useSelector(
+    (state) => state.home,
+  );
   const dispatch = useDispatch();
 
   const listRefs = useRef({});
@@ -62,28 +64,30 @@ const MovieList = () => {
       >
         <TagList />
       </div>
-      <div className="w-full h-fit flex flex-col gap-8">
-        {sortTitles &&
-          sortTitles.map((item) => (
-            <ListContainer
-              ref={(el) => (listRefs.current[item.id] = el)}
-              key={item.id}
-            >
-              <Title>{item.name}</Title>
-              <SortedMovieCarousel id={item.id} />
-            </ListContainer>
-          ))}
-        {tags &&
-          tags.map((item) => (
-            <ListContainer
-              ref={(el) => (listRefs.current[item.id] = el)}
-              key={item.id}
-            >
-              <Title>{item.name}</Title>
-              <SortedMovieCarousel id={item.id} />
-            </ListContainer>
-          ))}
-      </div>
+      {Object.keys(sortedMovies).length === 23 && (
+        <div className="w-full h-fit flex flex-col gap-8">
+          {sortTitles &&
+            sortTitles.map((item) => (
+              <ListContainer
+                ref={(el) => (listRefs.current[item.id] = el)}
+                key={item.id}
+              >
+                <Title>{item.name}</Title>
+                <SortedMovieCarousel id={item.id} />
+              </ListContainer>
+            ))}
+          {tags &&
+            tags.map((item) => (
+              <ListContainer
+                ref={(el) => (listRefs.current[item.id] = el)}
+                key={item.id}
+              >
+                <Title>{item.name}</Title>
+                <SortedMovieCarousel id={item.id} />
+              </ListContainer>
+            ))}
+        </div>
+      )}
     </>
   );
 };

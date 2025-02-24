@@ -1,6 +1,5 @@
-import styled from 'styled-components';
 import MovieInfo from '../../components/movie/MovieInfo';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import tw from 'tailwind-styled-components';
 import { getMovieDetail } from '../../utils/movieApi';
@@ -29,7 +28,8 @@ const MovieDetailPage = () => {
   }, [params.movie_id]);
 
   return (
-    movieInfo && (
+    movieInfo &&
+    movieInfo.movie_id == params.movie_id && (
       <Container>
         <MovieInfo />
         <CastList />
