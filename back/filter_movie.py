@@ -36,7 +36,7 @@ def is_adult_movie(release_dates):
       certification = release.get("certification", "")
       if country_code == "KR":
         has_kr = True
-        if certification in ["19", "19+"]:
+        if certification in ["18", "19", "19+"]:
           return True
         else:
           return False

@@ -8,7 +8,7 @@ const TagList = () => {
   const dispatch = useDispatch();
   const { selectedTag, isTagOpen, tags } = useSelector((state) => state.home);
   return (
-    <div className="w-11/12 flex flex-wrap gap-2 items-center sticky top-4 z-10">
+    <>
       <Badge
         $isPointer={true}
         $background={selectedTag === 20 ? Colors.btnBlue : Colors.btnGray}
@@ -60,7 +60,7 @@ const TagList = () => {
           onClick={() => dispatch(toggleTag())}
         />
       )}
-    </div>
+    </>
   );
 };
 
