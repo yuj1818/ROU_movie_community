@@ -88,16 +88,33 @@ const profileSlice = createSlice({
       }
     },
     followOthers(state, action) {
-      const { isFollowing, id } = action.payload;
-      state.selectedData = state.selectedData.map((user) =>
-        user.id === id ? { ...user, isFollowing } : user,
-      );
-      state.followers = state.followers.map((follower) =>
-        follower.id === id ? { ...follower, isFollowing } : follower,
-      );
-      state.followings = state.followings.map((following) =>
-        following.id === id ? { ...following, isFollowing } : following,
-      );
+      const { isFollowing, id, isMine } = action.payload;
+      if (isMine & !isFollowing) {
+        state.friends = state.friends.filter((friend) => friend.id !== id);
+        state.followings = state.followings.filter(
+          (following) => following.id !== id,
+        );
+        state.followers = state.followers.map((follower) =>
+          follower.id === id ? { ...follower, isFollowing } : follower,
+        );
+        if (state.category === 'follower') {
+          state.selectedData = state.followers;
+        } else if (state.category === 'friend') {
+          state.selectedData = state.friends;
+        } else {
+          state.selectedData = state.followings;
+        }
+      } else {
+        state.selectedData = state.selectedData.map((user) =>
+          user.id === id ? { ...user, isFollowing } : user,
+        );
+        state.followers = state.followers.map((follower) =>
+          follower.id === id ? { ...follower, isFollowing } : follower,
+        );
+        state.followings = state.followings.map((following) =>
+          following.id === id ? { ...following, isFollowing } : following,
+        );
+      }
     },
   },
 });
