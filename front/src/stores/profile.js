@@ -17,6 +17,7 @@ const initialState = {
   watching_movies: [],
   favorite_movies: [],
   friends: [],
+  isFollowing: false,
 };
 
 const profileSlice = createSlice({
@@ -40,6 +41,7 @@ const profileSlice = createSlice({
         dislike_movies,
         watching_movies,
         favorite_movies,
+        isFollowing,
       } = action.payload;
       state.userId = id;
       state.username = username;
@@ -59,9 +61,19 @@ const profileSlice = createSlice({
       state.friends = Array.from(
         new Set(followers).intersection(new Set(followings)),
       );
+      state.isFollowing = isFollowing;
+    },
+    setFollow(state, action) {
+      const { followers, followings, isFollowing } = action.payload;
+      state.followers = followers;
+      state.followings = followings;
+      state.isFollowing = isFollowing;
+      state.friends = Array.from(
+        new Set(followers).intersection(new Set(followings)),
+      );
     },
   },
 });
 
-export const { setProfileInfo } = profileSlice.actions;
+export const { setProfileInfo, setFollow } = profileSlice.actions;
 export default profileSlice.reducer;
