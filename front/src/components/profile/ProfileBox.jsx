@@ -6,8 +6,9 @@ import Colors from '../../constants/Colors';
 import { getCookie } from '../../utils/cookie';
 import SocialList from './SocialList';
 import { follow } from '../../utils/profileApi';
-import { useParams } from 'react-router-dom';
 import { setFollow } from '../../stores/profile';
+import { Pencil } from 'lucide-react';
+import { openModal } from '../../stores/modal';
 
 const ProfileBox = () => {
   const { userId, username, profile_image, isFollowing } = useSelector(
@@ -29,7 +30,17 @@ const ProfileBox = () => {
           alt="profile_img"
         />
       </div>
-      <p className="font-pretendard_semibold text-2xl">{username}</p>
+      <div className="flex gap-2 items-center">
+        <p className="font-pretendard_semibold text-2xl">{username}</p>
+        {userId == getCookie('userId') && (
+          <Pencil
+            className="cursor-pointer"
+            size="1rem"
+            color="white"
+            onClick={() => dispatch(openModal('profile'))}
+          />
+        )}
+      </div>
       {userId != getCookie('userId') && (
         <Button
           $background={isFollowing ? Colors.btnLightGray : Colors.btnBlue}

@@ -38,7 +38,7 @@ def profile(request, user_pk):
       if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+      return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
