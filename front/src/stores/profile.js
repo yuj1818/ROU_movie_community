@@ -16,6 +16,7 @@ const initialState = {
   dislike_movies: [],
   watching_movies: [],
   favorite_movies: [],
+  friends: [],
 };
 
 const profileSlice = createSlice({
@@ -24,7 +25,7 @@ const profileSlice = createSlice({
   reducers: {
     setProfileInfo(state, action) {
       const {
-        userId,
+        id,
         username,
         profile_image,
         region,
@@ -40,7 +41,7 @@ const profileSlice = createSlice({
         watching_movies,
         favorite_movies,
       } = action.payload;
-      state.userId = userId;
+      state.userId = id;
       state.username = username;
       state.profile_image = profile_image;
       state.region = region;
@@ -55,6 +56,9 @@ const profileSlice = createSlice({
       state.dislike_movies = dislike_movies;
       state.watching_movies = watching_movies;
       state.favorite_movies = favorite_movies;
+      state.friends = Array.from(
+        new Set(followers).intersection(new Set(followings)),
+      );
     },
   },
 });
