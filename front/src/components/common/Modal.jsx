@@ -3,15 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { closeModal } from '../../stores/modal';
 import TrailerModal from '../movie/TrailerModal';
+import ProfileEditModal from '../profile/ProfileEditModal';
 
 const MODAL_TYPES = {
   trailer: 'trailer',
+  profile: 'profile',
 };
 
 const MODAL_COMPONENTS = [
   {
     type: MODAL_TYPES.trailer,
     component: <TrailerModal />,
+  },
+  {
+    type: MODAL_TYPES.profile,
+    component: <ProfileEditModal />,
   },
 ];
 

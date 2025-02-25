@@ -44,19 +44,19 @@ const SocialList = () => {
     <div className="flex flex-col gap-2 w-full">
       <div className="flex justify-around w-full">
         <Category onClick={() => dispatch(setCategory('follower'))}>
-          <Text $isSelected={category === 'follower'}>Follower</Text>
+          <Text $isSelected={category === 'follower'}>팔로워</Text>
           <CircleNum $isSelected={category === 'follower'}>
             {followers.length}
           </CircleNum>
         </Category>
         <Category onClick={() => dispatch(setCategory('following'))}>
-          <Text $isSelected={category === 'following'}>Following</Text>
+          <Text $isSelected={category === 'following'}>팔로잉</Text>
           <CircleNum $isSelected={category === 'following'}>
             {followings.length}
           </CircleNum>
         </Category>
         <Category onClick={() => dispatch(setCategory('friend'))}>
-          <Text $isSelected={category === 'friend'}>Friend</Text>
+          <Text $isSelected={category === 'friend'}>친구</Text>
           <CircleNum $isSelected={category === 'friend'}>
             {friends.length}
           </CircleNum>
