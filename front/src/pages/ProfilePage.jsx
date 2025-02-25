@@ -19,7 +19,7 @@ const ProfilePage = () => {
   }, [params.user_id]);
 
   return (
-    <div className="w-4/5 flex gap-20 text-white py-12 h-fit">
+    <div className="w-5/6 flex justify-between text-white py-12 h-fit">
       <ProfileBox />
     </div>
   );

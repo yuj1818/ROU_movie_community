@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import tw from 'tailwind-styled-components';
 import Colors from '../../constants/Colors';
 import SocialInfo from './SocialInfo';
+import { setCategory, setSelectedData } from '../../stores/profile';
+import { useParams } from 'react-router-dom';
 
 const Category = tw.div`
-  flex gap-1 items-center text-sm text-white cursor-pointer
-  ${(props) =>
-    props.$isSelected ? 'font-pretendard_semibold' : 'font-pretendard_regular'}
+  flex gap-1 items-center text-sm text-white cursor-pointer font-pretendard_semibold
 `;
 
 const CircleNum = tw.div`
@@ -16,57 +16,57 @@ const CircleNum = tw.div`
   ${(props) => (props.$isSelected ? 'bg-white' : 'bg-gray-400')}
 `;
 
-const Num = styled.span`
+const Text = styled.span`
   color: ${(props) => (props.$isSelected ? Colors.btnBlue : 'white')};
+  text-shadow: ${(props) =>
+    props.$isSelected ? '0px 1px 2px rgba(255, 255, 255, 0.6)' : 'none'};
 `;
 
 const SocialList = () => {
-  const { followers, followings, friends } = useSelector(
-    (state) => state.profile,
-  );
-  const [selectedData, setSelectedData] = useState(null);
-  const [category, setCategory] = useState('follower');
+  const { userId, followers, followings, friends, selectedData, category } =
+    useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+  const params = useParams();
 
   useEffect(() => {
     if (category) {
       if (category === 'follower') {
-        setSelectedData(followers);
+        dispatch(setSelectedData(followers));
       } else if (category === 'following') {
-        setSelectedData(followings);
+        dispatch(setSelectedData(followings));
       } else {
-        setSelectedData(friends);
+        dispatch(setSelectedData(friends));
       }
     }
-  }, [category]);
+  }, [userId, category]);
 
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex justify-around w-full">
-        <Category
-          $isSelected={category === 'follower'}
-          onClick={() => setCategory('follower')}
-        >
-          <Num $isSelected={category === 'follower'}>Follower</Num>
-          <CircleNum>{followers.length}</CircleNum>
+        <Category onClick={() => dispatch(setCategory('follower'))}>
+          <Text $isSelected={category === 'follower'}>Follower</Text>
+          <CircleNum $isSelected={category === 'follower'}>
+            {followers.length}
+          </CircleNum>
         </Category>
-        <Category
-          $isSelected={category === 'following'}
-          onClick={() => setCategory('following')}
-        >
-          <Num $isSelected={category === 'following'}>Following</Num>
-          <CircleNum>{followings.length}</CircleNum>
+        <Category onClick={() => dispatch(setCategory('following'))}>
+          <Text $isSelected={category === 'following'}>Following</Text>
+          <CircleNum $isSelected={category === 'following'}>
+            {followings.length}
+          </CircleNum>
         </Category>
-        <Category
-          $isSelected={category === 'friend'}
-          onClick={() => setCategory('friend')}
-        >
-          <Num $isSelected={category === 'friend'}>Friend</Num>
-          <CircleNum>{friends.length}</CircleNum>
+        <Category onClick={() => dispatch(setCategory('friend'))}>
+          <Text $isSelected={category === 'friend'}>Friend</Text>
+          <CircleNum $isSelected={category === 'friend'}>
+            {friends.length}
+          </CircleNum>
         </Category>
       </div>
-      <div className="flex flex-col w-full aspect-square rounded-md border border-solid border-white overflow-y-scroll">
+      <div className="flex flex-col gap-1 p-2 w-full aspect-square rounded-md border border-solid border-white overflow-y-auto">
         {selectedData &&
-          selectedData.map((data) => <SocialInfo key={data.id} data={data} />)}
+          selectedData.map((data, idx) => (
+            <SocialInfo key={data.id} idx={idx} />
+          ))}
       </div>
     </div>
   );

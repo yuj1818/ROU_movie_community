@@ -18,12 +18,20 @@ const initialState = {
   favorite_movies: [],
   friends: [],
   isFollowing: false,
+  selectedData: null,
+  category: 'follower',
 };
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
+    setCategory(state, action) {
+      state.category = action.payload;
+    },
+    setSelectedData(state, action) {
+      state.selectedData = action.payload;
+    },
     setProfileInfo(state, action) {
       const {
         id,
@@ -58,8 +66,8 @@ const profileSlice = createSlice({
       state.dislike_movies = dislike_movies;
       state.watching_movies = watching_movies;
       state.favorite_movies = favorite_movies;
-      state.friends = Array.from(
-        new Set(followers).intersection(new Set(followings)),
+      state.friends = followers.filter((follower) =>
+        followings.some((following) => following.id === follower.id),
       );
       state.isFollowing = isFollowing;
     },
@@ -68,12 +76,37 @@ const profileSlice = createSlice({
       state.followers = followers;
       state.followings = followings;
       state.isFollowing = isFollowing;
-      state.friends = Array.from(
-        new Set(followers).intersection(new Set(followings)),
+      state.friends = followers.filter((follower) =>
+        followings.some((following) => following.id === follower.id),
+      );
+      if (state.category === 'follower') {
+        state.selectedData = state.followers;
+      } else if (state.category === 'friend') {
+        state.selectedData = followers.filter((follower) =>
+          followings.some((following) => following.id === follower.id),
+        );
+      }
+    },
+    followOthers(state, action) {
+      const { isFollowing, id } = action.payload;
+      state.selectedData = state.selectedData.map((user) =>
+        user.id === id ? { ...user, isFollowing } : user,
+      );
+      state.followers = state.followers.map((follower) =>
+        follower.id === id ? { ...follower, isFollowing } : follower,
+      );
+      state.followings = state.followings.map((following) =>
+        following.id === id ? { ...following, isFollowing } : following,
       );
     },
   },
 });
 
-export const { setProfileInfo, setFollow } = profileSlice.actions;
+export const {
+  setProfileInfo,
+  setFollow,
+  setCategory,
+  setSelectedData,
+  followOthers,
+} = profileSlice.actions;
 export default profileSlice.reducer;
