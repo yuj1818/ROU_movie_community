@@ -9,11 +9,8 @@ const InfoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  justify-content: space-between;
-  margin: 0 auto;
-  & > div:last-child {
-    margin-right: auto;
-  }
+  justify-content: flex-start;
+  gap: 0.8%;
 `;
 
 const RecommendList = ({ title }) => {

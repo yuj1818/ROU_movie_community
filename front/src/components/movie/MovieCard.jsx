@@ -6,7 +6,7 @@ import LazyImg from '../common/LazyImg';
 const Container = styled.div`
   width: 16%;
   aspect-ratio: 3 /4;
-  margin: 0.25%;
+  margin-bottom: 0.8%;
 `;
 
 const MovieCard = ({ data }) => {
