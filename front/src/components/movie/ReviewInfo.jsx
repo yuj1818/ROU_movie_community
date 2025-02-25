@@ -14,7 +14,7 @@ const ReviewInfo = ({ data }) => {
         className="w-[3rem] h-[3rem] rounded-full"
         src={
           data.review_writor.profile_image
-            ? import.meta.env.VITE_API_URL + data.review_writor.profile_image
+            ? data.review_writor.profile_image
             : unknown
         }
         alt="user_img"

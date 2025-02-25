@@ -89,7 +89,7 @@ const profileSlice = createSlice({
     },
     followOthers(state, action) {
       const { isFollowing, id, isMine } = action.payload;
-      if (isMine & !isFollowing) {
+      if (isMine && !isFollowing) {
         state.friends = state.friends.filter((friend) => friend.id !== id);
         state.followings = state.followings.filter(
           (following) => following.id !== id,

@@ -5,7 +5,7 @@ import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { follow } from '../../utils/profileApi';
-import { followOthers } from '../../stores/profile';
+import { followOthers, setFollow } from '../../stores/profile';
 
 const SocialInfo = ({ idx }) => {
   const dispatch = useDispatch();
@@ -13,13 +13,17 @@ const SocialInfo = ({ idx }) => {
 
   const onClickFollow = async () => {
     const res = await follow(selectedData[idx].id);
-    dispatch(
-      followOthers({
-        isFollowing: res.isFollowing,
-        id: selectedData[idx].id,
-        isMine: userId == getCookie('userId'),
-      }),
-    );
+    if (res.isFollowing && userId == getCookie('userId')) {
+      dispatch(setFollow(res));
+    } else {
+      dispatch(
+        followOthers({
+          isFollowing: res.isFollowing,
+          id: selectedData[idx].id,
+          isMine: userId == getCookie('userId'),
+        }),
+      );
+    }
   };
 
   return (
@@ -29,7 +33,7 @@ const SocialInfo = ({ idx }) => {
           <LazyImg
             src={
               selectedData[idx].profile_image
-                ? import.meta.env.VITE_API_URL + selectedData[idx].profile_image
+                ? selectedData[idx].profile_image
                 : unknown
             }
             className="w-full h-full"
