@@ -1,6 +1,7 @@
 import tw from 'tailwind-styled-components';
 import { MessageSquareMore, ThumbsUp, ThumbsDown } from 'lucide-react';
 import LazyImg from '../common/LazyImg';
+import unknown from '../../assets/profile.png';
 
 const IconContainer = tw.div`
   flex h-[1rem] items-center text-xs text-black
@@ -11,7 +12,11 @@ const ReviewInfo = ({ data }) => {
     <div className="flex items-center gap-4 w-full h-[5rem] px-6 py-4 bg-white rounded-md">
       <LazyImg
         className="w-[3rem] h-[3rem] rounded-full"
-        src={import.meta.env.VITE_API_URL + data.review_writor.profile_image}
+        src={
+          data.review_writor.profile_image
+            ? import.meta.env.VITE_API_URL + data.review_writor.profile_image
+            : unknown
+        }
         alt="user_img"
       />
       <div className="grow flex flex-col gap-2 text-black min-w-0">
