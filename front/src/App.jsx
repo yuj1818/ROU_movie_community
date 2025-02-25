@@ -11,6 +11,7 @@ import SignUpPage from './pages/auth/SignUpPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
       {
         path: 'search',
         element: <SearchPage />,
+      },
+      {
+        path: 'profile/:user_id',
+        element: (
+          <Suspense fallback={<p className="text-white">로딩...</p>}>
+            <ProfilePage />
+          </Suspense>
+        ),
       },
     ],
   },
