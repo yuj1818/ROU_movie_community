@@ -22,14 +22,10 @@ const ProfileBox = () => {
 
   return (
     <div className="w-[28%] flex flex-col gap-2 items-center">
-      <div className="w-1/2 rounded-full overflow-hidden">
+      <div className="w-1/2 rounded-full aspect-square overflow-hidden">
         <LazyImg
           className="w-full h-full"
-          src={
-            profile_image
-              ? import.meta.env.VITE_API_URL + profile_image
-              : unknown
-          }
+          src={profile_image ? profile_image : unknown}
           alt="profile_img"
         />
       </div>
