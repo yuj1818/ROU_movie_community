@@ -23,7 +23,7 @@ def delete(request):
 def profile(request, user_pk):
   user = get_object_or_404(User, pk=user_pk)
   if request.method == 'GET':
-    serializer = ProfileSerializer(user)
+    serializer = ProfileSerializer(user, context={'request': request})
     list_serializer = UserMovieListSerializer(user).data
     list_serializer.update(serializer.data)
     if request.user.pk != user_pk:
@@ -34,7 +34,7 @@ def profile(request, user_pk):
     return Response(list_serializer)
   elif request.method == 'PUT':
     if request.user == user:
-      serializer = ProfileSerializer(instance=user, data=request.data, partial=True)
+      serializer = ProfileSerializer(instance=user, data=request.data, partial=True, context={'request': request})
       if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data)
@@ -75,7 +75,7 @@ def follow(request, user_pk):
       user.followers.remove(request.user)
     else:
       user.followers.add(request.user)
-    serializer = ProfileSerializer(user)
+    serializer = ProfileSerializer(user, context={'request': request})
     data = {
       'isFollowing': user.followers.filter(pk=request.user.pk).exists()
     }
@@ -90,7 +90,7 @@ def follow(request, user_pk):
 def user_friend(request):
     me = get_object_or_404(User, pk=request.user.pk)
     # user = request.user # username이 출력
-    serializer = ProfileSerializer(me)  # 나의 정보를 추출
+    serializer = ProfileSerializer(me, context={'request': request})  # 나의 정보를 추출
     # 연도 추출 : 나의 나이 +-3
     year = int(serializer.data.get('birth')[:4])
     first_date = datetime.date(year - 3, 1, 1)
@@ -99,7 +99,7 @@ def user_friend(request):
     friends = User.objects.filter(
         region=serializer.data.get('region'),
         birth__range=(first_date, last_date)).exclude(pk=request.user.pk)
-    serializer = ProfileSerializer(friends, many=True)
+    serializer = ProfileSerializer(friends, many=True, context={'request': request})
     if friends.exists():
         return Response(serializer.data)
     else:
