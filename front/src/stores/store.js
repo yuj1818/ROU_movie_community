@@ -14,6 +14,7 @@ import movieSlice from './movie';
 import authSlice from './auth';
 import modalSlice from './modal';
 import homeSlice from './home';
+import profileSlice from './profile';
 
 const persistConfig = {
   key: 'root',
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   auth: authSlice,
   modal: modalSlice,
   home: homeSlice,
+  profile: profileSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
