@@ -26,6 +26,11 @@ def profile(request, user_pk):
     serializer = ProfileSerializer(user)
     list_serializer = UserMovieListSerializer(user).data
     list_serializer.update(serializer.data)
+    if request.user.pk != user_pk:
+      data = {
+        'isFollowing': user.followers.filter(pk=request.user.pk).exists()
+      }
+      list_serializer.update(data)
     return Response(list_serializer)
   elif request.method == 'PUT':
     if request.user == user:
@@ -71,7 +76,11 @@ def follow(request, user_pk):
     else:
       user.followers.add(request.user)
     serializer = ProfileSerializer(user)
-    return Response(serializer.data)
+    data = {
+      'isFollowing': user.followers.filter(pk=request.user.pk).exists()
+    }
+    data.update(serializer.data)
+    return Response(data)
   else:
     return Response({'detail': '본인은 팔로우 불가'}, status=status.HTTP_400_BAD_REQUEST)
 
