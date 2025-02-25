@@ -9,12 +9,16 @@ import { followOthers } from '../../stores/profile';
 
 const SocialInfo = ({ idx }) => {
   const dispatch = useDispatch();
-  const { selectedData } = useSelector((state) => state.profile);
+  const { selectedData, userId } = useSelector((state) => state.profile);
 
   const onClickFollow = async () => {
     const res = await follow(selectedData[idx].id);
     dispatch(
-      followOthers({ isFollowing: res.isFollowing, id: selectedData[idx].id }),
+      followOthers({
+        isFollowing: res.isFollowing,
+        id: selectedData[idx].id,
+        isMine: userId == getCookie('userId'),
+      }),
     );
   };
 
