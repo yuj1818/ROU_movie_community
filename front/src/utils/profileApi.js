@@ -13,3 +13,9 @@ export const follow = (user_id) => {
     .then((res) => res.data)
     .catch((err) => err);
 };
+
+export const updateProfileData = (user_id, data) => {
+  return API.put(URL + `profile/${user_id}/`, data)
+    .then((res) => res.data)
+    .catch((err) => err);
+};
