@@ -37,3 +37,13 @@ export const signUp = (data) => {
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const resign = () => {
+  return API.post(URL + 'delete/')
+    .then((res) => {
+      removeCookie('token', { path: '/' });
+      removeCookie('userId', { path: '/' });
+      return res;
+    })
+    .catch((err) => err);
+};
