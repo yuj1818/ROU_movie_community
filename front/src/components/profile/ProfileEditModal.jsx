@@ -2,14 +2,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import LazyImg from '../common/LazyImg';
 import styled from 'styled-components';
 import { Image } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import tw from 'tailwind-styled-components';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
-import { closeModal } from '../../stores/modal';
+import { closeModal, openModal } from '../../stores/modal';
 import { updateProfileData } from '../../utils/profileApi';
 import { getCookie } from '../../utils/cookie';
 import { setProfileInfo } from '../../stores/profile';
+import unknown from '../../assets/profile.png';
 
 const EditLayer = styled.label`
   position: absolute;
@@ -36,11 +37,10 @@ const Input = tw.input`
 `;
 
 const ProfileEditModal = () => {
-  const { profile_image, region, birth, userId } = useSelector(
+  const { profile_image, region, birth } = useSelector(
     (state) => state.profile,
   );
   const dispatch = useDispatch();
-  const [isEdit, setIsEdit] = useState(false);
   const fileRef = useRef(null);
   const [newImgFile, setNewImgFile] = useState(null);
   const [newImgUrl, setNewImgUrl] = useState(profile_image);
@@ -63,11 +63,15 @@ const ProfileEditModal = () => {
     dispatch(closeModal());
   };
 
+  const onClickResign = () => {
+    dispatch(openModal('confirm'));
+  };
+
   return (
     <div className="bg-white h-fit w-1/2 max-w-[28rem] p-8 rounded-sm flex flex-col justify-center items-center gap-4 relative z-1">
       <div className="w-1/3 aspect-square rounded-full relative overflow-hidden">
         <LazyImg
-          src={newImgUrl}
+          src={newImgUrl ? newImgUrl : unknown}
           alt="profile_image"
           className="w-full h-full rounded-full"
         />
@@ -114,6 +118,12 @@ const ProfileEditModal = () => {
           저장
         </Button>
       </div>
+      <span
+        className="text-xs font-pretendard_exlight text-red-500 underline underline-offset-2 cursor-pointer"
+        onClick={onClickResign}
+      >
+        회원 탈퇴
+      </span>
     </div>
   );
 };
