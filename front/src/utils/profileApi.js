@@ -23,3 +23,9 @@ export const updateProfileData = (user_id, data) => {
     .then((res) => res.data)
     .catch((err) => err);
 };
+
+export const updatePreferenceData = (pType, data) => {
+  return API.put(URL + `preference/${pType}/`, data)
+    .then((res) => res.data)
+    .catch((err) => err);
+};
