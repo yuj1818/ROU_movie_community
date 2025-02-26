@@ -3,6 +3,8 @@ import logo from '../../assets/logo.png';
 import Colors from '../../constants/Colors';
 import { useNavigate } from 'react-router-dom';
 import LazyImg from './LazyImg';
+import { getCookie } from '../../utils/cookie';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   position: fixed;
@@ -42,6 +44,7 @@ const Menu = styled.span`
 `;
 
 const SideBar = () => {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   return (
@@ -49,7 +52,11 @@ const SideBar = () => {
       <LazyImg className="logo" src={logo} onClick={() => navigate('/')} />
       <MenuContainer>
         <Menu onClick={() => navigate('/')}>Home</Menu>
-        <Menu>Profile</Menu>
+        {isLoggedIn && (
+          <Menu onClick={() => navigate(`/profile/${getCookie('userId')}`)}>
+            Profile
+          </Menu>
+        )}
         <Menu>Review</Menu>
       </MenuContainer>
     </Container>

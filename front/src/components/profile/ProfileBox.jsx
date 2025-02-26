@@ -9,6 +9,7 @@ import { follow } from '../../utils/profileApi';
 import { setFollow } from '../../stores/profile';
 import { Pencil } from 'lucide-react';
 import { openModal } from '../../stores/modal';
+import PreferenceList from './PreferenceList';
 
 const ProfileBox = () => {
   const { userId, username, profile_image, isFollowing } = useSelector(
@@ -52,6 +53,7 @@ const ProfileBox = () => {
         </Button>
       )}
       <SocialList />
+      <PreferenceList />
     </div>
   );
 };
