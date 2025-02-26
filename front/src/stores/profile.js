@@ -89,7 +89,9 @@ const profileSlice = createSlice({
     },
     followOthers(state, action) {
       const { isFollowing, id, isMine } = action.payload;
+      console.log(isFollowing, id, isMine);
       if (isMine && !isFollowing) {
+        console.log(id);
         state.friends = state.friends.filter((friend) => friend.id !== id);
         state.followings = state.followings.filter(
           (following) => following.id !== id,
@@ -111,6 +113,9 @@ const profileSlice = createSlice({
         state.followers = state.followers.map((follower) =>
           follower.id === id ? { ...follower, isFollowing } : follower,
         );
+        if (isMine) {
+          // followings에 추가해줘야함....
+        }
         state.followings = state.followings.map((following) =>
           following.id === id ? { ...following, isFollowing } : following,
         );
