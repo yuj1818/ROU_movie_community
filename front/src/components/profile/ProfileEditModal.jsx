@@ -56,8 +56,8 @@ const ProfileEditModal = () => {
   const onSaveUpdatedInfo = async () => {
     const data = new FormData();
     if (newImgFile) data.append('profile_image', newImgFile);
-    if (region) data.append('region', region);
-    if (birth) data.append('birth', birth);
+    if (region) data.append('region', newRegion);
+    if (birth) data.append('birth', newBirth);
     const res = await updateProfileData(getCookie('userId'), data);
     dispatch(setProfileInfo(res));
     dispatch(closeModal());
