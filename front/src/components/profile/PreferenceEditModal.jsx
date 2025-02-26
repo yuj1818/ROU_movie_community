@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Line } from '../common/Line';
-import { useSelector } from 'react-redux';
-import { Badge } from '../common/Badge';
+import { useDispatch, useSelector } from 'react-redux';
 import { CheckBox } from './CheckBox';
 import { Button } from '../common/Button';
+import { updatePreferenceData } from '../../utils/profileApi';
+import { setHateGenres, setLikeGenres } from '../../stores/profile';
+import { closeModal } from '../../stores/modal';
 
 const PreferenceEditModal = () => {
   const { like_genres, hate_genres } = useSelector((state) => state.profile);
   const { tags } = useSelector((state) => state.home);
+  const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(true);
   const [likeSelection, setLikeSelection] = useState(() => {
     const initValue = {};
@@ -47,6 +50,29 @@ const PreferenceEditModal = () => {
         ...prev,
         [id]: checked,
       }));
+    }
+  };
+
+  const onUpdatePreference = async () => {
+    const pType = isLike ? 'like' : 'hate';
+    if (isLike) {
+      const data = {
+        genres: Object.keys(likeSelection)
+          .filter((key) => likeSelection[key])
+          .join(','),
+      };
+      const res = await updatePreferenceData(pType, data);
+      dispatch(setLikeGenres(res.like_genres));
+      setIsLike(false);
+    } else {
+      const data = {
+        genres: Object.keys(hateSelection)
+          .filter((key) => hateSelection[key])
+          .join(','),
+      };
+      const res = await updatePreferenceData(pType, data);
+      dispatch(setHateGenres(res.hate_genres));
+      dispatch(closeModal());
     }
   };
 
@@ -95,7 +121,11 @@ const PreferenceEditModal = () => {
           ))}
         </li>
       )}
-      <Button className="self-center" $marginLeft={0}>
+      <Button
+        className="self-center"
+        $marginLeft={0}
+        onClick={onUpdatePreference}
+      >
         저장
       </Button>
     </div>
