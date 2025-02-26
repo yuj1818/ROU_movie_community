@@ -1,9 +1,15 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LazyImg from '../common/LazyImg';
 import styled from 'styled-components';
-import { Image, CircleX } from 'lucide-react';
+import { Image } from 'lucide-react';
 import { useRef, useState } from 'react';
+import tw from 'tailwind-styled-components';
+import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
+import { closeModal } from '../../stores/modal';
+import { updateProfileData } from '../../utils/profileApi';
+import { getCookie } from '../../utils/cookie';
+import { setProfileInfo } from '../../stores/profile';
 
 const EditLayer = styled.label`
   position: absolute;
@@ -21,67 +27,53 @@ const EditLayer = styled.label`
   }
 `;
 
+const InputContainer = tw.div`
+  flex w-3/4 gap-4 items-center text-sm
+`;
+
+const Input = tw.input`
+  flex-grow h-[2rem] p-2 rounded-sm border border-gray-200 outline-gray-400
+`;
+
 const ProfileEditModal = () => {
   const { profile_image, region, birth, userId } = useSelector(
     (state) => state.profile,
   );
+  const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const fileRef = useRef(null);
   const [newImgFile, setNewImgFile] = useState(null);
-  const [newImgUrl, setNewImgUrl] = useState();
+  const [newImgUrl, setNewImgUrl] = useState(profile_image);
   const [newRegion, setNewRegion] = useState(region);
   const [newBirth, setNewBirth] = useState(birth);
 
-  const onEditImage = () => {
-    if (!fileRef.current) return;
-    fileRef.current.click();
-    setIsEdit(true);
-  };
-
   const onChangeImage = (e) => {
     const targetFile = e.target.files?.[0];
-    if (!targetFile) {
-      setIsEdit(false);
-      return;
-    }
     setNewImgFile(targetFile);
     setNewImgUrl(URL.createObjectURL(targetFile));
   };
 
+  const onSaveUpdatedInfo = async () => {
+    const data = new FormData();
+    if (newImgFile) data.append('profile_image', newImgFile);
+    if (region) data.append('region', region);
+    if (birth) data.append('birth', birth);
+    const res = await updateProfileData(getCookie('userId'), data);
+    dispatch(setProfileInfo(res));
+    dispatch(closeModal());
+  };
+
   return (
     <div className="bg-white h-fit w-1/2 max-w-[28rem] p-8 rounded-sm flex flex-col justify-center items-center gap-4 relative z-1">
-      <div className="w-1/3 aspect-square rounded-full relative">
-        {isEdit ? (
-          <>
-            <LazyImg
-              src={newImgUrl ? newImgUrl : profile_image}
-              alt="edit_img"
-              className="w-full h-full rounded-full"
-            />
-            <CircleX
-              size="1.5rem"
-              className="absolute right-[5%] bottom-[5%] cursor-pointer"
-              color={Colors.bgDarkGray}
-              strokeWidth={3}
-              onClick={() => {
-                setIsEdit(false);
-                setNewImgUrl(null);
-                setNewImgFile(null);
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <LazyImg
-              src={profile_image}
-              alt="profile_image"
-              className="w-full h-full rounded-full"
-            />
-            <EditLayer htmlFor="file" onClick={onEditImage}>
-              <Image size="33%" color="white" />
-            </EditLayer>
-          </>
-        )}
+      <div className="w-1/3 aspect-square rounded-full relative overflow-hidden">
+        <LazyImg
+          src={newImgUrl}
+          alt="profile_image"
+          className="w-full h-full rounded-full"
+        />
+        <EditLayer htmlFor="file">
+          <Image size="33%" color="white" />
+        </EditLayer>
         <input
           id="file"
           ref={fileRef}
@@ -90,6 +82,37 @@ const ProfileEditModal = () => {
           accept="image/*"
           onChange={onChangeImage}
         />
+      </div>
+      <InputContainer>
+        <label htmlFor="region">지역</label>
+        <Input
+          id="region"
+          type="text"
+          value={newRegion}
+          onChange={(e) => setNewRegion(e.target.value)}
+        />
+      </InputContainer>
+      <InputContainer>
+        <label htmlFor="birth">생일</label>
+        <Input
+          id="birth"
+          type="date"
+          value={newBirth}
+          onChange={(e) => setNewBirth(e.target.value)}
+        />
+      </InputContainer>
+      <div className="flex gap-4 mt-2">
+        <Button
+          $background="white"
+          $boxShadow={`0 0 0 1px ${Colors.btnGray} inset`}
+          $color={Colors.btnGray}
+          onClick={() => dispatch(closeModal())}
+        >
+          취소
+        </Button>
+        <Button $background={Colors.btnBlue} onClick={onSaveUpdatedInfo}>
+          저장
+        </Button>
       </div>
     </div>
   );

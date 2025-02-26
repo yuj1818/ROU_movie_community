@@ -15,7 +15,11 @@ export const follow = (user_id) => {
 };
 
 export const updateProfileData = (user_id, data) => {
-  return API.put(URL + `profile/${user_id}/`, data)
+  return API.put(URL + `profile/${user_id}/`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
     .then((res) => res.data)
     .catch((err) => err);
 };

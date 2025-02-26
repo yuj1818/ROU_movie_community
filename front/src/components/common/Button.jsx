@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Button = styled.button`
-  border: ${(props) => props.$border || 'none'};
+  box-shadow: ${(props) => props.$boxShadow || 'none'};
   border-radius: 0.25rem;
   color: ${(props) => props.$color || 'white'};
   font-size: ${(props) => `${props.$fontSize || 0.875}rem`};
