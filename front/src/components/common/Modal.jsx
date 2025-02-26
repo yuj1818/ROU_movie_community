@@ -4,10 +4,12 @@ import { useLocation } from 'react-router-dom';
 import { closeModal } from '../../stores/modal';
 import TrailerModal from '../movie/TrailerModal';
 import ProfileEditModal from '../profile/ProfileEditModal';
+import ConfirmModal from '../profile/ConfirmModal';
 
 const MODAL_TYPES = {
   trailer: 'trailer',
   profile: 'profile',
+  confirm: 'confirm',
 };
 
 const MODAL_COMPONENTS = [
@@ -18,6 +20,10 @@ const MODAL_COMPONENTS = [
   {
     type: MODAL_TYPES.profile,
     component: <ProfileEditModal />,
+  },
+  {
+    type: MODAL_TYPES.confirm,
+    component: <ConfirmModal />,
   },
 ];
 
