@@ -13,17 +13,13 @@ const SocialInfo = ({ idx }) => {
 
   const onClickFollow = async () => {
     const res = await follow(selectedData[idx].id);
-    if (res.isFollowing && userId == getCookie('userId')) {
-      dispatch(setFollow(res));
-    } else {
-      dispatch(
-        followOthers({
-          isFollowing: res.isFollowing,
-          id: selectedData[idx].id,
-          isMine: userId == getCookie('userId'),
-        }),
-      );
-    }
+    dispatch(
+      followOthers({
+        isFollowing: res.isFollowing,
+        id: selectedData[idx].id,
+        isMine: userId == getCookie('userId'),
+      }),
+    );
   };
 
   return (
