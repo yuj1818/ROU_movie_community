@@ -3,6 +3,8 @@ import { Badge } from '../common/Badge';
 import tw from 'tailwind-styled-components';
 import Colors from '../../constants/Colors';
 import { openModal } from '../../stores/modal';
+import { useParams } from 'react-router-dom';
+import { getCookie } from '../../utils/cookie';
 
 const Container = tw.div`
   flex flex-col gap-2 w-full items-center
@@ -17,18 +19,22 @@ const GenreContainer = tw.div`
 `;
 
 const PreferenceList = () => {
-  const { like_genres, hate_genres } = useSelector((state) => state.profile);
+  const { like_genres, hate_genres, userId } = useSelector(
+    (state) => state.profile,
+  );
   const dispatch = useDispatch();
 
   return (
     <div className="w-full flex flex-col gap-4 px-4 pt-2 pb-6 border border-solid border-white rounded-md">
       <Container>
-        <span
-          className="text-xs font-pretendard_exlight self-end underline underline-offset-2 cursor-pointer"
-          onClick={() => dispatch(openModal('genre'))}
-        >
-          편집
-        </span>
+        {userId == getCookie('userId') && (
+          <span
+            className="text-xs font-pretendard_exlight self-end underline underline-offset-2 cursor-pointer"
+            onClick={() => dispatch(openModal('genre'))}
+          >
+            편집
+          </span>
+        )}
         <Title>관심 있는 장르</Title>
         <GenreContainer>
           {like_genres.length ? (
