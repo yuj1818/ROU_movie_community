@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Colors from '../../constants/Colors';
 
 export const Badge = styled.div`
+  box-shadow: ${(props) => props.$boxShadow || 'none'};
   padding-top: ${(props) => `${props.$paddingY || 0}rem`};
   padding-bottom: ${(props) => `${props.$paddingY || 0}rem`};
   padding-left: ${(props) =>
