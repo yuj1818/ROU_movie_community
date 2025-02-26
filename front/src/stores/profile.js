@@ -116,6 +116,12 @@ const profileSlice = createSlice({
         );
       }
     },
+    setLikeGenres(state, action) {
+      state.like_genres = action.payload;
+    },
+    setHateGenres(state, action) {
+      state.hate_genres = action.payload;
+    },
   },
 });
 
@@ -125,5 +131,7 @@ export const {
   setCategory,
   setSelectedData,
   followOthers,
+  setLikeGenres,
+  setHateGenres,
 } = profileSlice.actions;
 export default profileSlice.reducer;
