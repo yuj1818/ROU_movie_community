@@ -24,14 +24,13 @@ def profile(request, user_pk):
   user = get_object_or_404(User, pk=user_pk)
   if request.method == 'GET':
     serializer = ProfileSerializer(user, context={'request': request})
-    list_serializer = UserMovieListSerializer(user).data
-    list_serializer.update(serializer.data)
     if request.user.pk != user_pk:
       data = {
         'isFollowing': user.followers.filter(pk=request.user.pk).exists()
       }
-      list_serializer.update(data)
-    return Response(list_serializer)
+      data.update(serializer.data)
+      return Response(data)
+    return Response(serializer.data);
   elif request.method == 'PUT':
     if request.user == user:
       serializer = ProfileSerializer(instance=user, data=request.data, partial=True, context={'request': request})
