@@ -20,6 +20,8 @@ const initialState = {
   isFollowing: false,
   selectedData: null,
   category: 'follower',
+  targets: ['좋아요한 영화', '리뷰 쓴 영화', '찜한 영화', '시청 목록'],
+  targetIdx: 0,
 };
 
 const profileSlice = createSlice({
@@ -132,6 +134,9 @@ const profileSlice = createSlice({
     setHateGenres(state, action) {
       state.hate_genres = action.payload;
     },
+    setTarget(state, action) {
+      state.targetIdx = action.payload;
+    },
   },
 });
 
@@ -143,5 +148,6 @@ export const {
   followOthers,
   setLikeGenres,
   setHateGenres,
+  setTarget,
 } = profileSlice.actions;
 export default profileSlice.reducer;

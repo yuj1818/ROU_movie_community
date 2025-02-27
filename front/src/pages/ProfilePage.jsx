@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getProfileData } from '../utils/profileApi';
 import { setProfileInfo } from '../stores/profile';
 import ProfileBox from '../components/profile/ProfileBox';
+import MovieList from '../components/profile/MovieList';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -19,8 +20,9 @@ const ProfilePage = () => {
   }, [params.user_id]);
 
   return (
-    <div className="w-5/6 flex justify-between text-white py-12 h-fit">
+    <div className="w-5/6 flex justify-between text-white py-12 h-full items-center">
       <ProfileBox />
+      <MovieList />
     </div>
   );
 };
