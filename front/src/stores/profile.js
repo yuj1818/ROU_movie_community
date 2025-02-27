@@ -90,7 +90,6 @@ const profileSlice = createSlice({
     followOthers(state, action) {
       const { isFollowing, id, isMine, username, profile_image } =
         action.payload;
-      console.log(isFollowing, id, isMine);
       if (isMine) {
         if (isFollowing) {
           state.followers = state.followers.map((follower) =>
