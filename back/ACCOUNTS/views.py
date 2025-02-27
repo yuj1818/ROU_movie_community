@@ -102,7 +102,6 @@ def movie_list(request, user_pk):
     return Response({"error": "Invalid target parameter"}, status=400)
 
   paginator = PageNumberPagination()
-  paginator.page_size = request.GET.get('limit', 12)
   paginator.page_size_query_param = 'limit'
   paginator.max_page_size = 100
 
