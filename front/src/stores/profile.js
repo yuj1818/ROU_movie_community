@@ -45,10 +45,6 @@ const profileSlice = createSlice({
         birth,
         rate_image,
         score,
-        like_movies,
-        dislike_movies,
-        watching_movies,
-        favorite_movies,
         isFollowing,
       } = action.payload;
       state.userId = id;
@@ -62,10 +58,6 @@ const profileSlice = createSlice({
       state.birth = birth;
       state.rate_image = rate_image;
       state.score = score;
-      state.like_movies = like_movies;
-      state.dislike_movies = dislike_movies;
-      state.watching_movies = watching_movies;
-      state.favorite_movies = favorite_movies;
       state.friends = followers.filter((follower) =>
         followings.some((following) => following.id === follower.id),
       );
