@@ -22,6 +22,8 @@ const initialState = {
   category: 'follower',
   targets: ['좋아요한 영화', '리뷰 쓴 영화', '찜한 영화', '시청 목록'],
   targetIdx: 0,
+  page: 1,
+  totalItems: 0,
 };
 
 const profileSlice = createSlice({
@@ -137,6 +139,12 @@ const profileSlice = createSlice({
     setTarget(state, action) {
       state.targetIdx = action.payload;
     },
+    setPage(state, action) {
+      state.page = action.payload;
+    },
+    setTotalItems(state, action) {
+      state.totalItems = action.payload;
+    },
   },
 });
 
@@ -149,5 +157,7 @@ export const {
   setLikeGenres,
   setHateGenres,
   setTarget,
+  setPage,
+  setTotalItems,
 } = profileSlice.actions;
 export default profileSlice.reducer;
