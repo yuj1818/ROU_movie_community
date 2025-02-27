@@ -29,3 +29,9 @@ export const updatePreferenceData = (pType, data) => {
     .then((res) => res.data)
     .catch((err) => err);
 };
+
+export const getProfileMovieData = (user_id, params) => {
+  return API.get(URL + `movie/${user_id}/`, params)
+    .then((res) => res.data)
+    .catch((err) => err);
+};
