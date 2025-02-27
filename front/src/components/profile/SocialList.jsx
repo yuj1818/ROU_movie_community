@@ -62,7 +62,7 @@ const SocialList = () => {
           </CircleNum>
         </Category>
       </div>
-      <div className="flex flex-col gap-1 p-2 w-full aspect-square rounded-md border border-solid border-white overflow-y-auto">
+      <div className="flex flex-col gap-1 p-2 w-full aspect-square max-h-[12.75rem] rounded-md border border-solid border-white overflow-y-auto">
         {selectedData &&
           selectedData.map((data, idx) => (
             <SocialInfo key={data.id} idx={idx} />

@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
-  width: 24.5%;
+  height: 33%;
   aspect-ratio: 3 / 4;
   cursor: pointer;
-  margin-bottom: 0.5%;
 `;
 
 const MovieCard = ({ data }) => {

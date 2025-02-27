@@ -52,7 +52,7 @@ const MovieList = () => {
   }, [targetIdx, page, userId]);
 
   return (
-    <div className="w-[68%] flex flex-col">
+    <div className="w-[68%] h-full flex flex-col">
       <div className="flex">
         {targets.map((target, idx) => (
           <Category
@@ -64,9 +64,9 @@ const MovieList = () => {
           </Category>
         ))}
       </div>
-      <div className="bg-white w-full aspect-square rounded-b p-2 mb-2">
+      <div className="h-[5rem] bg-white aspect-square rounded-b p-2 mb-2">
         {selectedData && (
-          <div className="flex flex-wrap justify-start gap-[0.5%] w-full">
+          <div className="flex flex-wrap justify-start w-full h-full">
             {selectedData.map((data) => (
               <MovieCard key={data.movie_id} data={data} />
             ))}
