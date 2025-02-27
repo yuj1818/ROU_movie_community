@@ -88,23 +88,39 @@ const profileSlice = createSlice({
       }
     },
     followOthers(state, action) {
-      const { isFollowing, id, isMine } = action.payload;
+      const { isFollowing, id, isMine, username, profile_image } =
+        action.payload;
       console.log(isFollowing, id, isMine);
-      if (isMine && !isFollowing) {
-        console.log(id);
-        state.friends = state.friends.filter((friend) => friend.id !== id);
-        state.followings = state.followings.filter(
-          (following) => following.id !== id,
-        );
-        state.followers = state.followers.map((follower) =>
-          follower.id === id ? { ...follower, isFollowing } : follower,
-        );
-        if (state.category === 'follower') {
+      if (isMine) {
+        if (isFollowing) {
+          state.followers = state.followers.map((follower) =>
+            follower.id === id ? { ...follower, isFollowing } : follower,
+          );
+          state.followings.push({
+            id,
+            username,
+            profile_image,
+            isFollowing,
+          });
+          state.friends = state.followers.filter((follower) =>
+            state.followings.some((following) => following.id === follower.id),
+          );
           state.selectedData = state.followers;
-        } else if (state.category === 'friend') {
-          state.selectedData = state.friends;
         } else {
-          state.selectedData = state.followings;
+          state.friends = state.friends.filter((friend) => friend.id !== id);
+          state.followings = state.followings.filter(
+            (following) => following.id !== id,
+          );
+          state.followers = state.followers.map((follower) =>
+            follower.id === id ? { ...follower, isFollowing } : follower,
+          );
+          if (state.category === 'follower') {
+            state.selectedData = state.followers;
+          } else if (state.category === 'friend') {
+            state.selectedData = state.friends;
+          } else {
+            state.selectedData = state.followings;
+          }
         }
       } else {
         state.selectedData = state.selectedData.map((user) =>
@@ -113,9 +129,7 @@ const profileSlice = createSlice({
         state.followers = state.followers.map((follower) =>
           follower.id === id ? { ...follower, isFollowing } : follower,
         );
-        if (isMine) {
-          // followings에 추가해줘야함....
-        }
+
         state.followings = state.followings.map((following) =>
           following.id === id ? { ...following, isFollowing } : following,
         );
