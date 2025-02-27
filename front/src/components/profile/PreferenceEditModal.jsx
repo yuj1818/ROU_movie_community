@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Line } from '../common/Line';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckBox } from './CheckBox';
@@ -83,7 +83,7 @@ const PreferenceEditModal = () => {
       {isLike ? (
         <li className="w-full flex flex-wrap gap-2 my-4 justify-center">
           {tags.map((tag) => (
-            <>
+            <Fragment key={tag.id}>
               <CheckBox
                 htmlFor={tag.name}
                 $isLike={isLike}
@@ -96,8 +96,9 @@ const PreferenceEditModal = () => {
                 type="checkbox"
                 className="hidden"
                 onChange={onChange}
+                checked={likeSelection[tag.name]}
               />
-            </>
+            </Fragment>
           ))}
         </li>
       ) : (
