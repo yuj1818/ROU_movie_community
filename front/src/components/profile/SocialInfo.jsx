@@ -15,7 +15,7 @@ const SocialInfo = ({ idx }) => {
     const res = await follow(selectedData[idx].id);
     dispatch(
       followOthers({
-        isFollowing: res.isFollowing,
+        ...res,
         id: selectedData[idx].id,
         isMine: userId == getCookie('userId'),
       }),
