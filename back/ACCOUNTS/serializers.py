@@ -11,29 +11,10 @@ from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
-# 사용자가 좋아요/위시리스트/평점을 준 영화 목록 조회
-class UserMovieListSerializer(serializers.ModelSerializer):
-
-    class MovieSerializer(serializers.ModelSerializer):
-
-        class Meta:
-            model = Movie
-            fields = ('movie_id', 'title', 'poster_path',)
-
-    # 좋아요한 영화 목록
-    like_movies = MovieSerializer(many=True)
-    # 싫어요한 영화 목록
-    dislike_movies = MovieSerializer(many=True)
-    # 찜한 영화 목록
-    watching_movies = MovieSerializer(many=True)
-    # 시청한 영화 목록
-    favorite_movies = MovieSerializer(many=True)
-
-    class Meta:
-        model = User
-        # 사용자 id, 평가한 영화 목록, 좋아요한 영화 목록, 위시리스트에 담은 영화 목록
-        fields = ('like_movies', 'dislike_movies',
-                  'watching_movies', 'favorite_movies',)
+class MovieListSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Movie
+    fields = ('movie_id', 'title', 'poster_path',)     
 
 class CustomRegisterSerializer(RegisterSerializer):
   region = serializers.CharField(max_length=50)
