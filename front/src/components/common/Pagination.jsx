@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  margin-top: 0.5rem;
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  width: 100%;
+  gap: 0.25rem;
 
   .active {
     border-color: ${(props) => props.$color};
@@ -18,9 +20,8 @@ const Container = styled.div`
   }
 `;
 const PaginationButton = styled.button`
-  margin: 0 5px;
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   text-align: center;
   cursor: pointer;
   background-color: #ffffff;

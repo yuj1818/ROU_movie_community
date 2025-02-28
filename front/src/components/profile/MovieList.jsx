@@ -8,7 +8,7 @@ import Pagination from '../common/Pagination';
 import Colors from '../../constants/Colors';
 
 const Category = tw.div`
-  w-[25%] px-4 py-2 rounded-t font-pretendard_semibold text-center cursor-pointer
+  w-[25%] px-4 py-1 rounded-t font-pretendard_semibold text-center cursor-pointer
   ${(props) => (props.$isSelected ? 'bg-white text-black' : 'text-white')}
 `;
 
@@ -22,6 +22,10 @@ const MovieList = () => {
   const onPageChange = (newPage) => {
     dispatch(setPage(newPage));
   };
+
+  useEffect(() => {
+    dispatch(setPage(1));
+  }, [targetIdx]);
 
   useEffect(() => {
     const getSelectedData = async () => {
@@ -52,7 +56,7 @@ const MovieList = () => {
   }, [targetIdx, page, userId]);
 
   return (
-    <div className="w-[68%] h-full flex flex-col">
+    <div className="h-full aspect-poster_list max-w-[60%] flex flex-col">
       <div className="flex">
         {targets.map((target, idx) => (
           <Category
@@ -64,9 +68,9 @@ const MovieList = () => {
           </Category>
         ))}
       </div>
-      <div className="h-[5rem] bg-white aspect-square rounded-b p-2 mb-2">
+      <div className="grow bg-white w-full rounded-b p-2">
         {selectedData && (
-          <div className="flex flex-wrap justify-start w-full h-full">
+          <div className="flex flex-wrap gap-[0.33%] justify-start w-full h-full">
             {selectedData.map((data) => (
               <MovieCard key={data.movie_id} data={data} />
             ))}
