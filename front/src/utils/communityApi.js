@@ -7,3 +7,9 @@ export const getPostDetail = (review_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const likePost = (review_id) => {
+  return API.post(URL + `like/${review_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
