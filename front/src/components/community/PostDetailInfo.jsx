@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
-import { likePost } from '../../utils/communityApi';
-import { toggleLike } from '../../stores/community';
+import { dislikePost, likePost } from '../../utils/communityApi';
+import { toggleDislike, toggleLike } from '../../stores/community';
 
 const IconContainer = tw.div`
   flex gap-1 text-sm items-center
@@ -19,6 +19,11 @@ const PostDetailInfo = () => {
   const onClickLike = async () => {
     const res = await likePost(postInfo.id);
     dispatch(toggleLike(res.like_count));
+  };
+
+  const onClickDislike = async () => {
+    const res = await dislikePost(postInfo.id);
+    dispatch(toggleDislike(res.dislike_count));
   };
 
   return (
@@ -46,11 +51,19 @@ const PostDetailInfo = () => {
         </div>
         <div className="flex gap-3 justify-end">
           <IconContainer>
-            <ThumbsUp className="cursor-pointer" onClick={onClickLike} />
+            <ThumbsUp
+              fill={postInfo.isLike ? Colors.btnDarkPurple : 'none'}
+              className="cursor-pointer"
+              onClick={onClickLike}
+            />
             <span>{postInfo.like_count}</span>
           </IconContainer>
           <IconContainer>
-            <ThumbsDown className="cursor-pointer" />
+            <ThumbsDown
+              fill={postInfo.isDislike ? Colors.btnDarkPurple : 'none'}
+              className="cursor-pointer"
+              onClick={onClickDislike}
+            />
             <span>{postInfo.dislike_count}</span>
           </IconContainer>
         </div>
