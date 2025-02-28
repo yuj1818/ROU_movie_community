@@ -12,6 +12,7 @@ body ::-webkit-scrollbar-thumb {
   border-radius: 15px;
   border: 6px solid transparent;
   background-clip: padding-box;
+  cursor: default;
 }
 
 body ::-webkit-scrollbar-track {

@@ -19,7 +19,7 @@ import profileSlice from './profile';
 const persistConfig = {
   key: 'root',
   storage: sessionStorage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'movie'],
 };
 
 const rootReducer = combineReducers({
