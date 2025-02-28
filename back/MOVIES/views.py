@@ -191,10 +191,11 @@ def movie_recommend(request):
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def movie_review(request, movie_id):
+def movie_reviewing(request, movie_id):
   movie = get_object_or_404(Movie, pk=movie_id)
   if request.method == "GET":
-    serializer = MovieReviewSerializer(movie, context={'request': request})
+    reviews = movie.movie_review.order_by('-created_at')
+    serializer = ReviewSerializer(reviews, many=True, context={'request': request})
     return Response(serializer.data)
   elif request.method == "POST":
     serializer = ReviewSerializer(data=request.data)
