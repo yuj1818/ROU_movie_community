@@ -35,7 +35,14 @@ const PostDetailInfo = () => {
               {postInfo.title}
             </h1>
             <div className="flex gap-2 font-pretendard_exlight text-sm">
-              <span>by {postInfo.review_writor.username}</span>
+              <span
+                className="underline underline-offset-2 cursor-pointer"
+                onClick={() =>
+                  navigate(`/profile/${postInfo.review_writor.id}`)
+                }
+              >
+                by. {postInfo.review_writor.username}
+              </span>
               <span>{dayjs(postInfo.created_at).format('YYYY-MM-DD')}</span>
               <span className="text-gray-500">
                 {dayjs(postInfo.created_at).fromNow()}
