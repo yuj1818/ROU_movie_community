@@ -8,7 +8,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import LoginPage from './pages/auth/LoginPage';
 import SearchPage from './pages/SearchPage';
 import SignUpPage from './pages/auth/SignUpPage';
-import ReviewCreatePage from './pages/community/ReviewCreatePage';
+import PostCreatePage from './pages/community/PostCreatePage';
+import ReviewCreatePage from './pages/movie/ReviewCreatePage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: 'review/:movie_id',
+            element: <ReviewCreatePage />,
+          },
         ],
       },
       {
@@ -64,8 +69,8 @@ const router = createBrowserRouter([
         path: 'review',
         children: [
           {
-            path: 'create/:movie_id',
-            element: <ReviewCreatePage />,
+            path: 'create',
+            element: <PostCreatePage />,
           },
         ],
       },
