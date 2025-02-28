@@ -2,14 +2,20 @@ import tw from 'tailwind-styled-components';
 import { MessageSquareMore, ThumbsUp, ThumbsDown } from 'lucide-react';
 import LazyImg from '../common/LazyImg';
 import unknown from '../../assets/profile.png';
+import { useNavigate } from 'react-router-dom';
 
 const IconContainer = tw.div`
   flex h-[1rem] items-center text-xs text-black
 `;
 
 const ReviewInfo = ({ data }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex items-center gap-4 w-full h-[5rem] px-6 py-4 bg-white rounded-md">
+    <div
+      className="flex items-center gap-4 w-full h-[5rem] px-6 py-4 bg-white rounded-md"
+      onClick={() => navigate(`/review/${data.id}`)}
+    >
       <LazyImg
         className="w-[3rem] h-[3rem] rounded-full"
         src={
@@ -35,11 +41,11 @@ const ReviewInfo = ({ data }) => {
           </IconContainer>
           <IconContainer>
             <ThumbsUp className="h-full" />
-            <p>{data.like_review_users.length}</p>
+            <p>{data.like_count}</p>
           </IconContainer>
           <IconContainer>
             <ThumbsDown className="h-full" />
-            <p>{data.dislike_review_users.length}</p>
+            <p>{data.dislike_count}</p>
           </IconContainer>
         </div>
         <p className="text-xs font-pretendard_exlight text-gray-400 whitespace-nowrap text-right">
