@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from './Button';
+import Colors from '../../constants/Colors';
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -19,6 +21,7 @@ const TextArea = styled.textarea`
 `;
 
 const PostCreationForm = ({ isReview }) => {
+  const navigate = useNavigate();
   const { movieInfo } = useSelector((state) => state.movie);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -44,6 +47,14 @@ const PostCreationForm = ({ isReview }) => {
           placeholder="내용을 입력하세요"
           onChange={(e) => setContent(e.target.value)}
         />
+      </div>
+      <div className="flex gap-2">
+        <Button $background={Colors.btnGray} onClick={() => navigate(-1)}>
+          취소
+        </Button>
+        <Button $marginLeft={0} $background={Colors.btnPurple}>
+          작성
+        </Button>
       </div>
     </div>
   );

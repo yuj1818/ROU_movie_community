@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getMovieReviewList } from '../../utils/movieApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReviewInfo from './ReviewInfo';
 import { SubTitle } from './SubTitle';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ const ReviewList = () => {
   const [reviewData, setReviewData] = useState([]);
   const [isAll, setIsAll] = useState(false);
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getReviewData = async () => {
@@ -28,7 +29,12 @@ const ReviewList = () => {
         <div className="flex w-full justify-between items-center">
           <SubTitle>사용자 리뷰</SubTitle>
           {isLoggedIn && (
-            <Button $background={Colors.btnPurple}>리뷰 작성</Button>
+            <Button
+              $background={Colors.btnPurple}
+              onClick={() => navigate(`/movie/review/${params.movie_id}`)}
+            >
+              리뷰 작성
+            </Button>
           )}
         </div>
         <div className="flex flex-col w-full p-6 gap-2 rounded-md border border-solid border-white">
