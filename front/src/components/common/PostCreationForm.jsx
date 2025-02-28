@@ -4,10 +4,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from './Button';
 import Colors from '../../constants/Colors';
+import { createMovieReview } from '../../utils/movieApi';
 
 const TextArea = styled.textarea`
   width: 100%;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 0.25rem;
   resize: none;
   aspect-ratio: 4 / 3;
@@ -26,6 +27,16 @@ const PostCreationForm = ({ isReview }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
+  const onSubmit = async () => {
+    if (isReview) {
+      const res = await createMovieReview(movieInfo.movie_id, {
+        title,
+        content,
+      });
+      navigate(`/review/${res.id}`);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center gap-4 text-white w-1/2 min-w-[25rem]">
       {isReview && (
@@ -36,7 +47,7 @@ const PostCreationForm = ({ isReview }) => {
       )}
       <div className="w-full flex flex-col gap-2 text-black">
         <input
-          className="p-2 rounded-sm w-full outline-none"
+          className="py-2 px-4 rounded-sm w-full outline-none"
           type="text"
           placeholder="제목을 입력하세요"
           onChange={(e) => setTitle(e.target.value)}
@@ -52,7 +63,11 @@ const PostCreationForm = ({ isReview }) => {
         <Button $background={Colors.btnGray} onClick={() => navigate(-1)}>
           취소
         </Button>
-        <Button $marginLeft={0} $background={Colors.btnPurple}>
+        <Button
+          $marginLeft={0}
+          $background={Colors.btnPurple}
+          onClick={onSubmit}
+        >
           작성
         </Button>
       </div>
