@@ -38,9 +38,9 @@ const ReviewList = () => {
           )}
         </div>
         <div className="flex flex-col w-full p-6 gap-2 rounded-md border border-solid border-white">
-          {reviewData.movie_review?.length ? (
+          {reviewData?.length ? (
             <>
-              {reviewData.movie_review.length > 2 && (
+              {reviewData.length > 2 && (
                 <p
                   className="text-xs text-gray-400 self-end cursor-pointer"
                   onClick={() => setIsAll((pre) => !pre)}
@@ -49,10 +49,7 @@ const ReviewList = () => {
                 </p>
               )}
               <div className="flex flex-col w-full gap-2">
-                {(isAll
-                  ? reviewData.movie_review
-                  : reviewData.movie_review.slice(0, 3)
-                ).map((data) => (
+                {(isAll ? reviewData : reviewData.slice(0, 3)).map((data) => (
                   <ReviewInfo key={data.id} data={data} />
                 ))}
               </div>
