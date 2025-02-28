@@ -11,8 +11,12 @@ const communitySlice = createSlice({
     setPostInfo(state, action) {
       state.postInfo = action.payload;
     },
+    toggleLike(state, action) {
+      state.postInfo.isLike = !state.postInfo.isLike;
+      state.postInfo.like_count = action.payload;
+    },
   },
 });
 
-export const { setPostInfo } = communitySlice.actions;
+export const { setPostInfo, toggleLike } = communitySlice.actions;
 export default communitySlice.reducer;

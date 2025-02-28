@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import { ThumbsDown, ThumbsUp, X } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
+import { likePost } from '../../utils/communityApi';
+import { toggleLike } from '../../stores/community';
 
 const IconContainer = tw.div`
   flex gap-1 text-sm items-center
@@ -12,6 +14,12 @@ const IconContainer = tw.div`
 const PostDetailInfo = () => {
   const { postInfo } = useSelector((state) => state.community);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const onClickLike = async () => {
+    const res = await likePost(postInfo.id);
+    dispatch(toggleLike(res.like_count));
+  };
 
   return (
     postInfo && (
@@ -38,11 +46,11 @@ const PostDetailInfo = () => {
         </div>
         <div className="flex gap-3 justify-end">
           <IconContainer>
-            <ThumbsUp />
+            <ThumbsUp className="cursor-pointer" onClick={onClickLike} />
             <span>{postInfo.like_count}</span>
           </IconContainer>
           <IconContainer>
-            <ThumbsDown />
+            <ThumbsDown className="cursor-pointer" />
             <span>{postInfo.dislike_count}</span>
           </IconContainer>
         </div>
