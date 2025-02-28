@@ -8,7 +8,7 @@ import Pagination from '../common/Pagination';
 import Colors from '../../constants/Colors';
 
 const Category = tw.div`
-  w-[25%] px-4 py-1 rounded-t font-pretendard_semibold text-center cursor-pointer
+  w-[25%] px-4 py-2 rounded-t font-pretendard_semibold text-center cursor-pointer
   ${(props) => (props.$isSelected ? 'bg-white text-black' : 'text-white')}
 `;
 
@@ -23,33 +23,28 @@ const MovieList = () => {
     dispatch(setPage(newPage));
   };
 
-  useEffect(() => {
-    dispatch(setPage(1));
-  }, [targetIdx]);
+  const getSelectedData = async () => {
+    let target = '';
+    if (targetIdx === 0) {
+      target = 'like';
+    } else if (targetIdx === 1) {
+      target = 'review';
+    } else if (targetIdx === 2) {
+      target = 'favorite';
+    } else {
+      target = 'watch';
+    }
+    const res = await getProfileMovieData(userId, {
+      target: target,
+      page: page,
+      limit: 12,
+    });
+
+    setSelectedData(res.results);
+    dispatch(setTotalItems(res.count));
+  };
 
   useEffect(() => {
-    const getSelectedData = async () => {
-      let target = '';
-      if (targetIdx === 0) {
-        target = 'like';
-      } else if (targetIdx === 1) {
-        target = 'review';
-      } else if (targetIdx === 2) {
-        target = 'favorite';
-      } else {
-        target = 'watch';
-      }
-
-      const res = await getProfileMovieData(userId, {
-        target: target,
-        page: page,
-        limit: 12,
-      });
-
-      setSelectedData(res.results);
-      dispatch(setTotalItems(res.count));
-    };
-
     if (userId) {
       getSelectedData();
     }
@@ -62,13 +57,24 @@ const MovieList = () => {
           <Category
             key={target}
             $isSelected={idx === targetIdx}
-            onClick={() => dispatch(setTarget(idx))}
+            onClick={() => {
+              dispatch(setPage(1));
+              dispatch(setTarget(idx));
+            }}
           >
             {target}
           </Category>
         ))}
       </div>
-      <div className="grow bg-white w-full rounded-b p-2">
+      <div
+        className={`grow bg-white w-full rounded-b p-2 ${
+          targetIdx === 0
+            ? 'rounded-tr'
+            : targetIdx === 3
+            ? 'rounded-tl'
+            : 'rounded-t'
+        }`}
+      >
         {selectedData && (
           <div className="flex flex-wrap gap-[0.33%] justify-start w-full h-full">
             {selectedData.map((data) => (
