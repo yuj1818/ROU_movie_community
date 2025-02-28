@@ -194,7 +194,7 @@ def movie_recommend(request):
 def movie_review(request, movie_id):
   movie = get_object_or_404(Movie, pk=movie_id)
   if request.method == "GET":
-    serializer = MovieReviewSerializer(movie)
+    serializer = MovieReviewSerializer(movie, context={'request': request})
     return Response(serializer.data)
   elif request.method == "POST":
     serializer = ReviewSerializer(data=request.data)
