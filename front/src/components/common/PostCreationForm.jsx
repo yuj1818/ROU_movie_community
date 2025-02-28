@@ -18,26 +18,10 @@ const TextArea = styled.textarea`
   }
 `;
 
-const ReviewCreationForm = () => {
+const PostCreationForm = ({ isReview }) => {
   const { movieInfo } = useSelector((state) => state.movie);
-  const params = useParams();
-  const [isReview, setIsReview] = useState();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-
-  useEffect(() => {
-    if (params.movie_id) {
-      if (params.movie_id == 0) {
-        setIsReview(false);
-      } else {
-        setIsReview(true);
-      }
-    }
-  }, [params.movie_id]);
-
-  useEffect(() => {
-    console.log(content);
-  }, [content]);
 
   return (
     <div className="flex flex-col justify-center gap-4 text-white w-1/2 min-w-[25rem]">
@@ -65,4 +49,4 @@ const ReviewCreationForm = () => {
   );
 };
 
-export default ReviewCreationForm;
+export default PostCreationForm;
