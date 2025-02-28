@@ -48,7 +48,13 @@ const ReviewInfo = ({ data }) => {
             <p>{data.dislike_count}</p>
           </IconContainer>
         </div>
-        <p className="text-xs font-pretendard_exlight text-gray-400 whitespace-nowrap text-right">
+        <p
+          className="underline underline-offset-2 cursor-pointer text-xs font-pretendard_exlight text-gray-400 whitespace-nowrap text-right"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/profile/${data.review_writor.id}`);
+          }}
+        >
           by. {data.review_writor.username}
         </p>
       </div>
