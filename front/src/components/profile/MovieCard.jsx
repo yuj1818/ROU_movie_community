@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
-  height: 33%;
+  width: 24.75%;
   aspect-ratio: 3 / 4;
+  max-height: 33%;
   cursor: pointer;
 `;
 
