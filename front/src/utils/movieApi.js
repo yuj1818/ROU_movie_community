@@ -67,3 +67,9 @@ export const getGenreMovieList = (genre_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const createMovieReview = (movie_id, data) => {
+  return API.post(URL + `review/${movie_id}/`, data)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
