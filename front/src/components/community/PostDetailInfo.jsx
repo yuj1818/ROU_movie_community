@@ -6,6 +6,8 @@ import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
 import { dislikePost, likePost } from '../../utils/communityApi';
 import { toggleDislike, toggleLike } from '../../stores/community';
+import LazyImg from '../common/LazyImg';
+import Url from '../../constants/URL';
 
 const IconContainer = tw.div`
   flex gap-1 text-sm items-center
@@ -53,7 +55,13 @@ const PostDetailInfo = () => {
             className="cursor-pointer"
             size="1.75rem"
             color={Colors.btnGray}
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              if (postInfo.review_movie === null) {
+                navigate('-1');
+              } else {
+                navigate(`/movie/${postInfo.review_movie.movie_id}`);
+              }
+            }}
           />
         </div>
         <div className="flex gap-3 justify-end">
@@ -74,7 +82,17 @@ const PostDetailInfo = () => {
             <span>{postInfo.dislike_count}</span>
           </IconContainer>
         </div>
-        <div className="w-full whitespace-pre-line">{postInfo.content}</div>
+        <div className="w-full flex">
+          <div className="w-1/4 max-w-[12rem] max-h-[16rem] aspect-3/4 overflow-hidden">
+            <LazyImg
+              className="w-full h-full"
+              src={Url.tmdbImgPath + postInfo.review_movie.poster_path}
+            />
+          </div>
+          <div className="pl-4 w-3/4 whitespace-pre-line">
+            {postInfo.content}
+          </div>
+        </div>
       </div>
     )
   );
