@@ -43,3 +43,9 @@ export const createComment = (review_id, data) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const createRecomment = (review_id, comment_id, data) => {
+  return API.post(URL + `comment/${review_id}/${comment_id}/`, data)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
