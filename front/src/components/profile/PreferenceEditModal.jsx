@@ -77,7 +77,7 @@ const PreferenceEditModal = () => {
   };
 
   return (
-    <div className="bg-white h-fit w-1/2 max-w-[28rem] p-8 rounded-sm flex flex-col justify-center gap-2 relative z-1">
+    <div className="bg-white h-fit w-1/2 max-w-[28rem] p-8 rounded-sm flex flex-col justify-center gap-2 relative z-1 shadow-md shadow-gray-500">
       <p className="text-lg">{isLike ? '선호 장르' : '불호 장르'}</p>
       <Line />
       {isLike ? (
