@@ -49,3 +49,9 @@ export const createRecomment = (review_id, comment_id, data) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const deleteComment = (review_id, comment_id) => {
+  return API.delete(URL + `comment/${review_id}/${comment_id}/`)
+    .then((res) => res)
+    .catch((err) => console.error(err));
+};
