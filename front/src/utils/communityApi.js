@@ -31,3 +31,9 @@ export const deletePostData = (review_id) => {
     .then((res) => res)
     .catch((err) => console.error(err));
 };
+
+export const getCommentData = (review_id) => {
+  return API.get(URL + `comment/${review_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
