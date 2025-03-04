@@ -9,23 +9,27 @@ import { setPostInfo } from '../../stores/community';
 export const ConfirmModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { postInfo } = useSelector((state) => state.community);
+  const { postInfo, confirmType } = useSelector((state) => state.community);
 
   const onCancel = () => {
     dispatch(closeModal());
   };
 
   const onConfirm = async () => {
-    const res = await deletePostData(postInfo.id);
-    if (res.status === 204) {
-      if (postInfo.review_movie === null) {
-        return;
+    if (confirmType === 'post') {
+      const res = await deletePostData(postInfo.id);
+      if (res.status === 204) {
+        if (postInfo.review_movie === null) {
+          return;
+        } else {
+          navigate(`/movie/${postInfo.review_movie.movie_id}`);
+        }
+        dispatch(setPostInfo(null));
       } else {
-        navigate(`/movie/${postInfo.review_movie.movie_id}`);
+        window.alert('게시글 삭제 실패');
       }
-      dispatch(setPostInfo(null));
     } else {
-      window.alert('게시글 삭제 실패');
+      return;
     }
     dispatch(closeModal());
   };

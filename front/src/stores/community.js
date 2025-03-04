@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   postInfo: null,
   comments: null,
+  confirmType: null,
 };
 
 const communitySlice = createSlice({
@@ -23,9 +24,17 @@ const communitySlice = createSlice({
     setComments(state, action) {
       state.comments = action.payload;
     },
+    setConfirmType(state, action) {
+      state.confirmType = action.payload;
+    },
   },
 });
 
-export const { setPostInfo, toggleLike, toggleDislike, setComments } =
-  communitySlice.actions;
+export const {
+  setPostInfo,
+  toggleLike,
+  toggleDislike,
+  setComments,
+  setConfirmType,
+} = communitySlice.actions;
 export default communitySlice.reducer;
