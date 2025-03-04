@@ -13,7 +13,7 @@ class Review(models.Model):
   super_review = models.ForeignKey('self', on_delete=models.CASCADE, related_name='reviewed', null=True, blank=True)
 
 class Comment(models.Model):
-  content = models.CharField(max_length=20)
+  content = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   comment_writor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='written_comment')
