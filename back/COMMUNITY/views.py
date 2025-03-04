@@ -149,12 +149,13 @@ def review_recomment(request, review_id, comment_id):
     
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def comment_like(request, comment_id):
+def comment_like(request, review_id, comment_id):
+  review = get_object_or_404(Review, pk=review_id)
   comment = get_object_or_404(Comment, pk=comment_id)
   user = request.user
   if comment.like_comment_users.filter(pk=user.pk).exists():
     comment.like_comment_users.remove(user)
   else:
     comment.like_comment_users.add(user)
-  serializer = CommentLikeSerializer(comment)
+  serializer = CommentListSerializer(review, context={'request': request})
   return Response(serializer.data)
