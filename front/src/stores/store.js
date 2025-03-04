@@ -20,7 +20,7 @@ import communitySlice from './community';
 const persistConfig = {
   key: 'root',
   storage: sessionStorage,
-  whitelist: ['auth', 'movie'],
+  whitelist: ['auth', 'movie', 'community'],
 };
 
 const rootReducer = combineReducers({
