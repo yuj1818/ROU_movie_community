@@ -25,3 +25,9 @@ export const editPostData = (review_id, data) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const deletePostData = (review_id) => {
+  return API.delete(URL + `${review_id}/`)
+    .then((res) => res)
+    .catch((err) => console.error(err));
+};
