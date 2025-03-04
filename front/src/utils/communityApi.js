@@ -56,8 +56,8 @@ export const deleteComment = (review_id, comment_id) => {
     .catch((err) => console.error(err));
 };
 
-export const editComment = (review_id, comment_id) => {
-  return API.put(URL + `comment/${review_id}/${comment_id}/`)
+export const editComment = (review_id, comment_id, data) => {
+  return API.put(URL + `comment/${review_id}/${comment_id}/`, data)
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };

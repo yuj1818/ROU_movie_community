@@ -1,24 +1,25 @@
-import { CornerDownRight, Pencil, Trash2 } from 'lucide-react';
+import { CornerDownRight, Pencil, Trash2, CircleX } from 'lucide-react';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { CommentTextArea } from './CommentTextArea';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
-import { createRecomment } from '../../utils/communityApi';
+import { createRecomment, editComment } from '../../utils/communityApi';
 import { useParams } from 'react-router-dom';
 import {
   setComments,
   setConfirmType,
   setSelectedCommentId,
 } from '../../stores/community';
-import tw from 'tailwind-styled-components';
 import { getCookie } from '../../utils/cookie';
 import { openModal } from '../../stores/modal';
 
 const CommentInfo = ({ data, depth }) => {
   const [isReply, setIsReply] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [commentContent, setCommentContent] = useState('');
+  const [content, setContent] = useState(data.content);
   const dispatch = useDispatch();
   const params = useParams();
 
@@ -29,6 +30,13 @@ const CommentInfo = ({ data, depth }) => {
     dispatch(setComments(res.reply_comments));
     setIsReply(false);
     setCommentContent('');
+  };
+
+  const onEditComment = async () => {
+    const res = await editComment(params.review_id, data.id, { content });
+    dispatch(setComments(res.reply_comments));
+    setIsEdit(false);
+    setContent(data.content);
   };
 
   return (
@@ -56,11 +64,23 @@ const CommentInfo = ({ data, depth }) => {
                     dispatch(openModal('delete'));
                   }}
                 />
-                <Pencil
-                  className="cursor-pointer"
-                  size="1rem"
-                  color={Colors.btnGray}
-                />
+                {isEdit ? (
+                  <CircleX
+                    className="cursor-pointer"
+                    size="1rem"
+                    onClick={() => {
+                      setContent(data.content);
+                      setIsEdit(false);
+                    }}
+                  />
+                ) : (
+                  <Pencil
+                    className="cursor-pointer"
+                    size="1rem"
+                    color={Colors.btnGray}
+                    onClick={() => setIsEdit(true)}
+                  />
+                )}
               </>
             )}
             <span
@@ -76,7 +96,23 @@ const CommentInfo = ({ data, depth }) => {
             </span>
           </div>
         </div>
-        <span className="text-sm whitespace-pre-line">{data.content}</span>
+        {isEdit ? (
+          <div className="flex gap-2">
+            <CommentTextArea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <Button
+              $marginTop={0}
+              disabled={content.trim().length === 0}
+              onClick={onEditComment}
+            >
+              댓글 수정
+            </Button>
+          </div>
+        ) : (
+          <span className="text-sm whitespace-pre-line">{data.content}</span>
+        )}
       </div>
       {isReply && (
         <div className="flex gap-2">
