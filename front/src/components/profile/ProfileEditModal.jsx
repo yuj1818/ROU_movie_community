@@ -64,7 +64,7 @@ const ProfileEditModal = () => {
   };
 
   const onClickResign = () => {
-    dispatch(openModal('confirm'));
+    dispatch(openModal('resign'));
   };
 
   return (

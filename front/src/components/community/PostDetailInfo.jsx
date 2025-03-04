@@ -4,10 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
-import { dislikePost, likePost } from '../../utils/communityApi';
-import { toggleDislike, toggleLike } from '../../stores/community';
+import {
+  deletePostData,
+  dislikePost,
+  likePost,
+} from '../../utils/communityApi';
+import { setPostInfo, toggleDislike, toggleLike } from '../../stores/community';
 import LazyImg from '../common/LazyImg';
 import Url from '../../constants/URL';
+import { Button } from '../common/Button';
+import { getCookie } from '../../utils/cookie';
+import { openModal } from '../../stores/modal';
 
 const IconContainer = tw.div`
   flex gap-1 text-sm items-center
@@ -30,7 +37,7 @@ const PostDetailInfo = () => {
 
   return (
     postInfo && (
-      <div className="w-1/2 bg-white rounded-lg p-6 flex flex-col gap-2">
+      <div className="w-1/2 bg-white rounded-lg p-6 flex flex-col gap-3">
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2">
             <h1 className="font-pretendard_semibold text-xl">
@@ -83,16 +90,34 @@ const PostDetailInfo = () => {
           </IconContainer>
         </div>
         <div className="w-full flex">
-          <div className="w-1/4 max-w-[12rem] max-h-[16rem] aspect-3/4 overflow-hidden">
-            <LazyImg
-              className="w-full h-full"
-              src={Url.tmdbImgPath + postInfo.review_movie.poster_path}
-            />
+          <div className="w-1/4 min-w-[9rem] min-h-[12rem]">
+            <div className="w-full aspect-3/4">
+              <LazyImg
+                className="w-full h-full"
+                src={Url.tmdbImgPath + postInfo.review_movie.poster_path}
+              />
+            </div>
           </div>
           <div className="pl-4 w-3/4 whitespace-pre-line">
             {postInfo.content}
           </div>
         </div>
+        {postInfo.review_writor.id == getCookie('userId') && (
+          <div className="flex gap-2">
+            <Button
+              $background="red"
+              onClick={() => dispatch(openModal('delete'))}
+            >
+              삭제
+            </Button>
+            <Button
+              $marginLeft={0}
+              onClick={() => navigate(`/review/edit/${postInfo.id}`)}
+            >
+              수정
+            </Button>
+          </div>
+        )}
       </div>
     )
   );

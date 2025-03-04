@@ -5,7 +5,7 @@ import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
   width: 16%;
-  aspect-ratio: 3 /4;
+  aspect-ratio: 3 / 4;
   margin-bottom: 0.8%;
   cursor: pointer;
 `;
