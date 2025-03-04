@@ -1,11 +1,22 @@
-import { CornerDownRight, Pencil, Trash2, CircleX } from 'lucide-react';
+import {
+  CornerDownRight,
+  Pencil,
+  Trash2,
+  CircleX,
+  ThumbsDown,
+  ThumbsUp,
+} from 'lucide-react';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { CommentTextArea } from './CommentTextArea';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
-import { createRecomment, editComment } from '../../utils/communityApi';
+import {
+  createRecomment,
+  editComment,
+  likeComment,
+} from '../../utils/communityApi';
 import { useParams } from 'react-router-dom';
 import {
   setComments,
@@ -37,6 +48,11 @@ const CommentInfo = ({ data, depth }) => {
     dispatch(setComments(res.reply_comments));
     setIsEdit(false);
     setContent(data.content);
+  };
+
+  const onLikeComment = async () => {
+    const res = await likeComment(params.review_id, data.id);
+    dispatch(setComments(res.reply_comments));
   };
 
   return (
@@ -111,7 +127,22 @@ const CommentInfo = ({ data, depth }) => {
             </Button>
           </div>
         ) : (
-          <span className="text-sm whitespace-pre-line">{data.content}</span>
+          <div className="flex gap-2 items-center">
+            <span className="grow text-sm whitespace-pre-line">
+              {data.content}
+            </span>
+            <div className="flex gap-1 items-center">
+              <ThumbsUp
+                className="cursor-pointer"
+                size="1rem"
+                color={data.isLike ? Colors.btnDarkPurple : Colors.btnGray}
+                onClick={onLikeComment}
+              />
+              <span className="text-xs text-gray-500">
+                {data.like_comment_users.length}
+              </span>
+            </div>
+          </div>
         )}
       </div>
       {isReply && (
