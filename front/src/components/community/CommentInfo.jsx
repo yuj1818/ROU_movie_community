@@ -4,12 +4,25 @@ import { useState } from 'react';
 import { CommentTextArea } from './CommentTextArea';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
+import { useDispatch } from 'react-redux';
+import { createRecomment } from '../../utils/communityApi';
+import { useParams } from 'react-router-dom';
+import { setComments } from '../../stores/community';
 
 const CommentInfo = ({ data, depth }) => {
   const [isReply, setIsReply] = useState(false);
   const [commentContent, setCommentContent] = useState('');
+  const dispatch = useDispatch();
+  const params = useParams();
 
-  const onSubmitRecomment = () => {};
+  const onSubmitRecomment = async () => {
+    const res = await createRecomment(params.review_id, data.id, {
+      content: commentContent,
+    });
+    dispatch(setComments(res.reply_comments));
+    setIsReply(false);
+    setCommentContent('');
+  };
 
   return (
     <div className="grow flex flex-col text-black gap-2">
@@ -25,7 +38,12 @@ const CommentInfo = ({ data, depth }) => {
           </div>
           <span
             className="text-xs text-gray-500 underline underline-offset-2 cursor-pointer"
-            onClick={() => setIsReply((pre) => !pre)}
+            onClick={() => {
+              if (isReply) {
+                setCommentContent('');
+              }
+              setIsReply((pre) => !pre);
+            }}
           >
             {isReply ? '닫기' : '답변'}
           </span>
