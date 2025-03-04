@@ -38,12 +38,13 @@ class NewSuperCommentSerializer(serializers.ModelSerializer):
   commented = serializers.SerializerMethodField()
   comment_writor = UserSerializer(read_only=True)
   isLike = serializers.SerializerMethodField()
+  like_count = serializers.IntegerField(source='like_comment_users.count', read_only=True)
 
   class Meta:
     model = Comment
     # 댓글 번호, 댓글 작성자 번호, 댓글의 좋아요 수, 상위 댓글 번호, 댓글 내용, 작성 시간, 대댓글 정보(댓글 정보와 동일)
     fields = ('id', 'comment_writor', 'like_comment_users',  'commented_review',
-              'super_comment', 'content', 'created_at', 'commented', 'updated_at', 'isLike',)
+              'super_comment', 'content', 'created_at', 'commented', 'updated_at', 'isLike', 'like_count',)
 
   # 댓글 번호, 댓글 작성자,
   def get_commented(self, instance):
@@ -128,9 +129,9 @@ class ReviewDisLikeSerializer(serializers.ModelSerializer):
     # 게시글 id, 싫어요한 사용자 목록
     fields = ('id', 'dislike_count')
 
-class CommentLikeSerializer(serializers.ModelSerializer):
-  like_count = serializers.IntegerField(source='like_comment_users.count', read_only=True)
+# class CommentLikeSerializer(serializers.ModelSerializer):
+#   like_count = serializers.IntegerField(source='like_comment_users.count', read_only=True)
 
-  class Meta:
-    model = Comment
-    fields = ('id', 'like_count')
+#   class Meta:
+#     model = Comment
+#     fields = ('id', 'like_count')
