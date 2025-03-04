@@ -6,7 +6,7 @@ import { resign } from '../../utils/authApi';
 import { setLogout } from '../../stores/auth';
 import { useNavigate } from 'react-router-dom';
 
-const ConfirmModal = () => {
+export const ConfirmModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,5 +44,3 @@ const ConfirmModal = () => {
     </div>
   );
 };
-
-export default ConfirmModal;

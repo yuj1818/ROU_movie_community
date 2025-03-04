@@ -4,14 +4,16 @@ import { useLocation } from 'react-router-dom';
 import { closeModal } from '../../stores/modal';
 import TrailerModal from '../movie/TrailerModal';
 import ProfileEditModal from '../profile/ProfileEditModal';
-import ConfirmModal from '../profile/ConfirmModal';
+import { ConfirmModal as ResignConfirmModal } from '../profile/ConfirmModal';
+import { ConfirmModal as PostDeleteConfirmModal } from '../community/ConfirmModal';
 import PreferenceEditModal from '../profile/PreferenceEditModal';
 
 const MODAL_TYPES = {
   trailer: 'trailer',
   profile: 'profile',
-  confirm: 'confirm',
+  resign: 'resign',
   genre: 'genre',
+  delete: 'delete',
 };
 
 const MODAL_COMPONENTS = [
@@ -24,12 +26,16 @@ const MODAL_COMPONENTS = [
     component: <ProfileEditModal />,
   },
   {
-    type: MODAL_TYPES.confirm,
-    component: <ConfirmModal />,
+    type: MODAL_TYPES.resign,
+    component: <ResignConfirmModal />,
   },
   {
     type: MODAL_TYPES.genre,
     component: <PreferenceEditModal />,
+  },
+  {
+    type: MODAL_TYPES.delete,
+    component: <PostDeleteConfirmModal />,
   },
 ];
 
