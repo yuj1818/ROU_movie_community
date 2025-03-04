@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from './Button';
 import Colors from '../../constants/Colors';
 import { createMovieReview } from '../../utils/movieApi';
+import { editPostData, getPostDetail } from '../../utils/communityApi';
+import { setPostInfo } from '../../stores/community';
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -21,19 +23,42 @@ const TextArea = styled.textarea`
   }
 `;
 
-const PostCreationForm = ({ isReview }) => {
+const PostCreationForm = ({ isReview, isEdit }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { movieInfo } = useSelector((state) => state.movie);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const { postInfo } = useSelector((state) => state.community);
+  const [title, setTitle] = useState(() => {
+    if (isEdit) {
+      return postInfo.title;
+    } else {
+      return '';
+    }
+  });
+  const [content, setContent] = useState(() => {
+    if (isEdit) {
+      return postInfo.content;
+    } else {
+      return '';
+    }
+  });
 
   const onSubmit = async () => {
-    if (isReview) {
-      const res = await createMovieReview(movieInfo.movie_id, {
+    if (isEdit) {
+      const res = await editPostData(postInfo.id, {
         title,
         content,
       });
+      dispatch(setPostInfo(res));
       navigate(`/review/${res.id}`);
+    } else {
+      if (isReview) {
+        const res = await createMovieReview(movieInfo.movie_id, {
+          title,
+          content,
+        });
+        navigate(`/review/${res.id}`);
+      }
     }
   };
 
@@ -42,7 +67,7 @@ const PostCreationForm = ({ isReview }) => {
       {isReview && (
         <div className="flex items-end gap-2">
           <span className="text-2xl font-pretendard_semibold">{`"${movieInfo.title}"`}</span>
-          <span className="text-xl">리뷰 작성</span>
+          <span className="text-xl">리뷰 {isEdit ? '수정' : '작성'}</span>
         </div>
       )}
       <div className="w-full flex flex-col gap-2 text-black">
@@ -51,12 +76,14 @@ const PostCreationForm = ({ isReview }) => {
           type="text"
           placeholder="제목을 입력하세요"
           onChange={(e) => setTitle(e.target.value)}
+          value={title}
         />
         <TextArea
           name="content"
           id="content"
           placeholder="내용을 입력하세요"
           onChange={(e) => setContent(e.target.value)}
+          value={content}
         />
       </div>
       <div className="flex gap-2">
@@ -68,7 +95,7 @@ const PostCreationForm = ({ isReview }) => {
           $background={Colors.btnPurple}
           onClick={onSubmit}
         >
-          작성
+          {isEdit ? '수정' : '작성'}
         </Button>
       </div>
     </div>
