@@ -11,6 +11,7 @@ import SignUpPage from './pages/auth/SignUpPage';
 import PostCreatePage from './pages/community/PostCreatePage';
 import ReviewCreatePage from './pages/movie/ReviewCreatePage';
 import PostDetailPage from './pages/community/PostDetailPage';
+import PostEditPage from './pages/community/PostEditPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
           {
             path: ':review_id',
             element: <PostDetailPage />,
+          },
+          {
+            path: 'edit/:review_id',
+            element: <PostEditPage />,
           },
         ],
       },
