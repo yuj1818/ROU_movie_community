@@ -142,7 +142,8 @@ def review_recomment(request, review_id, comment_id):
   elif request.method == "DELETE":
     if request.user == comment.comment_writor:
       comment.delete()
-      return Response({"message": f"댓글 {comment_id}번이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+      serializer = CommentListSerializer(review)
+      return Response(serializer.data, status=status.HTTP_200_OK)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
     
