@@ -7,6 +7,7 @@ export const CommentTextArea = styled.textarea`
   resize: none;
   outline: none;
   padding: 0.5rem;
+  font-size: 0.875rem;
 
   &::-webkit-scrollbar-track {
     background-color: white;
