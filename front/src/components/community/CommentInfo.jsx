@@ -7,9 +7,14 @@ import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
 import { createRecomment } from '../../utils/communityApi';
 import { useParams } from 'react-router-dom';
-import { setComments } from '../../stores/community';
+import {
+  setComments,
+  setConfirmType,
+  setSelectedCommentId,
+} from '../../stores/community';
 import tw from 'tailwind-styled-components';
 import { getCookie } from '../../utils/cookie';
+import { openModal } from '../../stores/modal';
 
 const CommentInfo = ({ data, depth }) => {
   const [isReply, setIsReply] = useState(false);
@@ -45,6 +50,11 @@ const CommentInfo = ({ data, depth }) => {
                   className="cursor-pointer"
                   size="1rem"
                   color={Colors.btnGray}
+                  onClick={() => {
+                    dispatch(setConfirmType('comment'));
+                    dispatch(setSelectedCommentId(data.id));
+                    dispatch(openModal('delete'));
+                  }}
                 />
                 <Pencil
                   className="cursor-pointer"
@@ -54,7 +64,7 @@ const CommentInfo = ({ data, depth }) => {
               </>
             )}
             <span
-              className="text-xs text-gray-500 underline underline-offset-2 cusor-pointer"
+              className="text-xs text-gray-500 underline underline-offset-2 cursor-pointer"
               onClick={() => {
                 if (isReply) {
                   setCommentContent('');

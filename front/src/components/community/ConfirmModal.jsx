@@ -3,13 +3,15 @@ import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { closeModal } from '../../stores/modal';
-import { deletePostData } from '../../utils/communityApi';
-import { setPostInfo } from '../../stores/community';
+import { deleteComment, deletePostData } from '../../utils/communityApi';
+import { setComments, setPostInfo } from '../../stores/community';
 
 export const ConfirmModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { postInfo, confirmType } = useSelector((state) => state.community);
+  const { postInfo, confirmType, selectedCommentId } = useSelector(
+    (state) => state.community,
+  );
 
   const onCancel = () => {
     dispatch(closeModal());
@@ -28,8 +30,13 @@ export const ConfirmModal = () => {
       } else {
         window.alert('게시글 삭제 실패');
       }
-    } else {
-      return;
+    } else if (confirmType === 'comment') {
+      const res = await deleteComment(postInfo.id, selectedCommentId);
+      if (res.status === 200) {
+        dispatch(setComments(res.data.reply_comments));
+      } else {
+        window.alert('댓글 삭제 실패');
+      }
     }
     dispatch(closeModal());
   };
