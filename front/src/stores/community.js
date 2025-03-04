@@ -4,6 +4,7 @@ const initialState = {
   postInfo: null,
   comments: null,
   confirmType: null,
+  selectedCommentId: null,
 };
 
 const communitySlice = createSlice({
@@ -27,6 +28,9 @@ const communitySlice = createSlice({
     setConfirmType(state, action) {
       state.confirmType = action.payload;
     },
+    setSelectedCommentId(state, action) {
+      state.selectedCommentId = action.payload;
+    },
   },
 });
 
@@ -36,5 +40,6 @@ export const {
   toggleDislike,
   setComments,
   setConfirmType,
+  setSelectedCommentId,
 } = communitySlice.actions;
 export default communitySlice.reducer;
