@@ -37,18 +37,23 @@ class CommentSerializer(serializers.ModelSerializer):
 class NewSuperCommentSerializer(serializers.ModelSerializer):
   commented = serializers.SerializerMethodField()
   comment_writor = UserSerializer(read_only=True)
+  isLike = serializers.SerializerMethodField()
 
   class Meta:
     model = Comment
     # 댓글 번호, 댓글 작성자 번호, 댓글의 좋아요 수, 상위 댓글 번호, 댓글 내용, 작성 시간, 대댓글 정보(댓글 정보와 동일)
     fields = ('id', 'comment_writor', 'like_comment_users',  'commented_review',
-              'super_comment', 'content', 'created_at', 'commented', 'updated_at',)
+              'super_comment', 'content', 'created_at', 'commented', 'updated_at', 'isLike',)
 
   # 댓글 번호, 댓글 작성자,
   def get_commented(self, instance):
     serializer = self.__class__(instance.commented, many=True)
     serializer.bind('', self)
     return serializer.data
+  
+  def get_isLike(self, instance):
+    user = self.context['request'].user
+    return instance.like_comment_users.filter(id=user.id).exists()
 
 # 댓글 조회(대댓글 포함)
 class CommentListSerializer(serializers.ModelSerializer):
@@ -61,7 +66,7 @@ class CommentListSerializer(serializers.ModelSerializer):
 
   def get_reply_comments(self, obj):
     reply_comments = obj.review_comment.filter(super_comment=None)
-    serializer = NewSuperCommentSerializer(reply_comments, many=True)
+    serializer = NewSuperCommentSerializer(reply_comments, many=True, context=self.context)
     return serializer.data
 
 class MovieSerializer(serializers.ModelSerializer):

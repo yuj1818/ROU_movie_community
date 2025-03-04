@@ -110,13 +110,13 @@ def review_dislike(request, review_id):
 def review_comment(request, review_id):
   review = get_object_or_404(Review, pk=review_id)
   if request.method == "GET":
-    serializer = CommentListSerializer(review)
+    serializer = CommentListSerializer(review, context={'request': request})
     return Response(serializer.data)
   elif request.method == "POST":
     serializer = CommentSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
       serializer.save(commented_review=review, comment_writor=request.user)
-      serializer = CommentListSerializer(review)
+      serializer = CommentListSerializer(review, context={'request': request})
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["POST", "PUT", "DELETE"])
@@ -128,21 +128,21 @@ def review_recomment(request, review_id, comment_id):
     serializer = CommentSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
       serializer.save(commented_review=review, comment_writor=request.user, super_comment=comment)
-      serializer = CommentListSerializer(review)
+      serializer = CommentListSerializer(review, context={'request': request})
       return Response(serializer.data, status=status.HTTP_201_CREATED)
   elif request.method == "PUT":
     if request.user == comment.comment_writor:
       serializer = CommentSerializer(comment, data=request.data)
       if serializer.is_valid(raise_exception=True):
         serializer.save()
-        serializer = CommentListSerializer(review)
+        serializer = CommentListSerializer(review, context={'request': request})
         return Response(serializer.data)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
   elif request.method == "DELETE":
     if request.user == comment.comment_writor:
       comment.delete()
-      serializer = CommentListSerializer(review)
+      serializer = CommentListSerializer(review, context={'request': request})
       return Response(serializer.data, status=status.HTTP_200_OK)
     else:
       return Response({"message": "작성자 본인만 수정 및 삭제가 가능합니다"}, status=status.HTTP_401_UNAUTHORIZED)
