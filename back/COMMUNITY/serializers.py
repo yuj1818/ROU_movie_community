@@ -67,7 +67,7 @@ class CommentListSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
   class Meta:
     model = Movie
-    fields = ('movie_id', 'title',)
+    fields = ('movie_id', 'title', 'poster_path')
 
 # 전체 게시글 목록 조회 및 영화를 선택하지 않은 게시글 생성
 class ReviewListSerializer(serializers.ModelSerializer):
