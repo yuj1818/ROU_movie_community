@@ -19,3 +19,9 @@ export const dislikePost = (review_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const editPostData = (review_id, data) => {
+  return API.put(URL + `${review_id}/`, data)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
