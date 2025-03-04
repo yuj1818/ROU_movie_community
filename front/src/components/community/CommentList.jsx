@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getCommentData } from '../../utils/communityApi';
+import { createComment, getCommentData } from '../../utils/communityApi';
 import { setComments } from '../../stores/community';
 import { Line } from '../common/Line';
 import CommentInfo from './CommentInfo';
@@ -14,6 +14,14 @@ const CommentList = () => {
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.community);
   const [commentContent, setCommentContent] = useState('');
+
+  const onSubmitComment = async () => {
+    const res = await createComment(params.review_id, {
+      content: commentContent,
+    });
+    dispatch(setComments(res.reply_comments));
+    setCommentContent('');
+  };
 
   const getComments = async () => {
     const res = await getCommentData(params.review_id);
@@ -40,7 +48,12 @@ const CommentList = () => {
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
           />
-          <Button $marginTop={0} $background={Colors.btnPurple}>
+          <Button
+            $marginTop={0}
+            $background={Colors.btnPurple}
+            disabled={commentContent.trim().length === 0}
+            onClick={onSubmitComment}
+          >
             댓글 작성
           </Button>
         </div>
