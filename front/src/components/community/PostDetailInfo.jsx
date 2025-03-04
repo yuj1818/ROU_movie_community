@@ -4,17 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
-import {
-  deletePostData,
-  dislikePost,
-  likePost,
-} from '../../utils/communityApi';
-import { setPostInfo, toggleDislike, toggleLike } from '../../stores/community';
+import { dislikePost, likePost } from '../../utils/communityApi';
+import { toggleDislike, toggleLike } from '../../stores/community';
 import LazyImg from '../common/LazyImg';
 import Url from '../../constants/URL';
 import { Button } from '../common/Button';
 import { getCookie } from '../../utils/cookie';
 import { openModal } from '../../stores/modal';
+import CommentList from './CommentList';
 
 const IconContainer = tw.div`
   flex gap-1 text-sm items-center
@@ -37,7 +34,7 @@ const PostDetailInfo = () => {
 
   return (
     postInfo && (
-      <div className="w-1/2 bg-white rounded-lg p-6 flex flex-col gap-3">
+      <div className="w-2/3 bg-white rounded-lg p-6 flex flex-col gap-3">
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2">
             <h1 className="font-pretendard_semibold text-xl">
@@ -118,6 +115,7 @@ const PostDetailInfo = () => {
             </Button>
           </div>
         )}
+        <CommentList />
       </div>
     )
   );
