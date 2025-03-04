@@ -5,7 +5,11 @@ import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
 import { useNavigate } from 'react-router-dom';
 import { dislikePost, likePost } from '../../utils/communityApi';
-import { toggleDislike, toggleLike } from '../../stores/community';
+import {
+  setConfirmType,
+  toggleDislike,
+  toggleLike,
+} from '../../stores/community';
 import LazyImg from '../common/LazyImg';
 import Url from '../../constants/URL';
 import { Button } from '../common/Button';
@@ -103,7 +107,10 @@ const PostDetailInfo = () => {
           <div className="flex gap-2">
             <Button
               $background="red"
-              onClick={() => dispatch(openModal('delete'))}
+              onClick={() => {
+                dispatch(setConfirmType('post'));
+                dispatch(openModal('delete'));
+              }}
             >
               삭제
             </Button>
