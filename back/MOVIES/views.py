@@ -194,7 +194,10 @@ def movie_recommend(request):
 def movie_reviewing(request, movie_id):
   movie = get_object_or_404(Movie, pk=movie_id)
   if request.method == "GET":
-    reviews = movie.movie_review.order_by('-created_at')
+    reviews = movie.movie_review.annotate(
+      like_count=Count('like_review_users'),
+      comment_count=Count('review_comment')
+    ).order_by('-like_count', '-comment_count', '-created_at')
     serializer = ReviewSerializer(reviews, many=True, context={'request': request})
     return Response(serializer.data)
   elif request.method == "POST":

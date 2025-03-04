@@ -91,7 +91,7 @@ class ReviewSerializer(serializers.ModelSerializer):
   review_writor = UserSerializer(read_only=True)  # 게시글 작성자
   like_count = serializers.IntegerField(source='like_review_users.count', read_only=True)  # 좋아요 수
   dislike_count = serializers.IntegerField(source='dislike_review_users.count', read_only=True)
-  comment_count = serializers.IntegerField(source='review_comment.count', read_only=True)  # 댓글 수
+  comment_count = serializers.SerializerMethodField()  # 댓글 수
 
   class Meta:
     model = Review
@@ -99,6 +99,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     # 게시글 id, 작성자, 제목, 내용, 생성 시간, 좋아요 수, 댓글 수, 게시글이 달린 영화
     fields = ('id', 'review_writor', 'title', 'content', 'updated_at',
               'created_at', 'like_count', 'comment_count', 'review_movie', 'dislike_count',)
+    
+  def get_comment_count(self, obj):
+    return obj.review_comment.filter(super_comment__isnull=True).count()
 
 
 # 게시글 좋아요 등록 및 해제

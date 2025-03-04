@@ -71,22 +71,22 @@ class MovieFavoriteSerializer(serializers.ModelSerializer):
     model = Movie
     fields = ('movie_id', 'favorite_movie_users', 'favorite_movie_users_count')
 
-class ReviewSerializer(serializers.ModelSerializer):
-  class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-      model = User
-      fields = ('id', 'username', 'profile_image',)
+# class ReviewSerializer(serializers.ModelSerializer):
+#   class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#       model = User
+#       fields = ('id', 'username', 'profile_image',)
 
-  class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-      model = Comment
-      fields = '__all__'
+#   class CommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#       model = Comment
+#       fields = '__all__'
 
-  movie_id = serializers.IntegerField(source='review_movie.id')
-  review_writor = UserSerializer()
-  review_comment = CommentSerializer(many=True)
-  comment_count = serializers.IntegerField(source='review_comment.count', read_only=True)
+#   movie_id = serializers.IntegerField(source='review_movie.id')
+#   review_writor = UserSerializer()
+#   review_comment = CommentSerializer(many=True)
+#   comment_count = serializers.IntegerField(source='review_comment.count', read_only=True)
   
-  class Meta:
-    model = Review
-    fields = '__all__'
+#   class Meta:
+#     model = Review
+#     fields = '__all__'
