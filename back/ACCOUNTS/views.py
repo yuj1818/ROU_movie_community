@@ -9,7 +9,7 @@ from rest_framework.permissions import *
 from .serializers import *
 from MOVIES.models import Genre
 from django.http import JsonResponse
-from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
 
@@ -88,6 +88,8 @@ def follow(request, user_pk):
 @permission_classes([IsAuthenticated])
 def movie_list(request, user_pk):
   target = request.GET.get('target', '').strip()
+  page = request.GET.get('page', 1)
+  limit = request.GET.get('limit', 12)
 
   user = get_object_or_404(User, pk=user_pk)
   if target == 'like':
@@ -101,21 +103,24 @@ def movie_list(request, user_pk):
   else:
     return Response({"error": "Invalid target parameter"}, status=400)
 
-  paginator = PageNumberPagination()
-  paginator.page_size_query_param = 'limit'
-  paginator.max_page_size = 100
-
-  result_page = paginator.paginate_queryset(movies, request)
-
-  if result_page is None:
-    return Response({
-      "count": 0,
-      "next": None,
-      "previous": None,
-      "results": []
-    })
+  paginator = Paginator(movies, limit)
+  try:
+    result_page = paginator.page(page)
+  except PageNotAnInteger:
+    result_page = paginator.page(1)
+  except EmptyPage:
+    result_page = paginator.page(paginator.num_pages)
   
-  return paginator.get_paginated_response(MovieListSerializer(result_page, many=True).data)
+  serializer = MovieListSerializer(result_page, many=True)
+  page_data = {
+    "current_page": result_page.number,
+    "total_pages": paginator.num_pages,
+    "has_next": result_page.has_next(),
+    "has_previous": result_page.has_previous(),
+    "results": serializer.data if result_page != None else []
+  }
+
+  return Response(page_data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
