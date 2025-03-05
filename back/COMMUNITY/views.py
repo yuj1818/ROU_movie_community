@@ -106,7 +106,7 @@ def review_dislike(request, review_id):
   return Response(serializer.data)
 
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def review_comment(request, review_id):
   review = get_object_or_404(Review, pk=review_id)
   if request.method == "GET":
