@@ -2,7 +2,7 @@ import tw from 'tailwind-styled-components';
 import { MessageSquareMore, ThumbsUp, ThumbsDown } from 'lucide-react';
 import LazyImg from '../LazyImg';
 import unknown from '../../../assets/profile.png';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const IconContainer = tw.div`
@@ -24,11 +24,14 @@ const Content = styled.div`
 
 const PostInfo = ({ data }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div
       className="flex items-center gap-4 w-full h-[5rem] px-6 py-4 bg-white rounded-md"
-      onClick={() => navigate(`/review/${data.id}`)}
+      onClick={() =>
+        navigate(`/review/${data.id}`, { state: { from: location.pathname } })
+      }
     >
       <LazyImg
         className="w-[3rem] h-[3rem] rounded-full"

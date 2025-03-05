@@ -3,7 +3,7 @@ import { ThumbsDown, ThumbsUp, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import tw from 'tailwind-styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { dislikePost, likePost } from '../../utils/communityApi';
 import {
   setConfirmType,
@@ -25,6 +25,7 @@ const IconContainer = tw.div`
 const PostDetailInfo = () => {
   const { postInfo } = useSelector((state) => state.community);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const onClickLike = async () => {
@@ -73,10 +74,10 @@ const PostDetailInfo = () => {
             size="1.75rem"
             color={Colors.btnGray}
             onClick={() => {
-              if (postInfo.review_movie === null) {
-                navigate('-1');
+              if (location.state?.from) {
+                navigate(location.state.from, { replace: true });
               } else {
-                navigate(`/movie/${postInfo.review_movie.movie_id}`);
+                navigate(-1);
               }
             }}
           />
@@ -125,7 +126,11 @@ const PostDetailInfo = () => {
             </Button>
             <Button
               $marginLeft={0}
-              onClick={() => navigate(`/review/edit/${postInfo.id}`)}
+              onClick={() =>
+                navigate(`/review/edit/${postInfo.id}`, {
+                  state: { from: location.state.from },
+                })
+              }
             >
               수정
             </Button>

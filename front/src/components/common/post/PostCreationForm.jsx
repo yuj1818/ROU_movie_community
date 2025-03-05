@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '../Button';
 import Colors from '../../../constants/Colors';
@@ -25,6 +25,7 @@ const TextArea = styled.textarea`
 
 const PostCreationForm = ({ isReview, isEdit }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { movieInfo } = useSelector((state) => state.movie);
   const { postInfo } = useSelector((state) => state.community);
@@ -50,14 +51,16 @@ const PostCreationForm = ({ isReview, isEdit }) => {
         content,
       });
       dispatch(setPostInfo(res));
-      navigate(`/review/${res.id}`);
+      navigate(`/review/${res.id}`, { state: { from: location.state?.from } });
     } else {
       if (isReview) {
         const res = await createMovieReview(movieInfo.movie_id, {
           title,
           content,
         });
-        navigate(`/review/${res.id}`);
+        navigate(`/review/${res.id}`, {
+          state: { from: location.state?.from },
+        });
       }
     }
   };
