@@ -56,7 +56,7 @@ const SideBar = () => {
             Profile
           </Menu>
         )}
-        <Menu>Review</Menu>
+        <Menu onClick={() => navigate('/review')}>Review</Menu>
       </MenuContainer>
     </Container>
   );
