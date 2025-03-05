@@ -21,7 +21,7 @@ class SuperCommentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('id', 'username',)
+    fields = ('id', 'username', 'profile_image',)
 
 class CommentSerializer(serializers.ModelSerializer):
   comment_writor = UserSerializer(read_only=True)
