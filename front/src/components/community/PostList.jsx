@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { getPostData } from '../../utils/communityApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSort, setTotalPages } from '../../stores/community';
+import { setPage, setSort, setTotalPages } from '../../stores/community';
 import PostInfo from '../common/post/PostInfo';
 import { Line } from '../common/Line';
+import Pagination from '../common/Pagination';
+import Colors from '../../constants/Colors';
 
 const PostList = () => {
   const { page, sort, totalPages } = useSelector((state) => state.community);
@@ -19,8 +21,11 @@ const PostList = () => {
     setPostList(res.results);
   };
 
+  const onPageChange = (newPage) => {
+    dispatch(setPage(newPage));
+  };
+
   useEffect(() => {
-    console.log(page);
     getPostList();
   }, [page, sort]);
 
@@ -39,11 +44,17 @@ const PostList = () => {
       </select>
       {postList &&
         postList.map((post, idx) => (
-          <>
-            <PostInfo key={post.id} data={post} />
+          <Fragment key={post.id}>
+            <PostInfo data={post} />
             {idx !== postList.length - 1 && <Line />}
-          </>
+          </Fragment>
         ))}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        color={Colors.btnPurple}
+      />
     </div>
   );
 };

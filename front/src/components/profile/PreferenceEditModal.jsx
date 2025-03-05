@@ -104,7 +104,7 @@ const PreferenceEditModal = () => {
       ) : (
         <li className="w-full flex flex-wrap gap-2 my-4 justify-center">
           {tags.map((tag) => (
-            <>
+            <Fragment key={tag.id}>
               <CheckBox
                 htmlFor={tag.name}
                 $isLike={isLike}
@@ -118,7 +118,7 @@ const PreferenceEditModal = () => {
                 className="hidden"
                 onChange={onChange}
               />
-            </>
+            </Fragment>
           ))}
         </li>
       )}
