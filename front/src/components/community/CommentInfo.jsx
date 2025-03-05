@@ -1,17 +1,10 @@
-import {
-  CornerDownRight,
-  Pencil,
-  Trash2,
-  CircleX,
-  ThumbsDown,
-  ThumbsUp,
-} from 'lucide-react';
+import { CornerDownRight, Pencil, Trash2, CircleX, Heart } from 'lucide-react';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { CommentTextArea } from './CommentTextArea';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   createRecomment,
   editComment,
@@ -27,6 +20,7 @@ import { getCookie } from '../../utils/cookie';
 import { openModal } from '../../stores/modal';
 
 const CommentInfo = ({ data, depth }) => {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [commentContent, setCommentContent] = useState('');
@@ -51,8 +45,12 @@ const CommentInfo = ({ data, depth }) => {
   };
 
   const onLikeComment = async () => {
-    const res = await likeComment(params.review_id, data.id);
-    dispatch(setComments(res.reply_comments));
+    if (isLoggedIn) {
+      const res = await likeComment(params.review_id, data.id);
+      dispatch(setComments(res.reply_comments));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   return (
@@ -99,17 +97,19 @@ const CommentInfo = ({ data, depth }) => {
                 )}
               </>
             )}
-            <span
-              className="text-xs text-gray-500 underline underline-offset-2 cursor-pointer"
-              onClick={() => {
-                if (isReply) {
-                  setCommentContent('');
-                }
-                setIsReply((pre) => !pre);
-              }}
-            >
-              {isReply ? '닫기' : '답변'}
-            </span>
+            {isLoggedIn && (
+              <span
+                className="text-xs text-gray-500 underline underline-offset-2 cursor-pointer"
+                onClick={() => {
+                  if (isReply) {
+                    setCommentContent('');
+                  }
+                  setIsReply((pre) => !pre);
+                }}
+              >
+                {isReply ? '닫기' : '답변'}
+              </span>
+            )}
           </div>
         </div>
         {isEdit ? (
@@ -132,15 +132,14 @@ const CommentInfo = ({ data, depth }) => {
               {data.content}
             </span>
             <div className="flex gap-1 items-center">
-              <ThumbsUp
+              <Heart
                 className="cursor-pointer"
                 size="1rem"
-                color={data.isLike ? Colors.btnDarkPurple : Colors.btnGray}
+                color={Colors.btnGray}
+                fill={data.isLike ? Colors.btnDarkPurple : 'none'}
                 onClick={onLikeComment}
               />
-              <span className="text-xs text-gray-500">
-                {data.like_comment_users.length}
-              </span>
+              <span className="text-xs text-gray-500">{data.like_count}</span>
             </div>
           </div>
         )}
