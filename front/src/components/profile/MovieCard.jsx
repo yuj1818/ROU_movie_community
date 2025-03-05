@@ -5,9 +5,8 @@ import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
   width: 24.75%;
-  aspect-ratio: 3 / 4;
-  max-height: 33%;
   cursor: pointer;
+  max-height: 33%;
 `;
 
 const MovieCard = ({ data }) => {
@@ -15,11 +14,13 @@ const MovieCard = ({ data }) => {
 
   return (
     <Container onClick={() => navigate(`/movie/${data.movie_id}`)}>
-      <LazyImg
-        className="w-full h-full"
-        src={Url.tmdbImgPath + data.poster_path}
-        alt="poster"
-      />
+      <div className="w-full aspect-3/4">
+        <LazyImg
+          className="w-full h-full"
+          src={Url.tmdbImgPath + data.poster_path}
+          alt="poster"
+        />
+      </div>
     </Container>
   );
 };

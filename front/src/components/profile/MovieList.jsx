@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import tw from 'tailwind-styled-components';
-import { setPage, setTarget, setTotalItems } from '../../stores/profile';
+import { setPage, setTarget, setTotalPages } from '../../stores/profile';
 import { useEffect, useState } from 'react';
 import { getProfileMovieData } from '../../utils/profileApi';
 import MovieCard from './MovieCard';
@@ -13,7 +13,7 @@ const Category = tw.div`
 `;
 
 const MovieList = () => {
-  const { targets, targetIdx, userId, page, totalItems } = useSelector(
+  const { targets, targetIdx, userId, page, totalPages } = useSelector(
     (state) => state.profile,
   );
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ const MovieList = () => {
     });
 
     setSelectedData(res.results);
-    dispatch(setTotalItems(res.count));
+    dispatch(setTotalPages(res.total_pages));
   };
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const MovieList = () => {
         ))}
       </div>
       <div
-        className={`grow bg-white w-full rounded-b p-2 ${
+        className={`grow bg-white w-full aspect-square rounded-b p-2 ${
           targetIdx === 0
             ? 'rounded-tr'
             : targetIdx === 3
@@ -85,7 +85,7 @@ const MovieList = () => {
       </div>
       <Pagination
         currentPage={page}
-        totalPages={Math.ceil(totalItems / 12)}
+        totalPages={totalPages}
         onPageChange={onPageChange}
         color={Colors.btnPurple}
       />
