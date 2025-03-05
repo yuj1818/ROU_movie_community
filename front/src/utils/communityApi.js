@@ -73,3 +73,9 @@ export const getPostData = (params) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const createPost = (data) => {
+  return API.post(URL, data)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
