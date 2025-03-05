@@ -17,6 +17,7 @@ import ReviewCreatePage from './pages/movie/ReviewCreatePage';
 import PostDetailPage from './pages/community/PostDetailPage';
 import PostEditPage from './pages/community/PostEditPage';
 import { getCookie } from './utils/cookie';
+import PostListPage from './pages/community/PostListPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: 'review',
         children: [
+          {
+            index: true,
+            element: <PostListPage />,
+          },
           {
             path: 'create',
             element: <PostCreatePage />,
