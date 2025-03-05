@@ -23,17 +23,26 @@ const IconContainer = tw.div`
 
 const PostDetailInfo = () => {
   const { postInfo } = useSelector((state) => state.community);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const onClickLike = async () => {
-    const res = await likePost(postInfo.id);
-    dispatch(toggleLike(res.like_count));
+    if (isLoggedIn) {
+      const res = await likePost(postInfo.id);
+      dispatch(toggleLike(res.like_count));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   const onClickDislike = async () => {
-    const res = await dislikePost(postInfo.id);
-    dispatch(toggleDislike(res.dislike_count));
+    if (isLoggedIn) {
+      const res = await dislikePost(postInfo.id);
+      dispatch(toggleDislike(res.dislike_count));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   return (

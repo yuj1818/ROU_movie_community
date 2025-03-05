@@ -13,14 +13,17 @@ const CommentList = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.community);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [commentContent, setCommentContent] = useState('');
 
   const onSubmitComment = async () => {
-    const res = await createComment(params.review_id, {
-      content: commentContent,
-    });
-    dispatch(setComments(res.reply_comments));
-    setCommentContent('');
+    if (isLoggedIn) {
+      const res = await createComment(params.review_id, {
+        content: commentContent,
+      });
+      dispatch(setComments(res.reply_comments));
+      setCommentContent('');
+    }
   };
 
   const getComments = async () => {
@@ -47,6 +50,12 @@ const CommentList = () => {
             rows={3}
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
+            disabled={!isLoggedIn}
+            placeholder={
+              isLoggedIn
+                ? '댓글을 작성해주세요'
+                : '🔒 로그인 후, 사용할 수 있습니다.'
+            }
           />
           <Button
             $marginTop={0}
