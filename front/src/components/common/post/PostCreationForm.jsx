@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button } from '../Button';
 import Colors from '../../../constants/Colors';
 import { createMovieReview } from '../../../utils/movieApi';
-import { editPostData } from '../../../utils/communityApi';
+import { createPost, editPostData } from '../../../utils/communityApi';
 import { setPostInfo } from '../../../stores/community';
 
 const TextArea = styled.textarea`
@@ -26,7 +26,6 @@ const TextArea = styled.textarea`
 const PostCreationForm = ({ isReview, isEdit }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const { movieInfo } = useSelector((state) => state.movie);
   const { postInfo } = useSelector((state) => state.community);
   const [title, setTitle] = useState(() => {
@@ -45,24 +44,26 @@ const PostCreationForm = ({ isReview, isEdit }) => {
   });
 
   const onSubmit = async () => {
+    let res;
     if (isEdit) {
-      const res = await editPostData(postInfo.id, {
+      res = await editPostData(postInfo.id, {
         title,
         content,
       });
-      dispatch(setPostInfo(res));
-      navigate(`/review/${res.id}`, { state: { from: location.state?.from } });
     } else {
       if (isReview) {
-        const res = await createMovieReview(movieInfo.movie_id, {
+        res = await createMovieReview(movieInfo.movie_id, {
           title,
           content,
         });
-        navigate(`/review/${res.id}`, {
-          state: { from: location.state?.from },
+      } else {
+        res = await createPost({
+          title,
+          content,
         });
       }
     }
+    navigate(`/review/${res.id}`, { state: { from: location.state?.from } });
   };
 
   return (

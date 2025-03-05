@@ -101,17 +101,17 @@ const PostDetailInfo = () => {
           </IconContainer>
         </div>
         <div className="w-full flex">
-          <div className="w-1/4 min-w-[9rem] min-h-[12rem]">
-            <div className="w-full aspect-3/4">
-              <LazyImg
-                className="w-full h-full"
-                src={Url.tmdbImgPath + postInfo.review_movie.poster_path}
-              />
+          {postInfo.review_movie && (
+            <div className="w-1/4 min-w-[9rem] min-h-[12rem] pr-4">
+              <div className="w-full aspect-3/4">
+                <LazyImg
+                  className="w-full h-full"
+                  src={Url.tmdbImgPath + postInfo.review_movie.poster_path}
+                />
+              </div>
             </div>
-          </div>
-          <div className="pl-4 w-3/4 whitespace-pre-line">
-            {postInfo.content}
-          </div>
+          )}
+          <div className="w-3/4 whitespace-pre-line">{postInfo.content}</div>
         </div>
         {postInfo.review_writor.id == getCookie('userId') && (
           <div className="flex gap-2">

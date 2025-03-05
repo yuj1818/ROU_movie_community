@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const LazyImg = ({ src, alt, className }) => {
+const LazyImg = ({ src, alt, className, onClick }) => {
   const [isLoading, setIsLoading] = useState(false);
   const imgRef = useRef(null);
   const observer = useRef();
@@ -25,6 +25,7 @@ const LazyImg = ({ src, alt, className }) => {
       src={isLoading ? src : null}
       alt={alt}
       className={className}
+      onClick={onClick}
     />
   );
 };
