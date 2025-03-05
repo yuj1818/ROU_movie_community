@@ -37,7 +37,7 @@ def review(request):
     except EmptyPage:
       reviews_page = paginator.page(paginator.num_pages)
     
-    serializer = ReviewListSerializer(reviews_page, many=True)
+    serializer = ReviewListSerializer(reviews_page, many=True, context={'request': request})
     page_data = {
       "current_page": reviews_page.number,
       "total_pages": paginator.num_pages,
