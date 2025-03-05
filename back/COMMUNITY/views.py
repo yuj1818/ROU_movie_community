@@ -21,13 +21,13 @@ def review(request):
     )
     # 최신 순
     if sort_key == 0:
-      reviews = reviews.order_by("-pk")
+      reviews = reviews.order_by("-pk", "-like_count", "-comment_count")
     # 좋아요 많은 순
     elif sort_key == 1:
-      reviews = reviews.order_by("-like_count")
+      reviews = reviews.order_by("-like_count", "-comment_count", "-pk")
     # 댓글 많은 순
     elif sort_key == 2:
-      reviews = reviews.order_by("-comment_count")
+      reviews = reviews.order_by("-comment_count", "-like_count", "-pk")
       
     paginator = Paginator(reviews, 10)
     try:
