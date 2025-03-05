@@ -16,22 +16,22 @@ import PostCreatePage from './pages/community/PostCreatePage';
 import ReviewCreatePage from './pages/movie/ReviewCreatePage';
 import PostDetailPage from './pages/community/PostDetailPage';
 import PostEditPage from './pages/community/PostEditPage';
-import { getCookie } from './utils/cookie';
 import PostListPage from './pages/community/PostListPage';
+import { checkLogin } from './utils/authApi';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 
 const goHome = () => {
-  if (getCookie('userId')) {
+  if (checkLogin()) {
     return redirect('/');
   }
   return null;
 };
 
 const goLogin = () => {
-  if (!getCookie('userId')) {
+  if (!checkLogin()) {
     return redirect('/login');
   }
   return null;

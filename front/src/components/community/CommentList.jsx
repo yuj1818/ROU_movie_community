@@ -8,16 +8,16 @@ import CommentInfo from './CommentInfo';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
 import { CommentTextArea } from './CommentTextArea';
+import { checkLogin } from '../../utils/authApi';
 
 const CommentList = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.community);
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const [commentContent, setCommentContent] = useState('');
 
   const onSubmitComment = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const res = await createComment(params.review_id, {
         content: commentContent,
       });
@@ -50,9 +50,9 @@ const CommentList = () => {
             rows={3}
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
-            disabled={!isLoggedIn}
+            disabled={!checkLogin()}
             placeholder={
-              isLoggedIn
+              checkLogin()
                 ? '댓글을 작성해주세요'
                 : '🔒 로그인 후, 사용할 수 있습니다.'
             }

@@ -11,7 +11,6 @@ import {
 } from 'redux-persist';
 import sessionStorage from 'redux-persist/lib/storage/session';
 import movieSlice from './movie';
-import authSlice from './auth';
 import modalSlice from './modal';
 import homeSlice from './home';
 import profileSlice from './profile';
@@ -20,12 +19,11 @@ import communitySlice from './community';
 const persistConfig = {
   key: 'root',
   storage: sessionStorage,
-  whitelist: ['auth', 'movie', 'community'],
+  whitelist: ['movie', 'community'],
 };
 
 const rootReducer = combineReducers({
   movie: movieSlice,
-  auth: authSlice,
   modal: modalSlice,
   home: homeSlice,
   profile: profileSlice,

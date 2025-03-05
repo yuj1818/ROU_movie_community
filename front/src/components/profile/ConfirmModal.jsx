@@ -3,7 +3,6 @@ import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../stores/modal';
 import { resign } from '../../utils/authApi';
-import { setLogout } from '../../stores/auth';
 import { useNavigate } from 'react-router-dom';
 
 export const ConfirmModal = () => {
@@ -18,7 +17,6 @@ export const ConfirmModal = () => {
     const res = await resign();
     if (res.status === 204) {
       navigate('/');
-      dispatch(setLogout());
     } else {
       window.alert('탈퇴 실패');
     }

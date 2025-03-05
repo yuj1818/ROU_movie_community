@@ -5,6 +5,9 @@ const initialState = {
   comments: null,
   confirmType: null,
   selectedCommentId: null,
+  page: 1,
+  sort: 0,
+  totalPages: 0,
 };
 
 const communitySlice = createSlice({
@@ -31,6 +34,15 @@ const communitySlice = createSlice({
     setSelectedCommentId(state, action) {
       state.selectedCommentId = action.payload;
     },
+    setPage(state, action) {
+      state.page = action.payload;
+    },
+    setTotalPages(state, action) {
+      state.totalPages = action.payload;
+    },
+    setSort(state, action) {
+      state.sort = action.payload;
+    },
   },
 });
 
@@ -41,5 +53,8 @@ export const {
   setComments,
   setConfirmType,
   setSelectedCommentId,
+  setPage,
+  setTotalPages,
+  setSort,
 } = communitySlice.actions;
 export default communitySlice.reducer;

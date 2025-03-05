@@ -4,6 +4,7 @@ import { SubTitle } from './SubTitle';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import MovieCard from './MovieCard';
+import { checkLogin } from '../../utils/authApi';
 
 const InfoContainer = styled.div`
   display: flex;
@@ -14,12 +15,11 @@ const InfoContainer = styled.div`
 `;
 
 const RecommendList = ({ title }) => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const { movieInfo } = useSelector((state) => state.movie);
   const [movieData, setMovieData] = useState([]);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const getMovieData = async () => {
         const res = await getRecommendMovieList({ title: movieInfo.title });
         setMovieData(res);
@@ -33,7 +33,7 @@ const RecommendList = ({ title }) => {
     <div className="flex flex-col gap-2 w-full">
       <SubTitle>"{title}" 와(과) 비슷한 영화</SubTitle>
       <InfoContainer>
-        {isLoggedIn ? (
+        {checkLogin() ? (
           movieData && movieData.length ? (
             movieData.map((data) => (
               <MovieCard key={data.movie_id} data={data} />

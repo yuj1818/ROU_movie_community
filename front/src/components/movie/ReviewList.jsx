@@ -3,12 +3,11 @@ import { getMovieReviewList } from '../../utils/movieApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReviewInfo from './ReviewInfo';
 import { SubTitle } from './SubTitle';
-import { useSelector } from 'react-redux';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
+import { checkLogin } from '../../utils/authApi';
 
 const ReviewList = () => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const [reviewData, setReviewData] = useState([]);
   const [isAll, setIsAll] = useState(false);
   const params = useParams();
@@ -28,7 +27,7 @@ const ReviewList = () => {
       <div className="flex flex-col w-full gap-2">
         <div className="flex w-full justify-between items-center">
           <SubTitle>사용자 리뷰</SubTitle>
-          {isLoggedIn && (
+          {checkLogin() && (
             <Button
               $background={Colors.btnPurple}
               onClick={() => navigate(`/movie/review/${params.movie_id}`)}
