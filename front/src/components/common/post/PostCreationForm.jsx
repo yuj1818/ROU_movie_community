@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from './Button';
-import Colors from '../../constants/Colors';
-import { createMovieReview } from '../../utils/movieApi';
-import { editPostData, getPostDetail } from '../../utils/communityApi';
-import { setPostInfo } from '../../stores/community';
+import { Button } from '../Button';
+import Colors from '../../../constants/Colors';
+import { createMovieReview } from '../../../utils/movieApi';
+import { editPostData } from '../../../utils/communityApi';
+import { setPostInfo } from '../../../stores/community';
 
 const TextArea = styled.textarea`
   width: 100%;

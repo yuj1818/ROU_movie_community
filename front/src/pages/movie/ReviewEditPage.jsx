@@ -1,4 +1,4 @@
-import PostCreationForm from '../../components/common/PostCreationForm';
+import PostCreationForm from '../../components/common/post/PostCreationForm';
 
 const ReviewEditPage = () => {
   return (

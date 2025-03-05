@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getMovieReviewList } from '../../utils/movieApi';
 import { useNavigate, useParams } from 'react-router-dom';
-import ReviewInfo from './ReviewInfo';
+import PostInfo from '../common/post/PostInfo';
 import { SubTitle } from './SubTitle';
 import { Button } from '../common/Button';
 import Colors from '../../constants/Colors';
@@ -49,7 +49,7 @@ const ReviewList = () => {
               )}
               <div className="flex flex-col w-full gap-2">
                 {(isAll ? reviewData : reviewData.slice(0, 3)).map((data) => (
-                  <ReviewInfo key={data.id} data={data} />
+                  <PostInfo key={data.id} data={data} />
                 ))}
               </div>
             </>
