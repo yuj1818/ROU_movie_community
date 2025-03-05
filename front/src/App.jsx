@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Layout from './components/common/Layout';
 import { Provider } from 'react-redux';
@@ -12,10 +16,25 @@ import PostCreatePage from './pages/community/PostCreatePage';
 import ReviewCreatePage from './pages/movie/ReviewCreatePage';
 import PostDetailPage from './pages/community/PostDetailPage';
 import PostEditPage from './pages/community/PostEditPage';
+import { getCookie } from './utils/cookie';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+
+const goHome = () => {
+  if (getCookie('userId')) {
+    return redirect('/');
+  }
+  return null;
+};
+
+const goLogin = () => {
+  if (!getCookie('userId')) {
+    return redirect('/login');
+  }
+  return null;
+};
 
 const router = createBrowserRouter([
   {
@@ -33,10 +52,12 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginPage />,
+        loader: goHome,
       },
       {
         path: 'signup',
         element: <SignUpPage />,
+        loader: goHome,
       },
       {
         path: 'movie',
@@ -52,6 +73,7 @@ const router = createBrowserRouter([
           {
             path: 'review/:movie_id',
             element: <ReviewCreatePage />,
+            loader: goLogin,
           },
         ],
       },
@@ -66,6 +88,7 @@ const router = createBrowserRouter([
             <ProfilePage />
           </Suspense>
         ),
+        loader: goLogin,
       },
       {
         path: 'review',
@@ -73,6 +96,7 @@ const router = createBrowserRouter([
           {
             path: 'create',
             element: <PostCreatePage />,
+            loader: goLogin,
           },
           {
             path: ':review_id',
@@ -81,6 +105,7 @@ const router = createBrowserRouter([
           {
             path: 'edit/:review_id',
             element: <PostEditPage />,
+            loader: goLogin,
           },
         ],
       },

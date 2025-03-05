@@ -39,26 +39,43 @@ const IconContainer = tw.div`
 
 const MovieInfo = () => {
   const { movieInfo } = useSelector((state) => state.movie);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const onClickLike = async () => {
-    const res = await likeMovie(movieInfo.movie_id);
-    dispatch(toggleLikeMovie(res.like_movie_users_count));
+    if (isLoggedIn) {
+      const res = await likeMovie(movieInfo.movie_id);
+      dispatch(toggleLikeMovie(res.like_movie_users_count));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   const onClickDislike = async () => {
-    const res = await dislikeMovie(movieInfo.movie_id);
-    dispatch(toggleDislikeMovie(res.dislike_movie_users_count));
+    if (isLoggedIn) {
+      const res = await dislikeMovie(movieInfo.movie_id);
+      dispatch(toggleDislikeMovie(res.dislike_movie_users_count));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   const onClickFavorite = async () => {
-    const res = await favoriteMovie(movieInfo.movie_id);
-    dispatch(toggleFavoriteMovie(res.favorite_movie_users_count));
+    if (isLoggedIn) {
+      const res = await favoriteMovie(movieInfo.movie_id);
+      dispatch(toggleFavoriteMovie(res.favorite_movie_users_count));
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   const onClickWatch = async () => {
-    await watchMovie(movieInfo.movie_id);
-    dispatch(toggleWatchMovie());
+    if (isLoggedIn) {
+      await watchMovie(movieInfo.movie_id);
+      dispatch(toggleWatchMovie());
+    } else {
+      window.alert('로그인 후, 사용해주세요');
+    }
   };
 
   return (
