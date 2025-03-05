@@ -67,3 +67,9 @@ export const likeComment = (review_id, comment_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getPostData = (params) => {
+  return API.get(URL, { params })
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};

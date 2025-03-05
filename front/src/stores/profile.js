@@ -23,7 +23,7 @@ const initialState = {
   targets: ['좋아요한 영화', '리뷰 쓴 영화', '찜한 영화', '시청 목록'],
   targetIdx: 0,
   page: 1,
-  totalItems: 0,
+  totalPages: 0,
 };
 
 const profileSlice = createSlice({
@@ -142,8 +142,8 @@ const profileSlice = createSlice({
     setPage(state, action) {
       state.page = action.payload;
     },
-    setTotalItems(state, action) {
-      state.totalItems = action.payload;
+    setTotalPages(state, action) {
+      state.totalPages = action.payload;
     },
   },
 });
@@ -158,6 +158,6 @@ export const {
   setHateGenres,
   setTarget,
   setPage,
-  setTotalItems,
+  setTotalPages,
 } = profileSlice.actions;
 export default profileSlice.reducer;
