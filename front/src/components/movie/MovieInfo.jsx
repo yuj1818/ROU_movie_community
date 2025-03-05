@@ -20,6 +20,7 @@ import {
 } from '../../stores/movie';
 import { openModal } from '../../stores/modal';
 import LazyImg from '../common/LazyImg';
+import { checkLogin } from '../../utils/authApi';
 
 const FlexRowContainer = tw.div`
   flex text-base items-center
@@ -39,11 +40,10 @@ const IconContainer = tw.div`
 
 const MovieInfo = () => {
   const { movieInfo } = useSelector((state) => state.movie);
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const onClickLike = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const res = await likeMovie(movieInfo.movie_id);
       dispatch(toggleLikeMovie(res.like_movie_users_count));
     } else {
@@ -52,7 +52,7 @@ const MovieInfo = () => {
   };
 
   const onClickDislike = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const res = await dislikeMovie(movieInfo.movie_id);
       dispatch(toggleDislikeMovie(res.dislike_movie_users_count));
     } else {
@@ -61,7 +61,7 @@ const MovieInfo = () => {
   };
 
   const onClickFavorite = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const res = await favoriteMovie(movieInfo.movie_id);
       dispatch(toggleFavoriteMovie(res.favorite_movie_users_count));
     } else {
@@ -70,7 +70,7 @@ const MovieInfo = () => {
   };
 
   const onClickWatch = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       await watchMovie(movieInfo.movie_id);
       dispatch(toggleWatchMovie());
     } else {

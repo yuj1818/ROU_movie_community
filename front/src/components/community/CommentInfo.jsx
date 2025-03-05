@@ -18,9 +18,9 @@ import {
 } from '../../stores/community';
 import { getCookie } from '../../utils/cookie';
 import { openModal } from '../../stores/modal';
+import { checkLogin } from '../../utils/authApi';
 
 const CommentInfo = ({ data, depth }) => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [commentContent, setCommentContent] = useState('');
@@ -45,7 +45,7 @@ const CommentInfo = ({ data, depth }) => {
   };
 
   const onLikeComment = async () => {
-    if (isLoggedIn) {
+    if (checkLogin()) {
       const res = await likeComment(params.review_id, data.id);
       dispatch(setComments(res.reply_comments));
     } else {
@@ -97,7 +97,7 @@ const CommentInfo = ({ data, depth }) => {
                 )}
               </>
             )}
-            {isLoggedIn && (
+            {checkLogin() && (
               <span
                 className="text-xs text-gray-500 underline underline-offset-2 cursor-pointer"
                 onClick={() => {

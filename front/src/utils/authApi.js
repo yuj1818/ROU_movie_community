@@ -25,7 +25,7 @@ export const logout = () => {
 };
 
 export const checkLogin = () => {
-  const token = getCookie('key');
+  const token = getCookie('token');
   if (token) {
     return true;
   }
