@@ -3,6 +3,7 @@ import { getPostData } from '../../utils/communityApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSort, setTotalPages } from '../../stores/community';
 import PostInfo from '../common/post/PostInfo';
+import { Line } from '../common/Line';
 
 const PostList = () => {
   const { page, sort, totalPages } = useSelector((state) => state.community);
@@ -37,7 +38,12 @@ const PostList = () => {
         <option value={2}>댓글 ↓</option>
       </select>
       {postList &&
-        postList.map((post) => <PostInfo key={post.id} data={post} />)}
+        postList.map((post, idx) => (
+          <>
+            <PostInfo key={post.id} data={post} />
+            {idx !== postList.length - 1 && <Line />}
+          </>
+        ))}
     </div>
   );
 };

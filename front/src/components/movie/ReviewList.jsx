@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getMovieReviewList } from '../../utils/movieApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PostInfo from '../common/post/PostInfo';
 import { SubTitle } from './SubTitle';
 import { Button } from '../common/Button';
@@ -12,6 +12,7 @@ const ReviewList = () => {
   const [isAll, setIsAll] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const getReviewData = async () => {
@@ -30,7 +31,11 @@ const ReviewList = () => {
           {checkLogin() && (
             <Button
               $background={Colors.btnPurple}
-              onClick={() => navigate(`/movie/review/${params.movie_id}`)}
+              onClick={() =>
+                navigate(`/movie/review/${params.movie_id}`, {
+                  state: { from: location.pathname },
+                })
+              }
             >
               리뷰 작성
             </Button>
