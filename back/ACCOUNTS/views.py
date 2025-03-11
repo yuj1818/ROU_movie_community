@@ -1,4 +1,3 @@
-import datetime
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +9,9 @@ from .serializers import *
 from MOVIES.models import Genre
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Q, F, ExpressionWrapper, IntegerField
+from django.db.models.functions import ExtractYear
+from django.utils.timezone import now
 
 User = get_user_model()
 
@@ -125,22 +127,38 @@ def movie_list(request, user_pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_friend(request):
-    me = get_object_or_404(User, pk=request.user.pk)
-    # user = request.user # username이 출력
-    serializer = ProfileSerializer(me, context={'request': request})  # 나의 정보를 추출
-    # 연도 추출 : 나의 나이 +-3
-    year = int(serializer.data.get('birth')[:4])
-    first_date = datetime.date(year - 3, 1, 1)
-    last_date = datetime.date(year + 3, 12, 31)
-    # 나를 제외하고 지역이 같은 사람을 추출
-    friends = User.objects.filter(
-        region=serializer.data.get('region'),
-        birth__range=(first_date, last_date)).exclude(pk=request.user.pk)
-    serializer = ProfileSerializer(friends, many=True, context={'request': request})
-    if friends.exists():
-        return Response(serializer.data)
+    user = request.user
+    if not user.is_authenticated:
+      return Response({'error': '로그인이 필요합니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # 1차 추천 (사용자와 좋아하는 장르가 50% 이상 겹치는 유저들을 조회)
+    user_like_genres = user.like_genres.all()
+    min_common_genres = max(1, len(user_like_genres) // 2)
+    potential_users = User.objects.exclude(pk=user.pk).annotate(
+      common_genres = Count('like_genres', filter=Q(like_genres__in=user_like_genres))
+    ).filter(common_genres__gte=min_common_genres).order_by('-common_genres')
+
+    # 2차 추천 (같은 지역의 비슷한 나이인 사람 추천)
+    if potential_users.count() < 5:
+      current_year = now().year  # 현재 연도
+
+      additional_users = User.objects.exclude(pk=user.pk).filter(
+        region=user.region
+      ).annotate(
+        birth_year=ExtractYear('birth'),
+        age_difference=ExpressionWrapper(
+          F('birth_year') - current_year, output_field=IntegerField()
+        )
+      ).order_by('age_difference')
+
+      additional_users = list(additional_users)[:5]
+      potential_users = list(potential_users)  # 리스트 변환
+      filtered_additional_users = [user for user in additional_users if user.pk not in {u.pk for u in potential_users}][:5]
+      potential_users += filtered_additional_users  # 병합
+    
+    serializer = UserSerializer(potential_users, many=True, context={'request': request})
+
+    if potential_users:
+      return Response(serializer.data)
     else:
-        data = {
-            'content': f'추천 친구가 없습니다.',
-        }
-        return Response(data, status=status.HTTP_204_NO_CONTENT)
+      return Response({'message': '추천 친구가 없습니다.'}, stats=status.HTTP_204_NO_CONTENT)
