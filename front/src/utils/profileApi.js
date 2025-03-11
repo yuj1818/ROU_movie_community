@@ -35,3 +35,9 @@ export const getProfileMovieData = (user_id, params) => {
     .then((res) => res.data)
     .catch((err) => err);
 };
+
+export const getRecommendedUsers = () => {
+  return API.get(URL + 'friend/')
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
