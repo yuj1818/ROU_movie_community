@@ -41,18 +41,18 @@ class CustomRegisterSerializer(RegisterSerializer):
 
     return data
 
+class UserSerializer(serializers.ModelSerializer):
+  isFollowing = serializers.SerializerMethodField()
+  class Meta:
+    model = User
+    fields = ('id', 'username', 'profile_image', 'isFollowing')
+  
+  def get_isFollowing(self, obj):
+    request_user = self.context.get('request').user
+    return obj.followers.filter(pk=request_user.id).exists()
+
 # 프로필 조회 / 프로필 이미지, 지역, 생년월일 수정
 class ProfileSerializer(UserDetailsSerializer):
-  class UserSerializer(serializers.ModelSerializer):
-    isFollowing = serializers.SerializerMethodField()
-    class Meta:
-      model = User
-      fields = ('id', 'username', 'profile_image', 'isFollowing')
-    
-    def get_isFollowing(self, obj):
-      request_user = self.context.get('request').user
-      return obj.followers.filter(pk=request_user.id).exists()
-
   hate_genres = GenreSerializer(many=True, read_only=True)
   like_genres = GenreSerializer(many=True, read_only=True)
   followers = UserSerializer(many=True)
