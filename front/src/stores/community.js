@@ -8,6 +8,7 @@ const initialState = {
   page: 1,
   sort: 0,
   totalPages: 0,
+  friends: [],
 };
 
 const communitySlice = createSlice({
@@ -43,6 +44,19 @@ const communitySlice = createSlice({
     setSort(state, action) {
       state.sort = action.payload;
     },
+    setFriends(state, action) {
+      state.friends = action.payload;
+    },
+    followRecommendedFriend(state, action) {
+      const selectedId = action.payload;
+      state.friends = state.friends.map((friend) => {
+        if (friend.id === selectedId) {
+          return { ...friend, isFollowing: !friend.isFollowing };
+        } else {
+          return friend;
+        }
+      });
+    },
   },
 });
 
@@ -56,5 +70,7 @@ export const {
   setPage,
   setTotalPages,
   setSort,
+  setFriends,
+  followRecommendedFriend,
 } = communitySlice.actions;
 export default communitySlice.reducer;
