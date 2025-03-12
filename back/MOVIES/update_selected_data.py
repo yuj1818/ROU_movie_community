@@ -47,8 +47,8 @@ async def get_movie_details(session, movie_id):
   }
   return await fetch_json(session, f'{TMDB_DETAIL_INFO_URL}{movie_id}', params)
 
-def save_movie(movie):
-  if is_adult_movie(movie.get("release_dates", {})):
+def save_movie(movie, isFiltering):
+  if isFiltering and is_adult_movie(movie.get("release_dates", {})):
     return
 
   with transaction.atomic():
@@ -121,6 +121,14 @@ def updateTrendDB(request, movies):
       movies_data = await asyncio.gather(*tasks)
 
       for movie_data in movies_data:
-        await sync_to_async(save_movie, thread_sensitive=True)(movie_data)
+        await sync_to_async(save_movie, thread_sensitive=True)(movie_data, True)
   
+  asyncio.run(main())
+
+def updateSelectedMovie(request, movie_id):
+  async def main():
+    async with aiohttp.ClientSession() as session:
+      movie_data = await get_movie_details(session, movie_id)
+      await sync_to_async(save_movie)(movie_data, False)
+
   asyncio.run(main())

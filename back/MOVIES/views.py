@@ -14,7 +14,7 @@ import requests
 from datetime import date
 from .serializers import *
 from .recommend import recommend_movies
-from .update_selected_data import updateTrendDB
+from .update_selected_data import updateTrendDB, updateSelectedMovie
 from COMMUNITY.serializers import ReviewSerializer
 
 API_KEY = settings.API_KEY
@@ -210,5 +210,12 @@ def update_DB(request):
   try:
     updateDB(request)
     return HttpResponse("Database update completed successfully!")
+  except Exception as e:
+    return HttpResponse(f"Error Ocurred: {str(e)}", status=500)
+  
+def update_single_movie(request, movie_id):
+  try:
+    updateSelectedMovie(request, movie_id)
+    return HttpResponse("Update completed")
   except Exception as e:
     return HttpResponse(f"Error Ocurred: {str(e)}", status=500)
