@@ -18,7 +18,7 @@ const FriendList = () => {
   }, []);
 
   return (
-    <div className="flex-shrink-0 h-fit w-1/5 flex flex-col gap-2 border border-solid border-white rounded p-2">
+    <div className="flex-shrink-0 h-fit w-1/5 flex flex-col gap-2 border border-solid border-white rounded p-2 mt-[4.25rem]">
       <p className="font-pretendard_semibold text-white">친구 추천</p>
       <div className="flex flex-col gap-2 h-fit max-h-[9.25rem] w-full grow overflow-y-auto">
         {friends.map((friend) => (
