@@ -30,7 +30,7 @@ const PostListPage = () => {
         </div>
         <PostList />
       </div>
-      <FriendList />
+      {checkLogin() && <FriendList />}
     </div>
   );
 };
