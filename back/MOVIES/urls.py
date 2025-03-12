@@ -6,6 +6,7 @@ app_name = 'MOVIES'
 
 urlpatterns = [
   path('updateDB/', views.update_DB),
+  path('updateDB/<int:movie_id>', views.update_single_movie),
   path('trends/', views.movie_trend),
   path('genre/<int:genre_id>/', views.movie_genre),
   path('<int:movie_id>/', views.movie_detail),
