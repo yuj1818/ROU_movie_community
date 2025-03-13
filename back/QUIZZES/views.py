@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -23,3 +23,11 @@ def index(request):
       quiz = serializer.save()
       return Response(QuizSerializer(quiz, context={"request": request}).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def detail(request, quiz_id):
+  quiz = get_object_or_404(Quiz, pk=quiz_id)
+  if request.method == "GET":
+    serializer = QuizSerializer(quiz)
+    return Response(serializer.data)
