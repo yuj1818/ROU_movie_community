@@ -18,7 +18,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
 
   quiz_writor = UserSerializer(read_only=True)
-  items = QuizItemSerializer(many=True, read_only=True)
+  items = QuizItemSerializer(many=True)
 
   class Meta:
     model = Quiz
@@ -26,7 +26,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     request = self.context.get('request')
-    items_data = request.data.get('items')
+    items_data = request.data.get('items', '[]')
 
     quiz = Quiz.objects.create(**validated_data, quiz_writor=request.user)
     

@@ -20,5 +20,5 @@ def index(request):
     serializer = QuizSerializer(data=request.data, context={"request": request})
     if serializer.is_valid():
       quiz = serializer.save()
-      return Response(QuizSerializer(quiz).data, status=status.HTTP_201_CREATED)
+      return Response(QuizSerializer(quiz, context={"request": request}).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
