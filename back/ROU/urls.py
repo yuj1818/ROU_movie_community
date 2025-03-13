@@ -42,5 +42,6 @@ urlpatterns = [
     path('api/accounts/', include('dj_rest_auth.urls')),
     path('api/accounts/signup/', include('dj_rest_auth.registration.urls')),
     path('api/community/', include('COMMUNITY.urls')),
+    path('api/quiz/', include('QUIZZES.urls')),
     path('api/swagger/', schema_view.with_ui('swagger'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
