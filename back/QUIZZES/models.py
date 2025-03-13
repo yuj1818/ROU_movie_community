@@ -7,7 +7,7 @@ class Quiz(models.Model):
     settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='written_quiz'
   )
   quiz_image = models.ImageField(
-    upload_to='quiz_images/', blank=True, null=True
+    upload_to='quiz_images/'
   )
 
 class QuizItem(models.Model):
