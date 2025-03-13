@@ -5,18 +5,17 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class QuizItemSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = QuizItem
-    fields = '__all__'
-
-class QuizSerializer(serializers.ModelSerializer):
-  class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
       model = User
       fields = ('id', 'username')
 
-
+class QuizItemSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = QuizItem
+    fields = ('id', 'choice_text')
+    
+class QuizSerializer(serializers.ModelSerializer):
   quiz_writor = UserSerializer(read_only=True)
   items = serializers.SerializerMethodField()
 
