@@ -24,10 +24,25 @@ def index(request):
       return Response(QuizSerializer(quiz, context={"request": request}).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def detail(request, quiz_id):
   quiz = get_object_or_404(Quiz, pk=quiz_id)
   if request.method == "GET":
     serializer = QuizSerializer(quiz)
     return Response(serializer.data)
+  elif request.method == "POST":
+    user_answer_id = request.data.get('answer')
+    
+    try:
+      user_answer = QuizItem.objects.get(quiz=quiz, pk=user_answer_id)
+      is_correct = user_answer.is_correct
+    except QuizItem.DoesNotExist:
+      return Response({'error': 'Invalid answer ID'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    correct_answer = QuizItem.objects.filter(quiz=quiz, is_correct=True).first()
+    
+    return Response({
+      'is_correct': is_correct,
+      'correct_answer': correct_answer.choice_text
+    })
