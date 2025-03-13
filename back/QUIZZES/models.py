@@ -9,7 +9,6 @@ class Quiz(models.Model):
   quiz_image = models.ImageField(
     upload_to='quiz_images/', blank=True, null=True
   )
-  quiz_movie = models.ForeignKey('MOVIES.Movie', on_delete=models.CASCADE, related_name='movie_quiz', null=True, blank=True)
 
 class QuizItem(models.Model):
   quiz = models.ForeignKey(
