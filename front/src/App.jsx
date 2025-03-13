@@ -18,6 +18,7 @@ import PostDetailPage from './pages/community/PostDetailPage';
 import PostEditPage from './pages/community/PostEditPage';
 import PostListPage from './pages/community/PostListPage';
 import { checkLogin } from './utils/authApi';
+import QuizCreatePage from './pages/quiz/QuizCreatePage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -111,6 +112,15 @@ const router = createBrowserRouter([
             path: 'edit/:review_id',
             element: <PostEditPage />,
             loader: goLogin,
+          },
+        ],
+      },
+      {
+        path: 'quiz',
+        children: [
+          {
+            path: 'create',
+            element: <QuizCreatePage />,
           },
         ],
       },
