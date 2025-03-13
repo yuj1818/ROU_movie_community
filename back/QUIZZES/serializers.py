@@ -1,4 +1,4 @@
-import json
+import json, random
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model
@@ -18,7 +18,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
 
   quiz_writor = UserSerializer(read_only=True)
-  items = QuizItemSerializer(many=True)
+  items = serializers.SerializerMethodField()
 
   class Meta:
     model = Quiz
@@ -38,3 +38,8 @@ class QuizSerializer(serializers.ModelSerializer):
       raise serializers.ValidationError({"items data": "Invalid JSON format"})
     
     return quiz
+  
+  def get_items(self, obj):
+    items = list(obj.items.all())
+    random.shuffle(items)
+    return QuizItemSerializer(items, many=True).data
