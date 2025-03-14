@@ -6,7 +6,7 @@ const Colors = {
   bgGrayOp: 'rgba(250, 250, 250, 0.93)',
   bgDarkGray: '#666666',
   btnGray: '#6b7280',
-  btnLightGray: '#aaaaaa',
+  btnLightGray: '#9e9e9e',
 };
 
 export default Colors;
