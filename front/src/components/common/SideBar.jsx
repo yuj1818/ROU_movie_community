@@ -52,9 +52,12 @@ const SideBar = () => {
       <MenuContainer>
         <Menu onClick={() => navigate('/')}>Home</Menu>
         {checkLogin() && (
-          <Menu onClick={() => navigate(`/profile/${getCookie('userId')}`)}>
-            Profile
-          </Menu>
+          <>
+            <Menu onClick={() => navigate(`/profile/${getCookie('userId')}`)}>
+              Profile
+            </Menu>
+            <Menu onClick={() => navigate('/quiz')}>Quiz</Menu>
+          </>
         )}
         <Menu onClick={() => navigate('/review')}>Review</Menu>
       </MenuContainer>

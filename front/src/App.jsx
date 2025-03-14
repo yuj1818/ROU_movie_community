@@ -19,6 +19,7 @@ import PostEditPage from './pages/community/PostEditPage';
 import PostListPage from './pages/community/PostListPage';
 import { checkLogin } from './utils/authApi';
 import QuizCreatePage from './pages/quiz/QuizCreatePage';
+import QuizPage from './pages/quiz/QuizPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
       {
         path: 'quiz',
         children: [
+          {
+            index: true,
+            element: <QuizPage />,
+          },
           {
             path: 'create',
             element: <QuizCreatePage />,
