@@ -15,6 +15,7 @@ import modalSlice from './modal';
 import homeSlice from './home';
 import profileSlice from './profile';
 import communitySlice from './community';
+import quizSlice from './quiz';
 
 const persistConfig = {
   key: 'root',
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   home: homeSlice,
   profile: profileSlice,
   community: communitySlice,
+  quiz: quizSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

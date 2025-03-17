@@ -7,6 +7,7 @@ export default {
         pretendard_regular: ['Pretendard-Regular'],
         pretendard_semibold: ['Pretendard-SemiBold'],
         pretendard_exlight: ['Pretendard-ExtraLight'],
+        partial_sans: ['PartialSansKR-Regular'],
       },
       aspectRatio: {
         '3/4': '3 / 4',
