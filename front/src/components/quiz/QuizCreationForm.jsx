@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../../components/common/Button';
 import { createQuiz } from '../../utils/quizAPI';
 import tw from 'tailwind-styled-components';
