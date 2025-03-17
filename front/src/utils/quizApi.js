@@ -17,3 +17,9 @@ export const getQuizData = (params) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getQuizDetailData = (quiz_id) => {
+  return API.get(URL + `${quiz_id}/`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
