@@ -42,8 +42,3 @@ class QuizSerializer(serializers.ModelSerializer):
     items = list(obj.items.all())
     random.shuffle(items)
     return QuizItemSerializer(items, many=True).data
-  
-class QuizListSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Quiz
-    fields = ('id',)
