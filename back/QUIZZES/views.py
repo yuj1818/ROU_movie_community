@@ -15,7 +15,7 @@ def index(request):
   if request.method == "GET":
     limit = int(request.GET.get("limit", 10))
     quizzes = Quiz.objects.all().order_by('?')[:limit]
-    serializer = QuizSerializer(quizzes, many=True, context={"request": request})
+    serializer = QuizListSerializer(quizzes, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
   elif request.method == "POST":
     serializer = QuizSerializer(data=request.data, context={"request": request})
