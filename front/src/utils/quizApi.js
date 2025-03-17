@@ -11,3 +11,9 @@ export const createQuiz = (data) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const getQuizData = (params) => {
+  return API.get(URL, { params })
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
