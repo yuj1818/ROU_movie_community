@@ -14,9 +14,8 @@ User = get_user_model()
 def index(request):
   if request.method == "GET":
     limit = int(request.GET.get("limit", 10))
-    quizzes = Quiz.objects.all().order_by('?')[:limit]
-    serializer = QuizListSerializer(quizzes, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    quizzes = Quiz.objects.all().order_by('?').values_list('id', flat=True)[:limit]
+    return Response(quizzes, status=status.HTTP_200_OK)
   elif request.method == "POST":
     serializer = QuizSerializer(data=request.data, context={"request": request})
     if serializer.is_valid():
@@ -29,7 +28,7 @@ def index(request):
 def detail(request, quiz_id):
   quiz = get_object_or_404(Quiz, pk=quiz_id)
   if request.method == "GET":
-    serializer = QuizSerializer(quiz)
+    serializer = QuizSerializer(quiz, context={"request": request})
     return Response(serializer.data)
   elif request.method == "POST":
     user_answer_id = request.data.get('answer')
