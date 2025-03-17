@@ -13,7 +13,7 @@ User = get_user_model()
 @permission_classes([IsAuthenticated])
 def index(request):
   if request.method == "GET":
-    limit = request.GET.get("limit", 10)
+    limit = int(request.GET.get("limit", 10))
     quizzes = Quiz.objects.all().order_by('?')[:limit]
     serializer = QuizSerializer(quizzes, many=True, context={"request": request})
     return Response(serializer.data, status=status.HTTP_200_OK)
