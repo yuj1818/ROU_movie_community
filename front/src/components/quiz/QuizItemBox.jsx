@@ -1,7 +1,14 @@
 import styled from 'styled-components';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { setQuizIds, setQuizIdx, setQuizStatus } from '../../stores/quiz';
+import {
+  setCurQuizRes,
+  setCurQuizStatus,
+  setQuizIds,
+  setQuizIdx,
+  setQuizStatus,
+} from '../../stores/quiz';
+import { checkQuizAnswer } from '../../utils/quizAPI';
 
 const Container = styled.div`
   width: 100%;
@@ -19,18 +26,17 @@ const Container = styled.div`
 const QuizItemBox = ({ data }) => {
   const { quizIdx, quizIds } = useSelector((state) => state.quiz);
   const dispatch = useDispatch();
-  const onClickItem = async () => {
-    if (quizIdx < quizIds.length - 1) {
-      dispatch(setQuizIdx(quizIdx + 1));
-    } else {
-      dispatch(setQuizStatus(2));
-    }
+
+  const onClickItem = async (answer) => {
+    const res = await checkQuizAnswer(quizIds[quizIdx], { answer });
+    dispatch(setCurQuizStatus(1));
+    dispatch(setCurQuizRes(res));
   };
 
   return (
     <div
       className="w-full rounded bg-white overflow-hidden"
-      onClick={onClickItem}
+      onClick={() => onClickItem(data.id)}
     >
       <Container>{data.choice_text}</Container>
     </div>
