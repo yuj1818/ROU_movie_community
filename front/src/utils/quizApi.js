@@ -23,3 +23,9 @@ export const getQuizDetailData = (quiz_id) => {
     .then((res) => res.data)
     .catch((err) => console.error(err));
 };
+
+export const checkQuizAnswer = (quiz_id, data) => {
+  return API.post(URL + `${quiz_id}/`, data)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+};
