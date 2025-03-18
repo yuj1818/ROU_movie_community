@@ -30,7 +30,19 @@ const quizSlice = createSlice({
       state.curQuizStatus = action.payload;
     },
     setCurQuizRes(state, action) {
-      state.curQuizStatus = action.payload;
+      state.curQuizRes = action.payload;
+    },
+    addCount(state) {
+      state.count += 1;
+    },
+    restart(state) {
+      state.limit = null;
+      state.quizIds = [];
+      state.quizIdx = 0;
+      state.quizStatus = 0;
+      state.count = 0;
+      state.curQuizStatus = 0;
+      state.curQuizRes = null;
     },
   },
 });
@@ -42,5 +54,7 @@ export const {
   setQuizStatus,
   setCurQuizStatus,
   setCurQuizRes,
+  addCount,
+  restart,
 } = quizSlice.actions;
 export default quizSlice.reducer;
