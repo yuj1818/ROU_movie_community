@@ -56,11 +56,11 @@ const QuizPage = () => {
     };
 
     getQuizzes();
-  }, [limit]);
 
-  useEffect(() => {
-    dispatch(restart());
-  }, [location]);
+    return () => {
+      dispatch(restart());
+    };
+  }, [limit]);
 
   return quizStatus === 0 ? (
     <div className="py-12 px-8 w-full h-full flex flex-col justify-center items-center text-white gap-16">
