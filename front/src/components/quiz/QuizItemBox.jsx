@@ -1,13 +1,7 @@
 import styled from 'styled-components';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setCurQuizRes,
-  setCurQuizStatus,
-  setQuizIds,
-  setQuizIdx,
-  setQuizStatus,
-} from '../../stores/quiz';
+import { addCount, setCurQuizRes, setCurQuizStatus } from '../../stores/quiz';
 import { checkQuizAnswer } from '../../utils/quizAPI';
 
 const Container = styled.div`
@@ -29,6 +23,9 @@ const QuizItemBox = ({ data }) => {
 
   const onClickItem = async (answer) => {
     const res = await checkQuizAnswer(quizIds[quizIdx], { answer });
+    if (res.is_correct) {
+      dispatch(addCount());
+    }
     dispatch(setCurQuizStatus(1));
     dispatch(setCurQuizRes(res));
   };

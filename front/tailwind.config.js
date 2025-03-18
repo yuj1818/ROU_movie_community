@@ -14,6 +14,9 @@ export default {
         '4/3': '4 / 3',
         poster_list: '939953 / 1012453',
       },
+      colors: {
+        'main-purple': '#7B61FF',
+      },
     },
   },
   plugins: [],
