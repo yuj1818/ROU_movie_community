@@ -7,6 +7,7 @@ const initialState = {
   quizStatus: 0,
   count: 0,
   curQuizStatus: 0,
+  curQuizRes: null,
 };
 
 const quizSlice = createSlice({
@@ -25,9 +26,21 @@ const quizSlice = createSlice({
     setQuizStatus(state, action) {
       state.quizStatus = action.payload;
     },
+    setCurQuizStatus(state, action) {
+      state.curQuizStatus = action.payload;
+    },
+    setCurQuizRes(state, action) {
+      state.curQuizStatus = action.payload;
+    },
   },
 });
 
-export const { setLimit, setQuizIds, setQuizIdx, setQuizStatus } =
-  quizSlice.actions;
+export const {
+  setLimit,
+  setQuizIds,
+  setQuizIdx,
+  setQuizStatus,
+  setCurQuizStatus,
+  setCurQuizRes,
+} = quizSlice.actions;
 export default quizSlice.reducer;
