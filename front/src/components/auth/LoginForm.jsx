@@ -5,6 +5,7 @@ import { Button } from '../common/Button';
 import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
 import { logIn } from '../../utils/authApi';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -67,6 +68,21 @@ const LoginForm = () => {
           로그인
         </Button>
       </form>
+      <div className="flex gap-2 mt-2">
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <GoogleLogin
+            type="icon"
+            theme="outline"
+            shape="circle"
+            onSuccess={(credentialResponse) => {
+              console.log(credentialResponse.credential);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </GoogleOAuthProvider>
+      </div>
       <a
         className="text-xs mt-2 text-blue-500 underline underline-offset-2"
         href="/signup"
