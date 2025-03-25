@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { searchMovie } from '../utils/movieApi';
 import SearchList from '../components/search/SearchList';
 
@@ -7,10 +7,11 @@ const SearchPage = () => {
   const [searchData, setSearchData] = useState([]);
   const [query, setQuery] = useState();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const getSearchData = async () => {
-      const q = new URLSearchParams(location.search).get('q');
+      const q = searchParams.get('q');
       const res = await searchMovie({ q: q });
       setQuery(q);
       setSearchData(res);
