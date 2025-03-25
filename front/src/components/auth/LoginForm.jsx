@@ -5,7 +5,7 @@ import { Button } from '../common/Button';
 import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
 import { logIn } from '../../utils/authApi';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import googleBtn from '../../assets/google.png';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -68,27 +68,29 @@ const LoginForm = () => {
           로그인
         </Button>
       </form>
-      <div className="flex gap-2 mt-2">
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-          <GoogleLogin
-            type="icon"
-            theme="outline"
-            shape="circle"
-            onSuccess={(credentialResponse) => {
-              console.log(credentialResponse.credential);
-            }}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />
-        </GoogleOAuthProvider>
-      </div>
+      <div className="flex gap-2 mt-2"></div>
       <a
         className="text-xs mt-2 text-blue-500 underline underline-offset-2"
         href="/signup"
       >
         회원가입
       </a>
+      <div className="flex items-center justify-center mt-2">
+        <img
+          className="cursor-pointer"
+          width="80%"
+          height="80%"
+          src={googleBtn}
+          alt="googleLoginBtn"
+          onClick={() =>
+            (window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
+              import.meta.env.VITE_GOOGLE_CLIENT_ID
+            }&redirect_uri=${
+              import.meta.env.VITE_GOOGLE_REDIRECT_URI
+            }&response_type=code&scope=openid%20email%20profile`)
+          }
+        />
+      </div>
     </div>
   );
 };
