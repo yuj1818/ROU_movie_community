@@ -21,7 +21,7 @@ import authSlice from './auth';
 const persistConfig = {
   key: 'root',
   storage: sessionStorage,
-  whitelist: ['movie', 'community'],
+  whitelist: ['movie', 'community', 'auth'],
 };
 
 const rootReducer = combineReducers({
