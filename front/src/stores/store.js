@@ -16,6 +16,7 @@ import homeSlice from './home';
 import profileSlice from './profile';
 import communitySlice from './community';
 import quizSlice from './quiz';
+import authSlice from './auth';
 
 const persistConfig = {
   key: 'root',
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   profile: profileSlice,
   community: communitySlice,
   quiz: quizSlice,
+  auth: authSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
