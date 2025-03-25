@@ -15,7 +15,7 @@ from django.utils.timezone import now
 import requests
 from django.conf import settings
 from rest_framework.authtoken.models import Token
-import json
+from allauth.socialaccount.models import SocialAccount
 
 User = get_user_model()
 
@@ -192,11 +192,10 @@ def google_login(request):
 
   try:
     user = User.objects.get(email=email)
+    Token.objects.filter(user=user).delete()
     token = Token.objects.create(user=user)
-    if user.is_active == True:
-      return Response(token)
-    else:
-      raise Exception('Signup Required')
+    serializer = TokenSerializer(token)
+    return Response(serializer.data, status=status.HTTP_200_OK)
   except Exception:
     data = {
       'message': '추가 정보 입력이 필요합니다.',
@@ -208,9 +207,25 @@ def google_login(request):
 @permission_classes([AllowAny])
 def social_add_info(request):
   if request.method == 'POST':
-    nickname = request.data['nickname']
-    region = request.data['region']
-    birth = request.data['birth']
-    
-    if nickname == '' or region == '' or birth == '':
-      return Response({'message: filed is empty'}, status=status.HTTP_400_BAD_REQUEST)
+    serializer = CustomRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+      user = serializer.save(request=request)
+      SocialAccount.objects.create(user=user)
+      token = Token.objects.get(user=user)
+      serializer = TokenSerializer(token)
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class SocialAddInfoView(APIView):
+#     permission_classes = [AllowAny]
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = CustomSocialLoginSerializer(
+#             data=request.data,
+#             context={'request': request, 'view': self}  # view를 self로 전달
+#         )
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             token = Token.objects.create(user=user)
+#             return Response(token, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

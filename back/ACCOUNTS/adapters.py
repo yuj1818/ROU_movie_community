@@ -8,11 +8,13 @@ class CustomAccountsAdapter(DefaultAccountAdapter):
     region = data.get('region')
     birth = data.get('birth')
     nickname = data.get('nickname')
+    email = data.get('email', '')
 
     if region:
       user.region = region
       user.birth = birth
       user.nickname = nickname
+      user.email = email
 
     user.save()
     return user

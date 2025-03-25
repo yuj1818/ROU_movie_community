@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from dj_rest_auth.serializers import TokenSerializer
 from dj_rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import get_user_model
 from MOVIES.serializers import GenreSerializer
 from MOVIES.models import Movie
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.utils.crypto import get_random_string
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -26,24 +26,31 @@ class CustomRegisterSerializer(RegisterSerializer):
     fields = ('region', 'birth', 'nickname')
 
   def get_cleaned_data(self):
+    print('여기여기')
     data = super().get_cleaned_data()
     data['region'] = self.validated_data.get('region', '')
     data['birth'] = self.validated_data.get('birth', '')
     data['nickname'] = self.validated_data.get('nickname', '')
 
-    password1 = data.get('password1', '')
-    username = data.get('username', '')
+    if data.get('password1', ''): 
+      password1 = data.get('password1', '')
+      username = data.get('username', '')
 
-    if username and password1 and username.lower() in password1.lower():
-      raise serializers.ValidationError("비밀번호가 아이디와 너무 유사합니다.")
-    
-    try:
-      validate_password(password1)
-    except ValidationError as e:
-      raise serializers.ValidationError(f"Password validation error: {', '.join(e.messages)}")
+      if username and password1 and username.lower() in password1.lower():
+        raise serializers.ValidationError("비밀번호가 아이디와 너무 유사합니다.")
+      
+      try:
+        validate_password(password1)
+      except ValidationError as e:
+        raise serializers.ValidationError(f"Password validation error: {', '.join(e.messages)}")
+    else:
+      data['username'] = data.get('email', '')
+      password = get_random_string(length=10)
+      data['password'] = password
+      data['password2'] = password
 
     return data
-
+  
 class UserSerializer(serializers.ModelSerializer):
   isFollowing = serializers.SerializerMethodField()
   class Meta:
@@ -80,3 +87,8 @@ class LikeGenreSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ('id', 'username', 'like_genres', )
+
+class TokenSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Token
+    fields = ('key', 'user')
