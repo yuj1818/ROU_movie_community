@@ -47,3 +47,11 @@ export const resign = () => {
     })
     .catch((err) => err);
 };
+
+export const googleLogin = (params) => {
+  return API.get(URL + 'google/login/', {
+    params,
+  })
+    .then((res) => res)
+    .catch((err) => err);
+};
