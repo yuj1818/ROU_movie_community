@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Colors from '../../constants/Colors';
 import { Button } from '../common/Button';
 import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
-import { signUp } from '../../utils/authApi';
+import { signUp, socialLoginAddInfo } from '../../utils/authApi';
+import { useSelector } from 'react-redux';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -20,6 +21,9 @@ const ErrMsg = tw.p`
 `;
 
 const SignUpForm = () => {
+  const [searchParams] = useSearchParams();
+  const isSocial = searchParams.get('isSocial') === 'true';
+  const { email } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,24 +32,49 @@ const SignUpForm = () => {
   const [birth, setBirth] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(null);
+  const [nickname, setNickname] = useState('');
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const res = await signUp({
-      username,
-      password1: password,
-      password2: password2,
-      region,
-      birth,
-    });
-    console.log(res);
-    if (res.status === 201) {
-      navigate('/login');
-    } else {
-      if (Array.isArray(res.response.data)) {
-        setErrMsg(res.response.data[0]);
+
+    if (isSocial) {
+      const res = await socialLoginAddInfo({
+        email,
+        region,
+        birth,
+        nickname,
+        username: email,
+        password1: '임시비밀번호입니다',
+        password2: '임시비밀번호입니다',
+      });
+      console.log(res);
+      if (res.status === 201) {
+        navigate('/');
       } else {
-        setErrMsg(Object.values(res.response.data)[0][0]);
+        if (Array.isArray(res.response.data)) {
+          setErrMsg(res.response.data[0]);
+        } else {
+          setErrMsg(Object.values(res.response.data)[0][0]);
+        }
+      }
+    } else {
+      const res = await signUp({
+        username,
+        password1: password,
+        password2: password2,
+        region,
+        birth,
+        nickname,
+      });
+      console.log(res);
+      if (res.status === 201) {
+        navigate('/login');
+      } else {
+        if (Array.isArray(res.response.data)) {
+          setErrMsg(res.response.data[0]);
+        } else {
+          setErrMsg(Object.values(res.response.data)[0][0]);
+        }
       }
     }
   };
@@ -62,43 +91,59 @@ const SignUpForm = () => {
 
   return (
     <div className="w-1/2 py-6 flex flex-col gap-2 bg-neutral-300 rounded-lg items-center max-w-[25rem]">
-      <SubTitle>회원가입</SubTitle>
+      <SubTitle>{isSocial ? '추가 정보 기입' : '회원가입'}</SubTitle>
       <form className="w-2/3 flex flex-col gap-2" onSubmit={onSubmit}>
+        {!isSocial && (
+          <>
+            <Container>
+              <Label htmlFor="username">아이디</Label>
+              <input
+                className="h-[2rem] p-2 w-full rounded-sm"
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </Container>
+            <Container>
+              <Label htmlFor="password">비밀번호</Label>
+              <input
+                className="h-[2rem] p-2 w-full rounded-sm"
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Container>
+            <Container>
+              <Label htmlFor="password2">비밀번호 재확인</Label>
+              <input
+                className="h-[2rem] p-2 w-full rounded-sm"
+                type="password"
+                id="password2"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+              />
+            </Container>
+            {isValidPassword !== null && (
+              <ErrMsg $isValid={isValidPassword}>
+                {isValidPassword
+                  ? '비밀번호 일치'
+                  : '비밀번호가 일치하지 않습니다'}
+              </ErrMsg>
+            )}
+          </>
+        )}
         <Container>
-          <Label htmlFor="username">아이디</Label>
+          <Label htmlFor="nickname">닉네임</Label>
           <input
             className="h-[2rem] p-2 w-full rounded-sm"
             type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="nickname"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
           />
         </Container>
-        <Container>
-          <Label htmlFor="password">비밀번호</Label>
-          <input
-            className="h-[2rem] p-2 w-full rounded-sm"
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Container>
-        <Container>
-          <Label htmlFor="password2">비밀번호 재확인</Label>
-          <input
-            className="h-[2rem] p-2 w-full rounded-sm"
-            type="password"
-            id="password2"
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
-          />
-        </Container>
-        {isValidPassword !== null && (
-          <ErrMsg $isValid={isValidPassword}>
-            {isValidPassword ? '비밀번호 일치' : '비밀번호가 일치하지 않습니다'}
-          </ErrMsg>
-        )}
         <Container>
           <Label htmlFor="region">지역</Label>
           <input
@@ -129,11 +174,16 @@ const SignUpForm = () => {
           $isFullWidth={true}
           $background={Colors.btnPurple}
           disabled={
-            username.trim() === '' ||
-            password.trim() === '' ||
-            region.trim() === '' ||
-            birth.trim() === '' ||
-            !isValidPassword
+            isSocial
+              ? region.trim() === '' ||
+                birth.trim() === '' ||
+                nickname.trim() === ''
+              : username.trim() === '' ||
+                password.trim() === '' ||
+                region.trim() === '' ||
+                birth.trim() === '' ||
+                nickname.trim() === '' ||
+                !isValidPassword
           }
         >
           회원가입
