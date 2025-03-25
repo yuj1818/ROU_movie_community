@@ -13,7 +13,9 @@ from django.db.models import Count, Q, F, ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractYear
 from django.utils.timezone import now
 import requests
+from django.conf import settings
 from rest_framework.authtoken.models import Token
+import json
 
 User = get_user_model()
 
@@ -165,20 +167,28 @@ def user_friend(request):
     else:
       return Response({'message': '추천 친구가 없습니다.'}, stats=status.HTTP_204_NO_CONTENT)
     
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def google_login(request):
-  code = request.data['code']
-  info_res = requests.get(f'https://oauth2.googleapis.com/tokeninfo?id_token={code['credential']}')
+  code = request.GET.get('code')
+  token_url = 'https://oauth2.googleapis.com/token'
+  data = {
+    'code': code,
+    'client_id': settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID,
+    'client_secret': settings.SOCIAL_AUTH_GOOGLE_SECRET,
+    'redirect_uri': settings.OAUTH2_REDIRECT_URI,
+    'grant_type': 'authorization_code'
+  }
+  token_res = requests.post(token_url, data=data)
+  token_res_json = token_res.json()
+
+  access_token = token_res_json.get('access_token')
+  info_res = requests.get(f'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}')
   info_res_status = info_res.status_code
   if info_res_status != 200:
     return Response({'err_msg': 'failed to get email'}, status=status.HTTP_400_BAD_REQUEST)
   info_res_json = info_res.json()
-  print(info_res_json)
   email = info_res_json.get('email')
-  name = info_res_json.get('name')
-  print(email)
-  print(name)
 
   try:
     user = User.objects.get(email=email)
@@ -188,4 +198,19 @@ def google_login(request):
     else:
       raise Exception('Signup Required')
   except Exception:
-    return Response({'message': '추가 정보 입력이 필요합니다'}, status=status.HTTP_202_ACCEPTED)
+    data = {
+      'message': '추가 정보 입력이 필요합니다.',
+      'email': email
+    }
+    return Response(data, status=status.HTTP_202_ACCEPTED)
+  
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def social_add_info(request):
+  if request.method == 'POST':
+    nickname = request.data['nickname']
+    region = request.data['region']
+    birth = request.data['birth']
+    
+    if nickname == '' or region == '' or birth == '':
+      return Response({'message: filed is empty'}, status=status.HTTP_400_BAD_REQUEST)
