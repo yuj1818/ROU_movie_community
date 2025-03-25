@@ -20,6 +20,7 @@ import PostListPage from './pages/community/PostListPage';
 import { checkLogin } from './utils/authApi';
 import QuizCreatePage from './pages/quiz/QuizCreatePage';
 import QuizPage from './pages/quiz/QuizPage';
+import SocialCallbackPage from './pages/auth/SocialCallbackPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
         path: 'signup',
         element: <SignUpPage />,
         loader: goHome,
+      },
+      {
+        path: 'social/google-callback',
+        element: <SocialCallbackPage />,
       },
       {
         path: 'movie',
