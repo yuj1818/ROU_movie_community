@@ -33,7 +33,11 @@ SECRET_KEY = 'django-insecure-za5#y(3wa^vb_byl_lcdh=x4=ca&6n@&b)^e6_59h$g%9=q(dc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  'localhost',
+  '127.0.0.1',
+  'localhost:5173'
+]
 
 
 # Application definition
@@ -54,6 +58,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'django.contrib.sites',
 
@@ -96,6 +101,24 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:5173',
 ]
+
+CORS_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+CORS_ORIGINS_WHITELIST = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
 
 ROOT_URLCONF = 'ROU.urls'
 
@@ -176,12 +199,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
+LOGIN_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = env('GOOGLE_SECRET_KEY')
+OAUTH2_REDIRECT_URI = 'http://localhost:5173/social/google/callback'
+
 AUTH_USER_MODEL = 'ACCOUNTS.User'
 
 REST_AUTH = {
     'REGISTER_SERIALIZER': 'ACCOUNTS.serializers.CustomRegisterSerializer',
     'USER_DETAILS_SERIALIZER': 'ACCOUNTS.serializers.ProfileSerializer',
-    'TOKEN_SERIALIZER': 'ACCOUNTS.serializers.CustomTokenSerializer',
 }
 
 ACCOUNT_ADAPTER = 'ACCOUNTS.adapters.CustomAccountsAdapter'

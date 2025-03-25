@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from MOVIES.models import Genre
-from django.conf import settings
 
 class User(AbstractUser):
     followings = models.ManyToManyField(
@@ -16,3 +15,4 @@ class User(AbstractUser):
     score = models.IntegerField(default=0)
     region = models.CharField(max_length=100)
     birth = models.DateField()
+    nickname = models.TextField(max_length=20, default='nickname')

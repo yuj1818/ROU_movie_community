@@ -19,14 +19,17 @@ class MovieListSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
   region = serializers.CharField(max_length=50)
   birth = serializers.DateField()
+  nickname = serializers.CharField(max_length=20)
+
   class Meta:
     model = User
-    fields = ('region', 'birth',)
+    fields = ('region', 'birth', 'nickname')
 
   def get_cleaned_data(self):
     data = super().get_cleaned_data()
     data['region'] = self.validated_data.get('region', '')
     data['birth'] = self.validated_data.get('birth', '')
+    data['nickname'] = self.validated_data.get('nickname', '')
 
     password1 = data.get('password1', '')
     username = data.get('username', '')
@@ -77,8 +80,3 @@ class LikeGenreSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ('id', 'username', 'like_genres', )
-
-class CustomTokenSerializer(TokenSerializer):
-   class Meta:
-    model = Token
-    fields = ('key', 'user',)
