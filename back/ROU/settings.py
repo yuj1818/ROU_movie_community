@@ -203,7 +203,7 @@ LOGIN_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_SECRET = env('GOOGLE_SECRET_KEY')
-OAUTH2_REDIRECT_URI = 'http://localhost:5173/social/google/callback'
+OAUTH2_REDIRECT_URI = 'http://localhost:5173/social/google-callback'
 
 AUTH_USER_MODEL = 'ACCOUNTS.User'
 
