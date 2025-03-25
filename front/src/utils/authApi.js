@@ -55,3 +55,15 @@ export const googleLogin = (params) => {
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const socialLoginAddInfo = (data) => {
+  return API.post(URL + 'social/', data)
+    .then((res) => {
+      const token = res.data.key;
+      const user = res.data.user;
+      setCookie('token', `Token ${token}`, { path: '/' });
+      setCookie('userId', user, { path: '/' });
+      return res;
+    })
+    .catch((err) => err);
+};
