@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setEmail } from '../../stores/auth';
 import { setCookie } from '../../utils/cookie';
 
-const SocialCallbackPage = () => {
+const GoogleCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,4 +34,4 @@ const SocialCallbackPage = () => {
   return <div></div>;
 };
 
-export default SocialCallbackPage;
+export default GoogleCallbackPage;
