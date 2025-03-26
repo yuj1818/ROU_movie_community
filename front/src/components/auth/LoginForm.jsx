@@ -6,6 +6,7 @@ import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
 import { logIn } from '../../utils/authApi';
 import googleBtn from '../../assets/google.png';
+import kakaoBtn from '../../assets/kakao.png';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -70,12 +71,12 @@ const LoginForm = () => {
       </form>
       <div className="flex gap-2 mt-2"></div>
       <a
-        className="text-xs mt-2 text-blue-500 underline underline-offset-2"
+        className="text-xs text-blue-500 underline underline-offset-2"
         href="/signup"
       >
         회원가입
       </a>
-      <div className="flex items-center justify-center mt-2">
+      <div className="flex items-center justify-center mt-2 gap-4">
         <img
           className="cursor-pointer"
           width="80%"
@@ -88,6 +89,18 @@ const LoginForm = () => {
             }&redirect_uri=${
               import.meta.env.VITE_GOOGLE_REDIRECT_URI
             }&response_type=code&scope=openid%20email%20profile`)
+          }
+        />
+        <img
+          className="cursor-pointer"
+          width="80%"
+          height="80%"
+          src={kakaoBtn}
+          alt="kakaoLoginBtn"
+          onClick={() =>
+            (window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${
+              import.meta.env.VITE_KAKAO_CLIENT_SECRET
+            }&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`)
           }
         />
       </div>
