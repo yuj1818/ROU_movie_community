@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { googleLogin } from '../../utils/authApi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setEmail } from '../../stores/auth';
+import { setEmail, setUid } from '../../stores/auth';
 import { setCookie } from '../../utils/cookie';
 
 const GoogleCallbackPage = () => {
@@ -22,6 +22,7 @@ const GoogleCallbackPage = () => {
       navigate('/');
     } else if (res.status == 202) {
       dispatch(setEmail(res.data.email));
+      dispatch(setUid(res.data.uid));
       // 추가 정보 기입 페이지로 이동
       navigate({ pathname: '/signup', search: `?isSocial=${true}` });
     }
