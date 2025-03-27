@@ -8,10 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import LazyImg from '../common/LazyImg';
 
 const Container = styled.div`
-  height: 30rem;
-  width: 100%;
-  overflow: hidden;
-  max-width: 100%;
+  width: 91.666667% !important;
   margin-bottom: 3rem;
 `;
 
@@ -67,7 +64,7 @@ const MovieCarousel = () => {
     renderMode: 'performance',
     slides: {
       origin: 'center',
-      perView: 1.2,
+      perView: 1.3,
       spacing: 20,
     },
   });
