@@ -26,28 +26,21 @@ class CustomRegisterSerializer(RegisterSerializer):
     fields = ('region', 'birth', 'nickname')
 
   def get_cleaned_data(self):
-    print('여기여기')
     data = super().get_cleaned_data()
     data['region'] = self.validated_data.get('region', '')
     data['birth'] = self.validated_data.get('birth', '')
     data['nickname'] = self.validated_data.get('nickname', '')
+    data.pop('uid', None)
+    password1 = data.get('password1', '')
+    username = data.get('username', '')
 
-    if data.get('password1', ''): 
-      password1 = data.get('password1', '')
-      username = data.get('username', '')
-
-      if username and password1 and username.lower() in password1.lower():
-        raise serializers.ValidationError("비밀번호가 아이디와 너무 유사합니다.")
-      
-      try:
-        validate_password(password1)
-      except ValidationError as e:
-        raise serializers.ValidationError(f"Password validation error: {', '.join(e.messages)}")
-    else:
-      data['username'] = data.get('email', '')
-      password = get_random_string(length=10)
-      data['password'] = password
-      data['password2'] = password
+    if username and password1 and username.lower() in password1.lower():
+      raise serializers.ValidationError("비밀번호가 아이디와 너무 유사합니다.")
+    
+    try:
+      validate_password(password1)
+    except ValidationError as e:
+      raise serializers.ValidationError(f"Password validation error: {', '.join(e.messages)}")
 
     return data
   

@@ -165,7 +165,7 @@ def user_friend(request):
     if potential_users:
       return Response(serializer.data)
     else:
-      return Response({'message': '추천 친구가 없습니다.'}, stats=status.HTTP_204_NO_CONTENT)
+      return Response({'message': '추천 친구가 없습니다.'}, status=status.HTTP_204_NO_CONTENT)
     
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -199,10 +199,65 @@ def google_login(request):
   except Exception:
     data = {
       'message': '추가 정보 입력이 필요합니다.',
-      'email': email
+      'email': email,
+      'uid': info_res_json.get('user_id')
     }
     return Response(data, status=status.HTTP_202_ACCEPTED)
   
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def kakao_login(request):
+  code = request.GET.get('code')
+  token_url = 'https://kauth.kakao.com/oauth/token'
+  data = {
+    'code': code,
+    'client_id': settings.SOCIAL_AUTH_KAKAO_CLIENT_ID,
+    'redirect_uri': settings.KAKAO_REDIRECT_URI,
+    'grant_type': 'authorization_code'
+  }
+  token_res = requests.post(
+    token_url, 
+    headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"}, 
+    data=data
+  )
+  token_res_json = token_res.json()
+  
+  access_token = token_res_json.get('access_token')
+  info_res = requests.get(
+    'https://kapi.kakao.com/v1/oidc/userinfo',
+    headers = { "Authorization": f'Bearer {access_token}' }
+  )
+  if info_res.status_code != 200:
+    return Response({'err_msg': 'failed to get userinfo'}, status=status.HTTP_400_BAD_REQUEST)
+  info_res_json = info_res.json()
+  email = info_res_json.get('email')
+
+  try:
+    user = User.objects.get(email=email)
+    Token.objects.filter(user=user).delete()
+    token = Token.objects.create(user=user)
+    serializer = TokenSerializer(token)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+  except Exception:
+    data = {
+      'email': email,
+      'nickname': info_res_json.get('nickname'),
+      'profile_image': requests.get(info_res_json.get('picture')),
+      'birth': info_res_json.get('birthdate'),
+      'region': '전국',
+      'username': email,
+      'password1': '임시비밀번호입니다',
+      'password2': '임시비밀번호입니다',
+    }
+    serializer = CustomRegisterSerializer(data=data)
+    if serializer.is_valid():
+      user = serializer.save(request=request)
+      SocialAccount.objects.create(user=user, uid=info_res_json.get('sub'), provider="kakao")
+      token = Token.objects.get(user=user)
+      seializer = TokenSerializer(token)
+      return Response(seializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def social_add_info(request):
@@ -210,22 +265,8 @@ def social_add_info(request):
     serializer = CustomRegisterSerializer(data=request.data)
     if serializer.is_valid():
       user = serializer.save(request=request)
-      SocialAccount.objects.create(user=user)
+      SocialAccount.objects.create(user=user, provider="google", uid=request.data.get('uid'))
       token = Token.objects.get(user=user)
       serializer = TokenSerializer(token)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class SocialAddInfoView(APIView):
-#     permission_classes = [AllowAny]
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = CustomSocialLoginSerializer(
-#             data=request.data,
-#             context={'request': request, 'view': self}  # view를 self로 전달
-#         )
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             token = Token.objects.create(user=user)
-#             return Response(token, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
