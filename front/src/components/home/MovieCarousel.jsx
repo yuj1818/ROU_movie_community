@@ -40,6 +40,7 @@ const Description = styled.div`
   flex-direction: column;
   gap: 1rem;
   justify-content: flex-end;
+  overflow: hidden;
 
   .title {
     font-size: 2rem;
@@ -49,6 +50,11 @@ const Description = styled.div`
   .overview {
     font-size: 1rem;
     line-height: 150%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
   }
 `;
 
