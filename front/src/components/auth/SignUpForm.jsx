@@ -5,7 +5,8 @@ import { Button } from '../common/Button';
 import { SubTitle } from './SubTitle';
 import tw from 'tailwind-styled-components';
 import { signUp, socialLoginAddInfo } from '../../utils/authApi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEmail } from '../../stores/auth';
 
 const Container = tw.div`
   flex flex-col w-full gap-1
@@ -22,8 +23,9 @@ const ErrMsg = tw.p`
 
 const SignUpForm = () => {
   const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
   const isSocial = searchParams.get('isSocial') === 'true';
-  const { email } = useSelector((state) => state.auth);
+  const { email, uid } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -46,9 +48,12 @@ const SignUpForm = () => {
         username: email,
         password1: '임시비밀번호입니다',
         password2: '임시비밀번호입니다',
+        uid,
       });
       console.log(res);
       if (res.status === 201) {
+        dispatch(setEmail(null));
+        dispatch(setUid(null));
         navigate('/');
       } else {
         if (Array.isArray(res.response.data)) {

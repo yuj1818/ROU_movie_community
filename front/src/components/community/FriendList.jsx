@@ -21,9 +21,11 @@ const FriendList = () => {
     <div className="flex-shrink-0 h-fit w-1/5 flex flex-col gap-2 border border-solid border-white rounded p-2 mt-[4.25rem]">
       <p className="font-pretendard_semibold text-white">친구 추천</p>
       <div className="flex flex-col gap-2 h-fit max-h-[9.25rem] w-full grow overflow-y-auto">
-        {friends.map((friend) => (
-          <FriendBox key={friend.id} data={friend} />
-        ))}
+        {friends ? (
+          friends.map((friend) => <FriendBox key={friend.id} data={friend} />)
+        ) : (
+          <p className="text-center my-4 text-sm">추천 친구가 없습니다.</p>
+        )}
       </div>
     </div>
   );
