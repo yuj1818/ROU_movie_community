@@ -20,7 +20,8 @@ import PostListPage from './pages/community/PostListPage';
 import { checkLogin } from './utils/authApi';
 import QuizCreatePage from './pages/quiz/QuizCreatePage';
 import QuizPage from './pages/quiz/QuizPage';
-import SocialCallbackPage from './pages/auth/SocialCallbackPage';
+import GoogleCallbackPage from './pages/auth/GoogleCallbackPage';
+import KakaoCallbackPage from './pages/auth/KakaoCallbackPage';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const MovieDetailPage = lazy(() => import('./pages/movie/MovieDetailPage'));
@@ -64,8 +65,17 @@ const router = createBrowserRouter([
         loader: goHome,
       },
       {
-        path: 'social/google-callback',
-        element: <SocialCallbackPage />,
+        path: 'social',
+        children: [
+          {
+            path: 'google-callback',
+            element: <GoogleCallbackPage />,
+          },
+          {
+            path: 'kakao-callback',
+            element: <KakaoCallbackPage />,
+          },
+        ],
       },
       {
         path: 'movie',
