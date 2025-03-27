@@ -67,3 +67,17 @@ export const socialLoginAddInfo = (data) => {
     })
     .catch((err) => err);
 };
+
+export const kakaoLogin = (params) => {
+  return API.get(URL + 'kakao/login/', {
+    params,
+  })
+    .then((res) => {
+      const token = res.data.key;
+      const user = res.data.user;
+      setCookie('token', `Token ${token}`, { path: '/' });
+      setCookie('userId', user, { path: '/' });
+      return res;
+    })
+    .catch((err) => err);
+};
