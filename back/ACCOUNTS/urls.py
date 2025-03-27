@@ -18,5 +18,6 @@ urlpatterns = [
     # 회원 좋아요/리뷰/찜/시청 한 리스트 조회(GET)
     path('movie/<int:user_pk>/', views.movie_list),
     path('google/login/', views.google_login),
-    path('social/', views.social_add_info)
+    path('social/', views.social_add_info),
+    path('kakao/login/', views.kakao_login)
 ]
