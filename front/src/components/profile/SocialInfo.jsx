@@ -41,7 +41,7 @@ const SocialInfo = ({ idx }) => {
             className="w-full h-full"
           />
         </div>
-        <span className="text-black text-sm">{selectedData[idx].username}</span>
+        <span className="text-black text-sm">{selectedData[idx].nickname}</span>
       </div>
       {selectedData[idx].id != getCookie('userId') && (
         <Button

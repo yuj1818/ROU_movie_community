@@ -4,6 +4,7 @@ const initialState = {
   userId: null,
   username: null,
   profile_image: null,
+  nickname: null,
   region: null,
   hate_genres: [],
   like_genres: [],
@@ -40,6 +41,7 @@ const profileSlice = createSlice({
       const {
         id,
         username,
+        nickname,
         profile_image,
         region,
         followers,
@@ -53,6 +55,7 @@ const profileSlice = createSlice({
       } = action.payload;
       state.userId = id;
       state.username = username;
+      state.nickname = nickname;
       state.profile_image = profile_image;
       state.region = region;
       state.followers = followers;

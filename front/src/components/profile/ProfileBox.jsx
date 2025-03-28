@@ -12,7 +12,7 @@ import { openModal } from '../../stores/modal';
 import PreferenceList from './PreferenceList';
 
 const ProfileBox = () => {
-  const { userId, username, profile_image, isFollowing } = useSelector(
+  const { userId, nickname, profile_image, isFollowing } = useSelector(
     (state) => state.profile,
   );
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const ProfileBox = () => {
   };
 
   return (
-    <div className="w-[20%] max-h-full flex flex-col gap-2 items-center">
+    <div className="w-[20%] max-h-full flex flex-col gap-6 items-center">
       <div className="h-[20%] max-h-[8rem] rounded-full aspect-square overflow-hidden">
         <LazyImg
           className="w-full h-full"
@@ -32,7 +32,7 @@ const ProfileBox = () => {
         />
       </div>
       <div className="flex gap-2 items-center">
-        <p className="font-pretendard_semibold text-2xl">{username}</p>
+        <p className="font-pretendard_semibold text-2xl">{nickname}</p>
         {userId == getCookie('userId') && (
           <Pencil
             className="cursor-pointer"
