@@ -16,6 +16,7 @@ import requests
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 from allauth.socialaccount.models import SocialAccount
+from django.core.files.base import ContentFile
 
 User = get_user_model()
 
@@ -242,7 +243,7 @@ def kakao_login(request):
     data = {
       'email': email,
       'nickname': info_res_json.get('nickname'),
-      'profile_image': requests.get(info_res_json.get('picture')),
+      'profile_image': ContentFile(requests.get(info_res_json.get('picture')).content),
       'birth': info_res_json.get('birthdate'),
       'region': '전국',
       'username': email,
