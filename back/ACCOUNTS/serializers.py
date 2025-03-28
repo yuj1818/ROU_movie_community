@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
   isFollowing = serializers.SerializerMethodField()
   class Meta:
     model = User
-    fields = ('id', 'username', 'profile_image', 'isFollowing')
+    fields = ('id', 'username', 'profile_image', 'isFollowing', 'nickname')
   
   def get_isFollowing(self, obj):
     request_user = self.context.get('request').user
@@ -63,7 +63,7 @@ class ProfileSerializer(UserDetailsSerializer):
 
   class Meta:
     model = User
-    fields = ('id', 'followers', 'username', 'profile_image', 'region', 'followings', 'hate_genres', 'like_genres', 'birth', 'rate_image', 'score',)
+    fields = ('id', 'followers', 'username', 'nickname', 'profile_image', 'region', 'followings', 'hate_genres', 'like_genres', 'birth', 'rate_image', 'score',)
 
 # 사용자 불호 장르 조회/수정
 class HateGenreSerializer(serializers.ModelSerializer):
