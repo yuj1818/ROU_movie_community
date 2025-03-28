@@ -232,9 +232,12 @@ def kakao_login(request):
     return Response({'err_msg': 'failed to get userinfo'}, status=status.HTTP_400_BAD_REQUEST)
   info_res_json = info_res.json()
   email = info_res_json.get('email')
+  profile_res = requests.get(info_res_json.get('picture'))
+  profile_image = ContentFile(profile_res.content)
 
   try:
     user = User.objects.get(email=email)
+    user.profile_image.save(f'profile_{user.id}', profile_image)
     Token.objects.filter(user=user).delete()
     token = Token.objects.create(user=user)
     serializer = TokenSerializer(token)
@@ -243,7 +246,6 @@ def kakao_login(request):
     data = {
       'email': email,
       'nickname': info_res_json.get('nickname'),
-      'profile_image': ContentFile(requests.get(info_res_json.get('picture')).content),
       'birth': info_res_json.get('birthdate'),
       'region': '전국',
       'username': email,
@@ -253,6 +255,8 @@ def kakao_login(request):
     serializer = CustomRegisterSerializer(data=data)
     if serializer.is_valid():
       user = serializer.save(request=request)
+      user.profile_image.save(f'profile_{user.id}', profile_image)
+      user.save()
       SocialAccount.objects.create(user=user, uid=info_res_json.get('sub'), provider="kakao")
       token = Token.objects.get(user=user)
       seializer = TokenSerializer(token)
