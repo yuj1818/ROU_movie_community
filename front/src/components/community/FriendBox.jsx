@@ -30,7 +30,7 @@ const FriendBox = ({ data }) => {
           />
         </div>
         <span className="text-black text-sm text-ellipsis whitespace-nowrap">
-          {data.username}
+          {data.nickname}
         </span>
       </div>
       <Button

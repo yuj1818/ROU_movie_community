@@ -61,7 +61,7 @@ const PostDetailInfo = () => {
                   navigate(`/profile/${postInfo.review_writor.id}`)
                 }
               >
-                by. {postInfo.review_writor.username}
+                by. {postInfo.review_writor.nickname}
               </span>
               <span>{dayjs(postInfo.created_at).format('YYYY-MM-DD')}</span>
               <span className="text-gray-500">

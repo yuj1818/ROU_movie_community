@@ -59,7 +59,7 @@ const CommentInfo = ({ data, depth }) => {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
             <span className="font-pretendard_semibold text-sm">
-              {data.comment_writor.username}
+              {data.comment_writor.nickname}
             </span>
             <span className="text-xs text-gray-500">
               {dayjs(data.created_at).fromNow()}

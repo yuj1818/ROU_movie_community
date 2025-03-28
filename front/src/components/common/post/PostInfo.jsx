@@ -70,7 +70,7 @@ const PostInfo = ({ data }) => {
             navigate(`/profile/${data.review_writor.id}`);
           }}
         >
-          by. {data.review_writor.username}
+          by. {data.review_writor.nickname}
         </p>
       </div>
     </div>
