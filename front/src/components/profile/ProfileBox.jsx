@@ -23,7 +23,7 @@ const ProfileBox = () => {
   };
 
   return (
-    <div className="w-[20%] max-h-full flex flex-col gap-6 items-center">
+    <div className="w-[18rem] max-h-full flex flex-col gap-6 items-center">
       <div className="h-[20%] max-h-[8rem] rounded-full aspect-square overflow-hidden">
         <LazyImg
           className="w-full h-full"
