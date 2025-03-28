@@ -51,7 +51,7 @@ const MovieList = () => {
   }, [targetIdx, page, userId]);
 
   return (
-    <div className="h-5/6 aspect-poster_list flex flex-col">
+    <div className="md:h-5/6 md:w-auto sm:w-full sm:h-auto aspect-poster_list flex flex-col">
       <div className="flex">
         {targets.map((target, idx) => (
           <Category

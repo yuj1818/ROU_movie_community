@@ -20,7 +20,7 @@ const ProfilePage = () => {
   }, [params.user_id]);
 
   return (
-    <div className="w-5/6 flex justify-around text-white py-8 h-full items-center">
+    <div className="w-5/6 flex justify-around text-white py-8 h-full items-center flex-wrap gap-16">
       <ProfileBox />
       <MovieList />
     </div>
