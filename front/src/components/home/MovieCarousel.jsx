@@ -125,7 +125,7 @@ const MovieCarousel = () => {
             ) : (
               <LazyImg
                 className="media"
-                src={Url.tmdbImgPath + data.backdrop_path}
+                src={Url.tmdbImgPathOrg + data.backdrop_path}
                 alt={data.title}
               />
             )}
