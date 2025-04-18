@@ -8,6 +8,7 @@ export const logIn = (data) => {
     .then((res) => {
       const token = res.data.key;
       const user = res.data.user;
+      console.log(res);
       setCookie('token', `Token ${token}`, { path: '/' });
       setCookie('userId', user, { path: '/' });
       return res;

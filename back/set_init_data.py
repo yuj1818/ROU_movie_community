@@ -191,7 +191,7 @@ def run():
       genre_data = await fetch_genres(session)
       await sync_to_async(process_genres)(genre_data)
 
-      movie_tasks = [fetch_movies(session, page) for page in range(2, 501)]
+      movie_tasks = [fetch_movies(session, page) for page in range(1, 501)]
       movie_results = await asyncio.gather(*movie_tasks)
 
       all_movies = [movie for page in movie_results for movie in page.get("results", [])]
