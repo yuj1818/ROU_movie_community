@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from .models import Movie
 import pandas as pd
 import numpy as np
-from kiwipiepy import Kiwi
-from django.core.cache import cache
 from django.db import connection
 from django.db.models import Max
 import traceback
