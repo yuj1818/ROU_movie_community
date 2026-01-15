@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import AppSideBar from '@/components/common/sidebar';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -30,11 +32,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
-        className={`${pretendard.variable} ${partialsans.variable} antialiased`}
+        className={`${pretendard.variable} ${partialsans.variable} antialiased bg-black fixed inset-0 overflow-hidden dark`}
       >
-        {children}
+        <SidebarProvider defaultOpen={false}>
+          <AppSideBar />
+          <main>
+            <SidebarTrigger />
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );
