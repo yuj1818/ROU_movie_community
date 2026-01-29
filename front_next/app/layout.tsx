@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+
 import AppSideBar from '@/components/common/sidebar';
+import Header from '@/components/common/header.tsx';
+import Providers from '@/components/common/Providers';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -34,15 +36,17 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable} ${partialsans.variable} antialiased bg-black fixed inset-0 overflow-hidden dark`}
+        className={`${pretendard.variable} ${partialsans.variable} antialiased bg-black w-screen h-screen overflow-hidden dark flex`}
       >
-        <SidebarProvider defaultOpen={false}>
+        <Providers>
           <AppSideBar />
-          <main>
-            <SidebarTrigger />
-            {children}
+          <main className="flex-1 min-w-0 h-full flex flex-col">
+            <Header />
+            <div className="flex-1 min-h-0 overflow-y-auto w-full">
+              {children}
+            </div>
           </main>
-        </SidebarProvider>
+        </Providers>
       </body>
     </html>
   );
