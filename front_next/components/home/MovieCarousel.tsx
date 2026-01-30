@@ -89,7 +89,7 @@ export default function MovieCarousel() {
                 <div className="w-full h-full bg-white/20" />
               )}
               <div className="absolute inset-0 z-2 py-8 pl-[35%] pr-12 flex flex-col gap-4 justify-end bg-linear-to-tr from-black to-transparent to-70%">
-                <span className="text-3xl font-semibold">{movie.title}</span>
+                <span className="text-3xl font-bold">{movie.title}</span>
                 <span className="line-clamp-5 leading-normal max-h-30">
                   {movie.overview}
                 </span>
