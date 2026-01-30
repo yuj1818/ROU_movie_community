@@ -28,3 +28,5 @@ export const SORTS: Tag[] = [
   { id: 22, name: '개봉 예정 영화 TOP 30', key: 'upcoming' },
   { id: 23, name: '평점이 높은 영화 TOP 30', key: 'rate' },
 ];
+
+export type SortKey = 'popular' | 'latest' | 'upcoming' | 'rate';

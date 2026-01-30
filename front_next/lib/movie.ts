@@ -1,4 +1,4 @@
-import { Tag } from '@/types/movie';
+import { SortKey } from '@/constants/category';
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + '/api/movies';
 
@@ -10,7 +10,7 @@ export const getTrendMovieList = async () => {
   return res.json();
 };
 
-export const getSortedMovieList = async (key: Pick<Tag, 'key'>) => {
+export const getSortedMovieList = async (key: SortKey) => {
   const res = await fetch(`${URL}/sort?key=${key}`, { method: 'GET' });
 
   if (!res.ok) throw new Error(`${key} 정렬 영화 목록 조회 실패`);
