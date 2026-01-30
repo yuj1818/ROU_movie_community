@@ -1,4 +1,6 @@
-export interface TrendMovie {
+import { SortKey } from '@/constants/category';
+
+export interface Movie {
   movie_id: number;
   title: string;
   poster_path: string | null;
@@ -10,5 +12,5 @@ export interface TrendMovie {
 export interface Tag {
   id: number;
   name: string;
-  key?: 'latest' | 'upcoming' | 'rate' | 'popular';
+  key?: SortKey;
 }

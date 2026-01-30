@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { getTrendMovieList } from '@/lib/movie';
 import { LoaderCircle } from 'lucide-react';
-import { TrendMovie } from '@/types/movie';
+import { Movie } from '@/types/movie';
 import { MEDIA_BASE_URL } from '@/constants/url';
 
 export default function MovieCarousel() {
@@ -16,12 +16,14 @@ export default function MovieCarousel() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  const { data, isPending } = useQuery({
+  const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['trendMovies', dayjs().format('YYYY-MM-DD')],
     queryFn: async () => {
       const res = await getTrendMovieList();
       return res;
     },
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 
   const [sliderRef, slider] = useKeenSlider({
@@ -56,7 +58,7 @@ export default function MovieCarousel() {
         </div>
       ) : (
         <div className="keen-slider w-full" ref={sliderRef}>
-          {data.map((movie: TrendMovie) => (
+          {(movies ?? []).map((movie) => (
             <div
               key={movie.movie_id}
               className="keen-slider__slide w-ful flex items-center justify-center rounded-md relative aspect-video"
@@ -82,7 +84,7 @@ export default function MovieCarousel() {
                   src={MEDIA_BASE_URL.tmdbImgPathOrg + movie.backdrop_path}
                   alt={`backdrop_of_${movie.movie_id}`}
                   fill
-                  sizes="100vw"
+                  sizes="900px"
                   loading="eager"
                 />
               ) : (
