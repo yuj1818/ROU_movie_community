@@ -6,3 +6,9 @@ export interface TrendMovie {
   videos: string | null;
   overview: string | null;
 }
+
+export interface Tag {
+  id: number;
+  name: string;
+  key?: 'latest' | 'upcoming' | 'rate' | 'popular';
+}
