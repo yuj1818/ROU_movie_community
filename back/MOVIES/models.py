@@ -1,7 +1,9 @@
 from django.db import models
 from django.conf import settings
+import re
 
-# Create your models here.
+def normalize_title(title):
+  return re.sub(r"[\s\-:·.!?]", "", title).lower()
 
 # TMDB People 목록
 class Actor(models.Model):
@@ -32,6 +34,8 @@ class Movie(models.Model):
   director = models.CharField(max_length=50, null=True, blank=True)
   videos = models.TextField(null=True, blank=True)
   normalized_title = models.CharField(max_length=100, blank=True)
+  is_complete = models.BooleanField(default=False)
+  last_detail_fetched_at = models.DateTimeField(null=True, blank=True)
 
   like_movie_users = models.ManyToManyField(
     settings.AUTH_USER_MODEL, related_name='like_movies', blank=True
@@ -46,8 +50,13 @@ class Movie(models.Model):
     settings.AUTH_USER_MODEL, related_name='favorite_movies', blank=True
   )
 
+  def check_is_complete(self):
+    return (
+      bool(self.poster_path) and bool(self.backdrop_path) and bool(self.overview) and bool(self.videos)
+    )
+
   def save(self, *args, **kwargs):
-    self.normalized_title = self.title.replace(" ", "")
+    self.normalized_title = normalize_title(self.title)
     super().save(*args, **kwargs)
 
 class Cast(models.Model):
