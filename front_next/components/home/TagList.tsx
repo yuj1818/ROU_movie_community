@@ -4,11 +4,17 @@ import { Badge } from '@/components/ui/badge';
 import { TAGS } from '@/constants/category';
 import { useTagStore } from '@/stores/useTagStore';
 import { CircleChevronRight, CircleX } from 'lucide-react';
-import { useState } from 'react';
+import { useShallow } from 'zustand/shallow';
 
 export default function TagList() {
-  const { selectedTag, selectTag } = useTagStore();
-  const [isTagOpen, setIsTagOpen] = useState(false);
+  const { selectedTag, isTagOpen, openTag, selectTag } = useTagStore(
+    useShallow((state) => ({
+      selectedTag: state.selectedTag,
+      isTagOpen: state.isTagOpen,
+      openTag: state.openTag,
+      selectTag: state.selectTag,
+    })),
+  );
 
   return (
     <div className="w-11/12 flex flex-wrap gap-2 items-center sticky top-4 z-10">
@@ -38,14 +44,11 @@ export default function TagList() {
             </Badge>
           ))}
       {isTagOpen ? (
-        <CircleX
-          className="size-5 cursor-pointer"
-          onClick={() => setIsTagOpen(false)}
-        />
+        <CircleX className="size-5 cursor-pointer" onClick={() => openTag()} />
       ) : (
         <CircleChevronRight
           className="size-5 cursor-pointer"
-          onClick={() => setIsTagOpen(true)}
+          onClick={() => openTag()}
         />
       )}
     </div>

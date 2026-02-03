@@ -8,6 +8,10 @@ import { useKeenSlider } from 'keen-slider/react';
 import MovieItem from './MovieItem';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SortKey } from '@/constants/category';
+import { useEffect, useRef } from 'react';
+import { useTagStore } from '@/stores/useTagStore';
+import { cn } from '@/lib/utils';
+import { useShallow } from 'zustand/shallow';
 
 interface MovieSectionsProps {
   id: number;
@@ -22,6 +26,13 @@ export default function MovieSection({
   type,
   label,
 }: MovieSectionsProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const { registerSection, isTagOpen } = useTagStore(
+    useShallow((state) => ({
+      isTagOpen: state.isTagOpen,
+      registerSection: state.registerSection,
+    })),
+  );
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['movies', id, dayjs().format('YYYY-MM-DD')],
     queryFn: async () => {
@@ -46,8 +57,18 @@ export default function MovieSection({
     },
   });
 
+  useEffect(() => {
+    registerSection(id, ref.current);
+  }, [id]);
+
   return (
-    <section className="w-full flex flex-col gap-2 items-center">
+    <section
+      ref={ref}
+      className={cn(
+        'w-full flex flex-col gap-2 items-center',
+        isTagOpen ? 'scroll-mt-20' : 'scroll-mt-12',
+      )}
+    >
       <h3 className="font-semibold text-xl w-11/12">{label}</h3>
       <div className="w-full relative flex justify-center items-center">
         <div className="w-11/12">
