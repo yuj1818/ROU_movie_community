@@ -8,58 +8,101 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Actor',
+            name="Actor",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('person_id', models.IntegerField()),
-                ('name', models.CharField(max_length=100)),
-                ('profile_path', models.CharField(blank=True, max_length=60, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("person_id", models.IntegerField()),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "profile_path",
+                    models.CharField(blank=True, max_length=60, null=True),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre_id', models.IntegerField()),
-                ('name', models.CharField(max_length=10)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre_id", models.IntegerField()),
+                ("name", models.CharField(max_length=10)),
             ],
         ),
         migrations.CreateModel(
-            name='Movie',
+            name="Movie",
             fields=[
-                ('movie_id', models.IntegerField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=100)),
-                ('adult', models.BooleanField()),
-                ('backdrop_path', models.CharField(blank=True, max_length=60, null=True)),
-                ('release_date', models.DateField(blank=True, null=True)),
-                ('vote_average', models.FloatField()),
-                ('vote_count', models.IntegerField()),
-                ('poster_path', models.CharField(blank=True, max_length=60, null=True)),
-                ('popularity', models.FloatField()),
-                ('overview', models.TextField(blank=True, null=True)),
-                ('runtime', models.IntegerField(blank=True, null=True)),
-                ('director', models.CharField(blank=True, max_length=50, null=True)),
-                ('videos', models.TextField(blank=True, null=True)),
-                ('normalized_title', models.CharField(blank=True, max_length=100)),
-                ('actors', models.ManyToManyField(blank=True, to='MOVIES.actor')),
-                ('genres', models.ManyToManyField(blank=True, to='MOVIES.genre')),
+                ("movie_id", models.IntegerField(primary_key=True, serialize=False)),
+                ("title", models.CharField(max_length=100)),
+                ("adult", models.BooleanField()),
+                (
+                    "backdrop_path",
+                    models.CharField(blank=True, max_length=60, null=True),
+                ),
+                ("release_date", models.DateField(blank=True, null=True)),
+                ("vote_average", models.FloatField()),
+                ("vote_count", models.IntegerField()),
+                ("poster_path", models.CharField(blank=True, max_length=60, null=True)),
+                ("popularity", models.FloatField()),
+                ("overview", models.TextField(blank=True, null=True)),
+                ("runtime", models.IntegerField(blank=True, null=True)),
+                ("director", models.CharField(blank=True, max_length=50, null=True)),
+                ("videos", models.TextField(blank=True, null=True)),
+                ("normalized_title", models.CharField(blank=True, max_length=100)),
+                ("actors", models.ManyToManyField(blank=True, to="MOVIES.actor")),
+                ("genres", models.ManyToManyField(blank=True, to="MOVIES.genre")),
             ],
         ),
         migrations.CreateModel(
-            name='Cast',
+            name="Cast",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cast_order', models.IntegerField(blank=True, null=True)),
-                ('actor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='actor_movies', to='MOVIES.actor')),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_actors', to='MOVIES.movie')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("cast_order", models.IntegerField(blank=True, null=True)),
+                (
+                    "actor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="actor_movies",
+                        to="MOVIES.actor",
+                    ),
+                ),
+                (
+                    "movie",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="movie_actors",
+                        to="MOVIES.movie",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('movie', 'actor')},
+                "unique_together": {("movie", "actor")},
             },
         ),
     ]

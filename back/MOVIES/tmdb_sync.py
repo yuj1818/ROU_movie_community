@@ -10,17 +10,39 @@ from MOVIES.models import (
     Actor,
     Cast,
 )
+from datetime import datetime
 
 API_KEY = settings.API_KEY
 TMDB_MOVIE_URL = "https://api.themoviedb.org/3/movie/"
 SEMAPHORE = asyncio.Semaphore(20)
 
 
+def extract_kr_release_date(movie):
+    results = movie.get("release_dates", {}).get("results", [])
+    kr = next((r for r in results if r.get("iso_3166_1") == "KR"), None)
+    if not kr:
+        return None
+
+    candidates = []
+    for d in kr.get("release_dates", []):
+        if d.get("type") in (2, 3, 4):
+            ds = d.get("release_date")
+            if ds:
+                try:
+                    candidates.append(
+                        datetime.fromisoformat(ds.replace("Z", "")).date()
+                    )
+                except ValueError:
+                    pass
+
+    return min(candidates) if candidates else None
+
+
 async def fetch_movie_detail(session, movie_id):
     params = {
         "api_key": API_KEY,
         "language": "ko-KR",
-        "append_to_response": "videos,credits",
+        "append_to_response": "videos,credits,release_dates",
     }
     async with SEMAPHORE:
         async with session.get(
@@ -40,7 +62,9 @@ def save_movie(movie):
         ]
 
         actors = []
-        for cast in movie.get("credits", {}).get("cast", []):
+        casts = []
+
+        for cast in movie.get("credits", {}).get("cast", [])[:10]:
             if cast.get("known_for_department") != "Acting":
                 continue
 
@@ -52,12 +76,12 @@ def save_movie(movie):
                 },
             )
 
-            Cast.objects.get_or_create(
-                movie_id=movie["id"],
-                actor=actor,
-                defaults={"cast_order": cast.get("order")},
-            )
             actors.append(actor)
+            casts.append(
+                Cast(movie_id=movie["id"], actor=actor, cast_order=cast.get("order"))
+            )
+
+        Cast.objects.bulk_create(casts, ignore_conflicts=True)
 
         director = next(
             (
@@ -77,12 +101,15 @@ def save_movie(movie):
             None,
         )
 
+        release_date_kr = extract_kr_release_date(movie)
+
         instance, _ = Movie.objects.update_or_create(
             movie_id=movie["id"],
             defaults={
                 "title": movie["title"],
                 "overview": movie.get("overview"),
                 "release_date": movie.get("release_date") or None,
+                "release_date_kr": release_date_kr,
                 "popularity": movie.get("popularity", 0),
                 "vote_average": movie.get("vote_average", 0),
                 "vote_count": movie.get("vote_count", 0),
@@ -96,11 +123,11 @@ def save_movie(movie):
             },
         )
 
-        instance.genres.set(genres)
-        instance.actors.set(actors)
+        instance.genres.add(*genres)
+        instance.actors.add(*actors)
 
         instance.is_complete = instance.check_is_complete()
-        instance.save(update_fields=["is_complete", "last_detail_fetched_at"])
+        instance.save(update_fields=["is_complete"])
 
 
 def sync_movies(movie_ids):

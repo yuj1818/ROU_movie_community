@@ -7,14 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MOVIES', '0003_movie_dislike_movie_users_movie_like_movie_users_and_more'),
-        ('QUIZZES', '0001_initial'),
+        ("MOVIES", "0003_movie_dislike_movie_users_movie_like_movie_users_and_more"),
+        ("QUIZZES", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quiz',
-            name='quiz_movie',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='movie_quiz', to='MOVIES.movie'),
+            model_name="quiz",
+            name="quiz_movie",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movie_quiz",
+                to="MOVIES.movie",
+            ),
         ),
     ]

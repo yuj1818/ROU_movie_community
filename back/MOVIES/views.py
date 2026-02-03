@@ -91,9 +91,9 @@ def movie_sort(request):
                 "-release_date", "popularity"
             )[:30]
         elif key == "upcoming":
-            sort_movies = Movie.objects.filter(release_date__gt=date.today()).order_by(
-                "popularity"
-            )[:30]
+            sort_movies = Movie.objects.filter(
+                release_date_kr__gt=date.today()
+            ).order_by("popularity")[:30]
         elif key == "rate":
             C = Movie.objects.aggregate(Avg("vote_average"))["vote_average__avg"] or 0
             m = 5000
@@ -207,9 +207,9 @@ def movie_reviewing(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
     if request.method == "GET":
         reviews = movie.movie_review.annotate(
-            like_count=Count('like_review_users'), comment_count=Count('review_comment')
-        ).order_by('-like_count', '-comment_count', '-created_at')
-        serializer = ReviewSerializer(reviews, many=True, context={'request': request})
+            like_count=Count("like_review_users"), comment_count=Count("review_comment")
+        ).order_by("-like_count", "-comment_count", "-created_at")
+        serializer = ReviewSerializer(reviews, many=True, context={"request": request})
         return Response(serializer.data)
     elif request.method == "POST":
         serializer = ReviewSerializer(data=request.data)
@@ -221,6 +221,16 @@ def movie_reviewing(request, movie_id):
 def update_DB(request):
     try:
         ids = discover_recent_movie_ids(weeks=48)
+        print(f"{len(ids)} 개의 영화를 업데이트")
+        sync_movies(ids)
+        return HttpResponse("Database update completed successfully!")
+    except Exception as e:
+        return HttpResponse(f"Error Ocurred: {str(e)}", status=500)
+
+
+def update_upcoming_movies(request):
+    try:
+        ids = discover_recent_movie_ids(weeks=4, isUpcoming=True)
         print(f"{len(ids)} 개의 영화를 업데이트")
         sync_movies(ids)
         return HttpResponse("Database update completed successfully!")

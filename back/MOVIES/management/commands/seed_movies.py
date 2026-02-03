@@ -20,9 +20,35 @@ DISCOVER_PARAMS_BASE = {
     "sort_by": "popularity.desc",
     "certification_country": "KR",
     "certification.lte": 19,
-    "certification.get": 'ALL',
+    "certification.get": "ALL",
     "include_adult": "false",
+    "vote_count.gte": 30,
+    "vote_average.gte": 5.0,
 }
+
+
+def extract_kr_release_date(release_dates):
+    if not release_dates:
+        return None
+
+    kr = next((r for r in release_dates if r.get('iso_3166_1') == 'KR'), None)
+
+    if not kr:
+        return None
+
+    candidates = []
+    for d in kr.get("release_dates", []):
+        if d.get("type") in (2, 3, 4):
+            date_str = d.get("release_date")
+            if date_str:
+                try:
+                    candidates.append(
+                        datetime.fromisoformat(date_str.replace("Z", "")).date()
+                    )
+                except ValueError:
+                    pass
+
+    return min(candidates) if candidates else None
 
 
 async def fetch_json(session, url, params=None):
@@ -52,12 +78,10 @@ async def fetch_movie_detail(session, movie_id):
     params = {
         "api_key": API_KEY,
         "language": "ko-KR",
-        "append_to_response": "videos,credits",
+        "append_to_response": "videos,credits,release_dates",
     }
 
-    data = await fetch_json(session, f"{DETAIL_URL}{movie_id}", params)
-
-    return data
+    return await fetch_json(session, f"{DETAIL_URL}{movie_id}", params)
 
 
 def extract_genres_actors(details):
@@ -68,7 +92,7 @@ def extract_genres_actors(details):
         for g in d.get("genres", []):
             genre_map[g["id"]] = g["name"]
 
-        for c in d.get("credits", {}).get("case", []):
+        for c in d.get("credits", {}).get("cast", []):
             if c.get("known_for_department") == "Acting":
                 actor_map[c["id"]] = {
                     "name": c["name"],
@@ -92,6 +116,7 @@ def bulk_insert_movies(details):
     movies = []
 
     for d in details:
+        kr_date = extract_kr_release_date(d.get("release_dates", {}).get("results", []))
         movies.append(
             Movie(
                 movie_id=d["id"],
@@ -99,6 +124,7 @@ def bulk_insert_movies(details):
                 adult=d.get("adult", False),
                 overview=d.get("overview"),
                 release_date=d.get("release_date") or None,
+                release_date_kr=kr_date,
                 popularity=d.get("popularity", 0),
                 vote_average=d.get("vote_average", 0),
                 vote_count=d.get("vote_count", 0),
@@ -109,7 +135,7 @@ def bulk_insert_movies(details):
                     (
                         c["name"]
                         for c in d.get("credits", {}).get("crew", [])
-                        if c["job"] == 'Director'
+                        if c["job"] == "Director"
                     ),
                     None,
                 ),
@@ -125,7 +151,50 @@ def bulk_insert_movies(details):
             )
         )
 
-    Movie.objects.bulk_create(movies)
+    Movie.objects.bulk_create(movies, ignore_conflicts=True)
+
+
+def bulk_link_movie_genres(details):
+    through = Movie.genres.through
+    links = []
+
+    movie_map = {m.movie_id: m for m in Movie.objects.all()}
+    genre_map = {g.genre_id: g for g in Genre.objects.all()}
+
+    for d in details:
+        movie = movie_map.get(d["id"])
+        if not movie:
+            continue
+
+        for g in d.get("genres", []):
+            genre = genre_map.get(g["id"])
+            if genre:
+                links.append(through(movie_id=movie.movie_id, genre_id=genre.id))
+
+    through.objects.bulk_create(links, ignore_conflicts=True)
+
+
+def bulk_link_movie_actors(details):
+    through = Movie.actors.through
+    links = []
+
+    movie_map = {m.movie_id: m for m in Movie.objects.all()}
+    actor_map = {a.person_id: a for a in Actor.objects.all()}
+
+    for d in details:
+        movie = movie_map.get(d["id"])
+        if not movie:
+            continue
+
+        for c in d.get("credits", {}).get("cast", [])[:10]:
+            if c.get("known_for_department") != "Acting":
+                continue
+
+            actor = actor_map.get(c["id"])
+            if actor:
+                links.append(through(movie_id=movie.movie_id, actor_id=actor.id))
+
+    through.objects.bulk_create(links, ignore_conflicts=True)
 
 
 def bulk_insert_casts(details):
@@ -152,7 +221,7 @@ def bulk_insert_casts(details):
                     )
                 )
 
-    Cast.objects.bulk_create(casts)
+    Cast.objects.bulk_create(casts, ignore_conflicts=True)
 
 
 def bulk_save_all(details):
@@ -161,6 +230,9 @@ def bulk_save_all(details):
     with transaction.atomic():
         bulk_insert_genres_actors(genre_map, actor_map)
         bulk_insert_movies(details)
+
+        bulk_link_movie_genres(details)
+        bulk_link_movie_actors(details)
         bulk_insert_casts(details)
 
         Movie.objects.filter(

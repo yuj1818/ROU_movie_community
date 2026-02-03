@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MOVIES', '0003_movie_dislike_movie_users_movie_like_movie_users_and_more'),
+        ("MOVIES", "0003_movie_dislike_movie_users_movie_like_movie_users_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='movie',
-            name='is_complete',
+            model_name="movie",
+            name="is_complete",
             field=models.BooleanField(default=False),
         ),
     ]
