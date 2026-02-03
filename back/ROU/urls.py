@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -23,25 +24,25 @@ from drf_yasg import openapi
 from rest_framework.permissions import AllowAny
 
 schema_view = get_schema_view(
-  openapi.Info(
-    title="ROU API",
-    default_version="v1",
-    description="영화 커뮤니티 ROU API",
-    terms_of_service="https://www.google.com/policies/terms/",
-    contact=openapi.Contact(email="sonyujeong18@gmail.com"),
-    license=openapi.License(name="ROU License")
-  ),
-  public=True,
-  permission_classes=[AllowAny]
+    openapi.Info(
+        title="ROU API",
+        default_version="v1",
+        description="영화 커뮤니티 ROU API",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="sonyujeong18@gmail.com"),
+        license=openapi.License(name="ROU License"),
+    ),
+    public=True,
+    permission_classes=[AllowAny],
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/movies/', include('MOVIES.urls')),
-    path('api/accounts/', include('ACCOUNTS.urls')),
-    path('api/accounts/', include('dj_rest_auth.urls')),
-    path('api/accounts/signup/', include('dj_rest_auth.registration.urls')),
-    path('api/community/', include('COMMUNITY.urls')),
-    path('api/quiz/', include('QUIZZES.urls')),
-    path('api/swagger/', schema_view.with_ui('swagger'))
+    path("admin/", admin.site.urls),
+    path("api/movies/", include("MOVIES.urls")),
+    path("api/accounts/", include("ACCOUNTS.urls")),
+    path("api/accounts/", include("dj_rest_auth.urls")),
+    path("api/accounts/signup/", include("dj_rest_auth.registration.urls")),
+    path("api/community/", include("COMMUNITY.urls")),
+    path("api/quiz/", include("QUIZZES.urls")),
+    path("api/swagger/", schema_view.with_ui("swagger")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
