@@ -5,13 +5,13 @@ import { Movie } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useKeenSlider } from 'keen-slider/react';
-import MovieItem from './MovieItem';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SortKey } from '@/constants/category';
 import { useEffect, useRef } from 'react';
 import { useTagStore } from '@/stores/useTagStore';
 import { cn } from '@/lib/utils';
 import { useShallow } from 'zustand/shallow';
+import MovieCard from '@/components/common/MovieCard';
 
 interface MovieSectionsProps {
   id: number;
@@ -77,7 +77,11 @@ export default function MovieSection({
           ) : (
             <ul ref={sliderRef} className="keen-slider">
               {(movies ?? []).map((movie) => (
-                <MovieItem key={movie.movie_id} {...movie} />
+                <MovieCard
+                  key={movie.movie_id}
+                  className="keen-slider__slide"
+                  {...movie}
+                />
               ))}
             </ul>
           )}

@@ -25,3 +25,11 @@ export const getGenreMovieList = async (genreId: number) => {
 
   return res.json();
 };
+
+export const searchMovie = async (query: string) => {
+  const res = await fetch(`${URL}/search?q=${query}`, { method: 'GET' });
+
+  if (!res.ok) throw new Error(`검색어_${query} 검색 실패`);
+
+  return res.json();
+};

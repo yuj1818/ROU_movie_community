@@ -1,11 +1,16 @@
 import { MEDIA_BASE_URL } from '@/constants/url';
+import { cn } from '@/lib/utils';
 import { Movie } from '@/types/movie';
 import { ImageOff } from 'lucide-react';
 import Image from 'next/image';
 
-export default function MovieItem({ title, poster_path }: Movie) {
+export default function MovieCard({
+  title,
+  poster_path,
+  className = '',
+}: Movie & { className?: string }) {
   return (
-    <li className="keen-slider__slide flex w-full aspect-3/4 cursor-pointer">
+    <li className={cn('flex w-full aspect-3/4 cursor-pointer', className)}>
       {poster_path ? (
         <Image
           src={MEDIA_BASE_URL.tmdbImgPath + poster_path}
