@@ -21,7 +21,7 @@ export default async function SearchPage({
 
   return (
     <Suspense key={q} fallback={<div>검색중...</div>}>
-      <div className="w-full flex flex-col gap-4 px-[10%] py-12">
+      <div className="w-4/5 flex flex-col gap-4 py-12">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-2xl">"{q}"</span>에 대한 검색 결과
           {results.length > 0 ? (

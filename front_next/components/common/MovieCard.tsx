@@ -1,16 +1,24 @@
+'use client';
+
 import { MEDIA_BASE_URL } from '@/constants/url';
 import { cn } from '@/lib/utils';
 import { Movie } from '@/types/movie';
 import { ImageOff } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function MovieCard({
   title,
   poster_path,
+  movie_id,
   className = '',
 }: Movie & { className?: string }) {
+  const router = useRouter();
   return (
-    <li className={cn('flex w-full aspect-3/4 cursor-pointer', className)}>
+    <li
+      className={cn('flex w-full aspect-3/4 cursor-pointer', className)}
+      onClick={() => router.push(`/movie/${movie_id}`)}
+    >
       {poster_path ? (
         <Image
           src={MEDIA_BASE_URL.tmdbImgPath + poster_path}

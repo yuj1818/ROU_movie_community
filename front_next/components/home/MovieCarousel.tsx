@@ -10,8 +10,10 @@ import { getTrendMovieList } from '@/lib/movie';
 import { LoaderCircle } from 'lucide-react';
 import { Movie } from '@/types/movie';
 import { MEDIA_BASE_URL } from '@/constants/url';
+import { useRouter } from 'next/navigation';
 
 export default function MovieCarousel() {
+  const router = useRouter();
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
@@ -61,7 +63,7 @@ export default function MovieCarousel() {
           {(movies ?? []).map((movie) => (
             <div
               key={movie.movie_id}
-              className="keen-slider__slide w-ful flex items-center justify-center rounded-md relative aspect-video"
+              className="keen-slider__slide w-ful flex items-center justify-center rounded-md relative aspect-video cursor-pointer"
               onMouseEnter={() => {
                 setHoveredId(movie.movie_id);
                 setIsPlaying(false);
@@ -70,6 +72,7 @@ export default function MovieCarousel() {
                 setHoveredId(null);
                 setIsPlaying(true);
               }}
+              onClick={() => router.push(`/movie/${movie.movie_id}`)}
             >
               {hoveredId === movie.movie_id ? (
                 <iframe
