@@ -1,5 +1,6 @@
 import CastInfo from '@/components/movie/CastInfo';
 import MovieInfo from '@/components/movie/MovieInfo';
+import ReviewList from '@/components/movie/review/ReviewList';
 import { getMovieInfo } from '@/lib/movie';
 
 export default async function MovieDetailPage({
@@ -15,6 +16,7 @@ export default async function MovieDetailPage({
     <div className="w-5/6 py-8 flex flex-col gap-8">
       <MovieInfo initialData={movie} />
       <CastInfo actors={movie.actors} />
+      <ReviewList movieId={movieId} />
     </div>
   );
 }

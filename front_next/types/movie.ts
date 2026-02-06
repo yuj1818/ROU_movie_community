@@ -44,3 +44,24 @@ export interface MovieDetail extends Movie {
   runtime: number;
   director: string;
 }
+
+export interface Review {
+  id: number;
+  review_writor: {
+    id: number;
+    username: string;
+    profile_path: string | null;
+    nickname: string;
+  };
+  title: string;
+  content: string;
+  updated_at: string;
+  created_at: string;
+  like_count: number;
+  dislike_count: number;
+  comment_count: number;
+  review_movie: {
+    movie_id: number;
+    title: string;
+  };
+}

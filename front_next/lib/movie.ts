@@ -41,3 +41,11 @@ export const getMovieInfo = async (movieId: string) => {
 
   return res.json();
 };
+
+export const getMovieReviewList = async (movieId: string) => {
+  const res = await fetch(`${URL}/review/${movieId}`, { method: 'GET' });
+
+  if (!res.ok) throw new Error(`영화_${movieId} 리뷰 조회 실패`);
+
+  return res.json();
+};
