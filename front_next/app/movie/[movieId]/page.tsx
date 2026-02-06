@@ -1,3 +1,4 @@
+import CastInfo from '@/components/movie/CastInfo';
 import MovieInfo from '@/components/movie/MovieInfo';
 import { getMovieInfo } from '@/lib/movie';
 
@@ -13,6 +14,7 @@ export default async function MovieDetailPage({
   return (
     <div className="w-5/6 py-8 flex flex-col gap-8">
       <MovieInfo initialData={movie} />
+      <CastInfo actors={movie.actors} />
     </div>
   );
 }
