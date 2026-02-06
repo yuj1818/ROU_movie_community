@@ -45,7 +45,7 @@ export default function MovieInfo({
     <div className="w-full grid grid-cols-5 gap-4">
       <div className="col-span-3 flex flex-col gap-4">
         <div className="flex text-base items-end gap-4">
-          <h3 className="font-semibold text-2xl">{movie.title}</h3>
+          <h2 className="font-semibold text-2xl">{movie.title}</h2>
           <div className="flex gap-1 items-center">
             <Star className="size-4 fill-yellow-500" />
             <span className="text-sm font-extralight">
