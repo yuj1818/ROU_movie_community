@@ -113,6 +113,7 @@ export default function MovieInfo({
           alt={`${movie.title}_poster`}
           fill
           sizes="300px"
+          loading="eager"
         />
       </div>
     </div>
