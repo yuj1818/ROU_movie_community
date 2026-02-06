@@ -40,9 +40,10 @@ export default function RootLayout({
       >
         <Providers>
           <AppSideBar />
+          <div id="root-portal"></div>
           <main className="flex-1 min-w-0 h-full flex flex-col">
             <Header />
-            <div className="flex-1 min-h-0 overflow-y-auto w-full">
+            <div className="flex-1 min-h-0 overflow-y-auto w-full flex flex-col items-center">
               {children}
             </div>
           </main>
