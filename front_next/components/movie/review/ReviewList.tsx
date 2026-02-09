@@ -3,7 +3,7 @@
 import { getMovieReviewList } from '@/lib/movie';
 import { Review } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReviewItem from './ReviewItem';
 
 export default function ReviewList({ movieId }: { movieId: string }) {
