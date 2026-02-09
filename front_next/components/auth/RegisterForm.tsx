@@ -61,7 +61,7 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
   }, [formValues.password2, formValues.password]);
 
   return (
-    <div className="w-1/2 min-w-50 py-6 flex flex-col gap-4 bg-muted border rounded-lg items-center max-w-100">
+    <div className="w-1/2 min-w-100 py-6 flex flex-col gap-4 bg-muted border rounded-lg items-center max-w-100">
       <h3 className="font-semibold text-2xl text-center">
         {isSocial ? '추가 정보 기입' : '회원가입'}
       </h3>
