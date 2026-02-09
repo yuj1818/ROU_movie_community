@@ -6,3 +6,8 @@ export interface RegisterFormData {
   birth: string;
   nickname: string;
 }
+
+export interface LoginFormData {
+  username: string;
+  password: string;
+}
