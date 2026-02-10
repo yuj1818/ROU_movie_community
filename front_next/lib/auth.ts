@@ -8,3 +8,12 @@ export const register = async (data: RegisterFormData) => {
     body: JSON.stringify(data),
   });
 };
+
+export const addInfoForSocial = async (
+  data: RegisterFormData & { email: string; uid: string },
+) => {
+  return fetch(`${URL}/social`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};

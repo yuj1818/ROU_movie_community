@@ -62,7 +62,14 @@ export default function LoginForm() {
           />
         </FormField>
         {error && <span className="text-sm text-red-500">{error}</span>}
-        <Button>로그인</Button>
+        <Button
+          disabled={
+            formValues.username.trim() === '' ||
+            formValues.password.trim() === ''
+          }
+        >
+          로그인
+        </Button>
       </form>
       <Button variant="link" onClick={() => router.push('/register')}>
         회원가입
@@ -70,13 +77,17 @@ export default function LoginForm() {
       <button
         className="rounded-md w-2/3 flex items-center p-3 cursor-pointer shadow border"
         style={{ backgroundColor: '#FEE500' }}
+        onClick={() => signIn('kakao', { callbackUrl: '/' })}
       >
         <Image src="/kakao_logo.svg" alt="kakao_logo" width={18} height={18} />
         <span className="flex-1 min-w-0 text-sm text-center text-black/85 font-semibold">
           카카오 로그인
         </span>
       </button>
-      <button className="rounded-md w-2/3 flex items-center p-3 cursor-pointer bg-white border shadow">
+      <button
+        className="rounded-md w-2/3 flex items-center p-3 cursor-pointer bg-white border shadow"
+        onClick={() => signIn('google', { callbackUrl: '/' })}
+      >
         <Image
           src="/google_logo.svg"
           alt="google_logo"
