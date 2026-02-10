@@ -4,7 +4,7 @@ import re
 
 
 def normalize_title(title):
-    return re.sub(r"[\s\-:·.!?]", "", title).lower()
+    return re.sub(r"[\s\-:·.!?,]", "", title).lower()
 
 
 # TMDB People 목록

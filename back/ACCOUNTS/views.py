@@ -205,24 +205,13 @@ def user_friend(request):
         )
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def google_login(request):
-    code = request.GET.get("code")
-    token_url = "https://oauth2.googleapis.com/token"
-    data = {
-        "code": code,
-        "client_id": settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID,
-        "client_secret": settings.SOCIAL_AUTH_GOOGLE_SECRET,
-        "redirect_uri": settings.OAUTH2_REDIRECT_URI,
-        "grant_type": "authorization_code",
-    }
-    token_res = requests.post(token_url, data=data)
-    token_res_json = token_res.json()
-
-    access_token = token_res_json.get("access_token")
+    id_token = request.data.get("id_token")
     info_res = requests.get(
-        f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}"
+        "https://oauth2.googleapis.com/tokeninfo",
+        params={"id_token": id_token},
     )
     info_res_status = info_res.status_code
     if info_res_status != 200:
@@ -231,41 +220,40 @@ def google_login(request):
         )
     info_res_json = info_res.json()
     email = info_res_json.get("email")
+    uid = info_res_json.get("sub")
 
     try:
         user = User.objects.get(email=email)
         Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
-        serializer = TokenSerializer(token)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "is_new": False,
+                "key": token.key,
+                "user": user.id,
+            },
+            status=status.HTTP_200_OK,
+        )
     except Exception:
-        data = {
-            "message": "추가 정보 입력이 필요합니다.",
-            "email": email,
-            "uid": info_res_json.get("user_id"),
-        }
-        return Response(data, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            {
+                "message": "추가 정보 입력이 필요합니다.",
+                "is_new": True,
+                "email": email,
+                "uid": uid,
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def kakao_login(request):
-    code = request.GET.get("code")
-    token_url = "https://kauth.kakao.com/oauth/token"
-    data = {
-        "code": code,
-        "client_id": settings.SOCIAL_AUTH_KAKAO_CLIENT_ID,
-        "redirect_uri": settings.KAKAO_REDIRECT_URI,
-        "grant_type": "authorization_code",
-    }
-    token_res = requests.post(
-        token_url,
-        headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"},
-        data=data,
-    )
-    token_res_json = token_res.json()
-
-    access_token = token_res_json.get("access_token")
+    access_token = request.data.get("access_token")
+    if not access_token:
+        return Response(
+            {"err_msg": "access_token missing"}, status=status.HTTP_400_BAD_REQUEST
+        )
     info_res = requests.get(
         "https://kapi.kakao.com/v1/oidc/userinfo",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -275,13 +263,18 @@ def kakao_login(request):
             {"err_msg": "failed to get userinfo"}, status=status.HTTP_400_BAD_REQUEST
         )
     info_res_json = info_res.json()
+    print(info_res_json)
     email = info_res_json.get("email")
-    profile_res = requests.get(info_res_json.get("picture"))
-    profile_image = ContentFile(profile_res.content)
+    uid = info_res_json.get("sub")
+    profile_image = None
+    if info_res_json.get("picture"):
+        profile_res = requests.get(info_res_json["picture"])
+        profile_image = ContentFile(profile_res.content)
 
     try:
         user = User.objects.get(email=email)
-        user.profile_image.save(f"profile_{user.id}", profile_image)
+        if profile_image:
+            user.profile_image.save(f"profile_{user.id}", profile_image)
         Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
         serializer = TokenSerializer(token)
@@ -291,7 +284,7 @@ def kakao_login(request):
             "email": email,
             "nickname": info_res_json.get("nickname"),
             "birth": info_res_json.get("birthdate"),
-            "region": "전국",
+            "region": "서울특별시 강남구",
             "username": email,
             "password1": "임시비밀번호입니다",
             "password2": "임시비밀번호입니다",
@@ -299,11 +292,10 @@ def kakao_login(request):
         serializer = CustomRegisterSerializer(data=data)
         if serializer.is_valid():
             user = serializer.save(request=request)
-            user.profile_image.save(f"profile_{user.id}", profile_image)
+            if profile_image:
+                user.profile_image.save(f"profile_{user.id}", profile_image)
             user.save()
-            SocialAccount.objects.create(
-                user=user, uid=info_res_json.get("sub"), provider="kakao"
-            )
+            SocialAccount.objects.create(user=user, uid=uid, provider="kakao")
             token = Token.objects.get(user=user)
             seializer = TokenSerializer(token)
             return Response(seializer.data, status=status.HTTP_201_CREATED)

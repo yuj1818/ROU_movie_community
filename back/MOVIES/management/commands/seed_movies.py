@@ -7,6 +7,7 @@ from django.db import transaction
 from django.utils import timezone
 from asgiref.sync import sync_to_async
 from MOVIES.models import Movie, Genre, Actor, Cast
+import re
 
 API_KEY = settings.API_KEY
 DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie"
@@ -25,6 +26,10 @@ DISCOVER_PARAMS_BASE = {
     "vote_count.gte": 30,
     "vote_average.gte": 5.0,
 }
+
+
+def normalize_title(title):
+    return re.sub(r"[\s\-:·.!?]", "", title).lower()
 
 
 def extract_kr_release_date(release_dates):
@@ -121,6 +126,7 @@ def bulk_insert_movies(details):
             Movie(
                 movie_id=d["id"],
                 title=d["title"],
+                normalized_title=normalize_title(d["title"]),
                 adult=d.get("adult", False),
                 overview=d.get("overview"),
                 release_date=d.get("release_date") or None,
