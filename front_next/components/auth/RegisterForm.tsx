@@ -5,16 +5,24 @@ import { Button } from '../ui/button';
 import FormField from './FormField';
 import RegionSelect from './RegionSelect';
 import TextInput from './TextInput';
-import { register } from '@/lib/auth';
+import { addInfoForSocial, register } from '@/lib/auth';
 import { RegisterFormData } from '@/types/auth';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
-export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
+export default function RegisterForm({
+  isSocial,
+  email = '',
+  uid = '',
+}: {
+  isSocial: boolean;
+  email?: string;
+  uid?: string;
+}) {
   const router = useRouter();
   const [formValues, setFormValues] = useState<RegisterFormData>({
     username: '',
-    password: '',
+    password1: '',
     password2: '',
     nickname: '',
     region: '',
@@ -22,7 +30,6 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
   });
   const [error, setError] = useState('');
   const [isValidPassword, setIsValidPassword] = useState<boolean | null>(null);
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues((prev) => ({
       ...prev,
@@ -34,7 +41,20 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
     e.preventDefault();
     setError('');
 
-    const res = await register(formValues);
+    let res;
+
+    if (isSocial) {
+      res = await addInfoForSocial({
+        ...formValues,
+        email,
+        username: email,
+        password1: '임시비밀번호입니다',
+        password2: '임시비밀번호입니다',
+        uid,
+      });
+    } else {
+      res = await register(formValues);
+    }
 
     const data = await res.json();
 
@@ -50,15 +70,33 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
     router.replace(isSocial ? '/' : 'login');
   };
 
+  const checkValidation = () => {
+    const { username, password1, nickname, region, birth } = formValues;
+    if (isSocial) {
+      return (
+        region.trim() === '' || birth.trim() === '' || nickname.trim() === ''
+      );
+    } else {
+      return (
+        username.trim() === '' ||
+        password1.trim() === '' ||
+        region.trim() === '' ||
+        birth.trim() === '' ||
+        nickname.trim() === '' ||
+        !isValidPassword
+      );
+    }
+  };
+
   useEffect(() => {
-    if (formValues.password) {
-      if (formValues.password !== formValues.password2) {
+    if (formValues.password1) {
+      if (formValues.password1 !== formValues.password2) {
         setIsValidPassword(false);
       } else {
         setIsValidPassword(true);
       }
     }
-  }, [formValues.password2, formValues.password]);
+  }, [formValues.password2, formValues.password1]);
 
   return (
     <div className="w-1/2 min-w-100 py-6 flex flex-col gap-4 bg-muted border rounded-lg items-center max-w-100">
@@ -76,11 +114,11 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
                 onChange={onChange}
               />
             </FormField>
-            <FormField label="비밀번호" htmlFor="password">
+            <FormField label="비밀번호" htmlFor="password1">
               <TextInput
                 type="password"
-                id="password"
-                name="password"
+                id="password1"
+                name="password1"
                 onChange={onChange}
               />
             </FormField>
@@ -125,7 +163,7 @@ export default function RegisterForm({ isSocial }: { isSocial: boolean }) {
           <TextInput type="date" id="birth" name="birth" onChange={onChange} />
         </FormField>
         {error && <span className="text-sm text-red-500">{error}</span>}
-        <Button>회원가입</Button>
+        <Button disabled={checkValidation()}>회원가입</Button>
       </form>
     </div>
   );
