@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import { useModalContext } from '@/contexts/ModalContext';
+import Title from '../common/Title';
 
 export default function MovieInfo({
   initialData,
@@ -55,11 +56,11 @@ export default function MovieInfo({
         </div>
         <Separator className="bg-muted-foreground" />
         <div className="flex text-base items-center gap-4">
-          <h3 className="font-semibold text-lg">상영일</h3>
+          <Title size="sm">상영일</Title>
           <span className="text-sm font-extralight">{movie.release_date}</span>
         </div>
         <div className="flex text-base items-center gap-4">
-          <h3 className="font-semibold text-lg">장르</h3>
+          <Title size="sm">장르</Title>
           <div className="flex gap-2">
             {movie.genres.map((genre) => (
               <Badge key={genre.id}>{genre.name}</Badge>
@@ -67,7 +68,7 @@ export default function MovieInfo({
           </div>
         </div>
         <div className="flex text-base items-center gap-4">
-          <h3 className="font-semibold text-lg">감독</h3>
+          <Title size="sm">감독</Title>
           <span className="text-sm font-extralight">{movie.director}</span>
         </div>
         <span className="text-sm font-extralight">{movie.overview}</span>
