@@ -3,10 +3,14 @@
 import { getMovieReviewList } from '@/lib/movie';
 import { Review } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReviewItem from './ReviewItem';
+import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import Title from '@/components/common/Title';
 
 export default function ReviewList({ movieId }: { movieId: string }) {
+  const { status } = useSession();
   const [isAll, setIsAll] = useState(false);
   const { data: reviews, isPending } = useQuery<Review[]>({
     queryKey: ['reviews', movieId],
@@ -19,7 +23,8 @@ export default function ReviewList({ movieId }: { movieId: string }) {
   return (
     <div className="flex flex-col w-full gap-2">
       <div className="w-full flex justify-between items-center">
-        <h3 className="font-semibold text-xl text-white">사용자 리뷰</h3>
+        <Title>사용자 리뷰</Title>
+        {status === 'authenticated' && <Button>리뷰 작성</Button>}
       </div>
       <div className="flex flex-col w-full p-6 gap-2 rounded-md border border-foreground">
         {reviews && reviews.length > 0 ? (

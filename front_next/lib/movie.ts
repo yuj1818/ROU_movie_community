@@ -49,3 +49,12 @@ export const getMovieReviewList = async (movieId: string) => {
 
   return res.json();
 };
+
+export const getRecommendMovieList = async (title: string) => {
+  const res = await fetch(`${URL}/recommend?title=${title}`);
+
+  if (!res.ok)
+    throw new Error(`영화_${title}와 비슷한 영화 추천 목록 조회 실패`);
+
+  return res.json();
+};
