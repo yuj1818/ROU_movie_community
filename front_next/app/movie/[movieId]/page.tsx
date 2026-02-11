@@ -1,5 +1,6 @@
 import CastInfo from '@/components/movie/CastInfo';
 import MovieInfo from '@/components/movie/MovieInfo';
+import RecommendList from '@/components/movie/RecommendList';
 import ReviewList from '@/components/movie/review/ReviewList';
 import { getMovieInfo } from '@/lib/movie';
 
@@ -17,6 +18,7 @@ export default async function MovieDetailPage({
       <MovieInfo initialData={movie} />
       <CastInfo actors={movie.actors} />
       <ReviewList movieId={movieId} />
+      <RecommendList movieId={movieId} title={movie.title} />
     </div>
   );
 }
