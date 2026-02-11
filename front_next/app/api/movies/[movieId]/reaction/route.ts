@@ -16,9 +16,10 @@ export async function POST(req: NextRequest) {
     const res = await fetch(`${URL}${pathname}/`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Token ${session.backendToken}`,
       },
-      body,
+      body: JSON.stringify(body),
     });
     const data = await res.json();
 

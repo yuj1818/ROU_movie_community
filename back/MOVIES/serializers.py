@@ -76,6 +76,43 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class MovieReactionSerializer(serializers.ModelSerializer):
+    like_movie_users_count = serializers.IntegerField(
+        source="like_movie_users.count", read_only=True
+    )
+    dislike_movie_users_count = serializers.IntegerField(
+        source="dislike_movie_users.count", read_only=True
+    )
+    reaction = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = (
+            "movie_id",
+            "reaction",
+            "like_movie_users_count",
+            "dislike_movie_users_count",
+        )
+
+    def get_reaction(self, obj):
+        request = self.context.get("request")
+        if not request or not hasattr(request, 'user'):
+            return None
+
+        user = request.user
+
+        if not user.is_authenticated:
+            return None
+
+        if obj.like_movie_users.filter(pk=user.pk).exists():
+            return "LIKE"
+
+        if obj.dislike_movie_users.filter(pk=user.pk).exists():
+            return "DISLIKE"
+
+        return None
+
+
 class MovieLikeSerializer(serializers.ModelSerializer):
     like_movie_users = UserSerializer(many=True, read_only=True)
     like_movie_users_count = serializers.IntegerField(

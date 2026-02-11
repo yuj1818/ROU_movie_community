@@ -61,11 +61,19 @@ def movie_genre(request, genre_id):
 def movie_detail(request, movie_id):
     movie = Movie.objects.get(pk=movie_id)
     serializer = MovieSerializer(movie)
+    isLike = movie.like_movie_users.filter(pk=request.user.pk).exists()
+    isDislike = movie.dislike_movie_users.filter(pk=request.user.pk).exists()
+    reaction = None
+    if isLike:
+        reaction = 'LIKE'
+    elif isDislike:
+        reaction = 'DISLIKE'
 
     data = {
-        "isLike": movie.like_movie_users.filter(pk=request.user.pk).exists(),
+        "reaction": reaction,
+        "isLike": isLike,
         "isFavorite": movie.favorite_movie_users.filter(pk=request.user.pk).exists(),
-        "isDislike": movie.dislike_movie_users.filter(pk=request.user.pk).exists(),
+        "isDislike": isDislike,
         "isWatch": movie.watching_movie_users.filter(pk=request.user.pk).exists(),
     }
 
@@ -131,6 +139,31 @@ def search(request):
         )
     serializer = MovieSimpleSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def movie_reaction(request, movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
+    user = request.user
+    reaction_type = request.data.get("type")  # "LIKE" | "DISLIKE"
+
+    if reaction_type == "LIKE":
+        if movie.like_movie_users.filter(pk=user.pk).exists():
+            movie.like_movie_users.remove(user)
+        else:
+            movie.dislike_movie_users.remove(user)
+            movie.like_movie_users.add(user)
+
+    elif reaction_type == "DISLIKE":
+        if movie.dislike_movie_users.filter(pk=user.pk).exists():
+            movie.dislike_movie_users.remove(user)
+        else:
+            movie.like_movie_users.remove(user)
+            movie.dislike_movie_users.add(user)
+
+    serializer = MovieReactionSerializer(movie, context={"request": request})
+    return Response(serializer.data)
 
 
 @api_view(["POST"])
