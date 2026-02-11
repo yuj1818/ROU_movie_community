@@ -1,6 +1,6 @@
 'use client';
 
-import { SidebarMenuButton } from '@/components/ui/sidebar';
+import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { logout } from '@/lib/auth';
 import { signOut } from 'next-auth/react';
 import { LogOut } from 'lucide-react';
@@ -14,8 +14,10 @@ export default function LogoutBtn() {
   };
 
   return (
-    <SidebarMenuButton onClick={onClickLogout}>
-      <LogOut />
-    </SidebarMenuButton>
+    <SidebarMenuItem onClick={onClickLogout}>
+      <SidebarMenuButton asChild tooltip="Logout">
+        <LogOut />
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }

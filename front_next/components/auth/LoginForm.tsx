@@ -8,6 +8,7 @@ import TextInput from './TextInput';
 import { useRouter } from 'next/navigation';
 import { LoginFormData } from '@/types/auth';
 import Image from 'next/image';
+import Title from '../common/Title';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -38,12 +39,15 @@ export default function LoginForm() {
       return;
     }
 
-    router.push('/');
+    router.replace('/');
+    router.refresh();
   };
 
   return (
     <div className="w-1/2 min-w-100 py-6 flex flex-col gap-2 bg-muted border rounded-lg items-center max-w-150">
-      <h3 className="font-semibold text-2xl text-center">로그인</h3>
+      <Title size="xl" className="text-center">
+        로그인
+      </Title>
       <form className="w-2/3 flex flex-col gap-4" onSubmit={onSubmit}>
         <FormField label="아이디" htmlFor="username">
           <TextInput

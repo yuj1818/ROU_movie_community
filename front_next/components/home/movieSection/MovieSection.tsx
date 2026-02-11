@@ -12,6 +12,7 @@ import { useTagStore } from '@/stores/useTagStore';
 import { cn } from '@/lib/utils';
 import { useShallow } from 'zustand/shallow';
 import MovieCard from '@/components/common/MovieCard';
+import Title from '@/components/common/Title';
 
 interface MovieSectionsProps {
   id: number;
@@ -69,7 +70,7 @@ export default function MovieSection({
         isTagOpen ? 'scroll-mt-20' : 'scroll-mt-12',
       )}
     >
-      <h3 className="font-semibold text-xl w-11/12">{label}</h3>
+      <Title className="w-11/12">{label}</Title>
       <div className="w-full relative flex justify-center items-center">
         <div className="w-11/12">
           {isPending ? (

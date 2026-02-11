@@ -9,6 +9,7 @@ import { addInfoForSocial, register } from '@/lib/auth';
 import { RegisterFormData } from '@/types/auth';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import Title from '../common/Title';
 
 export default function RegisterForm({
   isSocial,
@@ -100,9 +101,9 @@ export default function RegisterForm({
 
   return (
     <div className="w-1/2 min-w-100 py-6 flex flex-col gap-4 bg-muted border rounded-lg items-center max-w-100">
-      <h3 className="font-semibold text-2xl text-center">
+      <Title size="xl" className="text-center">
         {isSocial ? '추가 정보 기입' : '회원가입'}
-      </h3>
+      </Title>
       <form className="w-2/3 flex flex-col gap-4" onSubmit={onSubmit}>
         {!isSocial && (
           <>
