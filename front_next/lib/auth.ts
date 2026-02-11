@@ -17,3 +17,9 @@ export const addInfoForSocial = async (
     body: JSON.stringify(data),
   });
 };
+
+export const logout = async () => {
+  return fetch(`${URL}/logout`, {
+    method: 'POST',
+  });
+};
