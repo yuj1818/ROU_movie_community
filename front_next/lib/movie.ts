@@ -18,7 +18,7 @@ export const getSortedMovieList = async (key: SortKey) => {
   return res.json();
 };
 
-export const getGenreMovieList = async (genreId: number) => {
+export const getGenreMovieList = async (genreId: number | string) => {
   const res = await fetch(`${URL}/genre/${genreId}`, { method: 'GET' });
 
   if (!res.ok) throw new Error(`장르_${genreId} 영화 목록 조회 실패`);
@@ -34,7 +34,7 @@ export const searchMovie = async (query: string) => {
   return res.json();
 };
 
-export const getMovieInfo = async (movieId: string) => {
+export const getMovieInfo = async (movieId: number | string) => {
   const res = await fetch(`${URL}/${movieId}`, { method: 'GET' });
 
   if (!res.ok) throw new Error(`영화_${movieId} 조회 실패`);
@@ -42,8 +42,8 @@ export const getMovieInfo = async (movieId: string) => {
   return res.json();
 };
 
-export const getMovieReviewList = async (movieId: string) => {
-  const res = await fetch(`${URL}/review/${movieId}`, { method: 'GET' });
+export const getMovieReviewList = async (movieId: number | string) => {
+  const res = await fetch(`${URL}/${movieId}/review`, { method: 'GET' });
 
   if (!res.ok) throw new Error(`영화_${movieId} 리뷰 조회 실패`);
 
@@ -51,10 +51,18 @@ export const getMovieReviewList = async (movieId: string) => {
 };
 
 export const getRecommendMovieList = async (title: string) => {
-  const res = await fetch(`${URL}/recommend?title=${title}`);
+  const res = await fetch(`${URL}/recommend?title=${title}`, { method: 'GET' });
 
   if (!res.ok)
     throw new Error(`영화_${title}와 비슷한 영화 추천 목록 조회 실패`);
 
   return res.json();
+};
+
+export const toggleWatch = async (movieId: number | string) => {
+  const res = await fetch(`${URL}/${movieId}/watch`, { method: 'POST' });
+
+  if (!res.ok) throw new Error('시청 여부 토글 실패');
+
+  return res;
 };

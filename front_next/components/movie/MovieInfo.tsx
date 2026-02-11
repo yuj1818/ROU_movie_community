@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import { useModalContext } from '@/contexts/ModalContext';
 import Title from '../common/Title';
+import WatchToggle from './movieActions/WatchToggle';
 
 export default function MovieInfo({
   initialData,
@@ -74,12 +75,7 @@ export default function MovieInfo({
         <span className="text-sm font-extralight">{movie.overview}</span>
         <Separator className="bg-muted-foreground" />
         <div className="flex gap-4 h-6">
-          <TvMinimal
-            className={cn(
-              'cursor-pointer',
-              movie.isWatch ? 'text-red-500' : '',
-            )}
-          />
+          <WatchToggle movie_id={movie.movie_id} />
           <div className="h-full flex items-center text-sm font-extralight gap-1">
             <ThumbsUp
               className={cn('cursor-pointer', movie.isLike ? 'fill-white' : '')}
