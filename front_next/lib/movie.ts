@@ -66,3 +66,17 @@ export const toggleWatch = async (movieId: number | string) => {
 
   return res;
 };
+
+export const toggleReaction = async (
+  movieId: number | string,
+  type: 'LIKE' | 'DISLIKE',
+) => {
+  const res = await fetch(`${URL}/${movieId}/reaction`, {
+    method: 'POST',
+    body: JSON.stringify({ type }),
+  });
+
+  if (!res.ok) throw new Error('좋아요/싫어요 토글 실패');
+
+  return res.json();
+};

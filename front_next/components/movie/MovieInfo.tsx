@@ -13,6 +13,7 @@ import { MEDIA_BASE_URL } from '@/constants/url';
 import { useModalContext } from '@/contexts/ModalContext';
 import Title from '../common/Title';
 import WatchToggle from './movieActions/WatchToggle';
+import ReactionToggle from './movieActions/ReactionToggle';
 
 export default function MovieInfo({
   initialData,
@@ -75,19 +76,8 @@ export default function MovieInfo({
         <span className="text-sm font-extralight">{movie.overview}</span>
         <Separator className="bg-muted-foreground" />
         <div className="flex gap-4 h-6">
-          <WatchToggle movie_id={movie.movie_id} />
-          <div className="h-full flex items-center text-sm font-extralight gap-1">
-            <ThumbsUp
-              className={cn('cursor-pointer', movie.isLike ? 'fill-white' : '')}
-            />
-            <span>{movie.like_movie_users_count}</span>
-          </div>
-          <div className="h-full flex items-center text-sm font-extralight gap-1">
-            <ThumbsDown
-              className={cn('cursor-pointer', movie.isLike ? 'fill-white' : '')}
-            />
-            <span>{movie.dislike_movie_users_count}</span>
-          </div>
+          <WatchToggle movieId={movie.movie_id} />
+          <ReactionToggle movieId={movie.movie_id} />
           <div className="h-full flex items-center text-sm font-extralight gap-1">
             <Star
               className={cn(
