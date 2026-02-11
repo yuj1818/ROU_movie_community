@@ -165,6 +165,9 @@ export default function RegisterForm({
         {error && <span className="text-sm text-red-500">{error}</span>}
         <Button disabled={checkValidation()}>회원가입</Button>
       </form>
+      <Button variant="link" onClick={() => router.push('/login')}>
+        {'<-'} 로그인
+      </Button>
     </div>
   );
 }

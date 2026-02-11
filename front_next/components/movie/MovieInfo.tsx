@@ -42,8 +42,8 @@ export default function MovieInfo({
   };
 
   return (
-    <div className="w-full grid grid-cols-5 gap-4">
-      <div className="col-span-3 flex flex-col gap-4">
+    <div className="w-full flex gap-4">
+      <div className="flex-1 min-w-0 flex flex-col gap-4">
         <div className="flex text-base items-end gap-4">
           <h2 className="font-semibold text-2xl">{movie.title}</h2>
           <div className="flex gap-1 items-center">
@@ -106,7 +106,7 @@ export default function MovieInfo({
           />
         </div>
       </div>
-      <div className="col-span-2 w-full aspect-3/4 relative">
+      <div className="w-2/5 max-w-100 aspect-3/4 relative">
         <Image
           className="rounded overflow-hidden"
           src={MEDIA_BASE_URL.tmdbImgPath + movie.poster_path || ''}
