@@ -7,17 +7,10 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
 } from '../../ui/sidebar';
-import {
-  Balloon,
-  CircleUser,
-  Home,
-  LogOut,
-  MessageSquareText,
-} from 'lucide-react';
+import { Balloon, CircleUser, Home, MessageSquareText } from 'lucide-react';
 import SidebarMenuItem from './SidebarMenuItem';
-
+import LogoutBtn from './LogoutBtn';
 export default function AppSideBar() {
   return (
     <Sidebar collapsible="icon">
@@ -47,9 +40,7 @@ export default function AppSideBar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenuButton>
-          <LogOut />
-        </SidebarMenuButton>
+        <LogoutBtn />
       </SidebarFooter>
     </Sidebar>
   );

@@ -4,6 +4,7 @@ const URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const pathname = req.nextUrl.pathname;
 
   const { password1, password2 } = body;
 
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${URL}/api/accounts/signup/`, {
+    const res = await fetch(`${URL}${pathname}/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth';
+import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
@@ -123,5 +123,3 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
-
-export const { auth, handlers } = NextAuth(authOptions);
