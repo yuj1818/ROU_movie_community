@@ -4,19 +4,19 @@ import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleWatch } from '@/lib/movie';
 
-export default function WatchToggle({ movie_id }: { movie_id: number }) {
+export default function WatchToggle({ movieId }: { movieId: number }) {
   const queryClient = useQueryClient();
-  const movie = queryClient.getQueryData<MovieDetail>(['movie', movie_id]);
+  const movie = queryClient.getQueryData<MovieDetail>(['movie', movieId]);
 
   const mutation = useMutation({
-    mutationFn: () => toggleWatch(movie_id),
+    mutationFn: () => toggleWatch(movieId),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['movie', movie_id] });
+      await queryClient.cancelQueries({ queryKey: ['movie', movieId] });
 
-      const prev = queryClient.getQueryData<MovieDetail>(['movie', movie_id]);
+      const prev = queryClient.getQueryData<MovieDetail>(['movie', movieId]);
 
       queryClient.setQueryData<MovieDetail>(
-        ['movie', movie_id],
+        ['movie', movieId],
         (old) =>
           old && {
             ...old,
@@ -27,7 +27,7 @@ export default function WatchToggle({ movie_id }: { movie_id: number }) {
       return { prev };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['movie', movie_id], context?.prev);
+      queryClient.setQueryData(['movie', movieId], context?.prev);
     },
   });
 

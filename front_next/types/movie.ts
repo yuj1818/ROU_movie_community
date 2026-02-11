@@ -29,10 +29,9 @@ export interface Genre {
 }
 
 export interface MovieDetail extends Movie {
-  isLike: boolean;
   isFavorite: boolean;
-  isDislike: boolean;
   isWatch: boolean;
+  reaction: ReactionType;
   actors: Actor[];
   genres: Genre[];
   like_movie_users_count: number;
@@ -44,6 +43,8 @@ export interface MovieDetail extends Movie {
   runtime: number;
   director: string;
 }
+
+export type ReactionType = 'LIKE' | 'DISLIKE' | null;
 
 export interface Review {
   id: number;
