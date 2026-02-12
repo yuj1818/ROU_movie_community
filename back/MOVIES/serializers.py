@@ -136,14 +136,13 @@ class MovieDislikeSerializer(serializers.ModelSerializer):
 
 
 class MovieFavoriteSerializer(serializers.ModelSerializer):
-    favorite_movie_users = UserSerializer(many=True, read_only=True)
     favorite_movie_users_count = serializers.IntegerField(
         source="favorite_movie_users.count", read_only=True
     )
 
     class Meta:
         model = Movie
-        fields = ("movie_id", "favorite_movie_users", "favorite_movie_users_count")
+        fields = ("movie_id", "favorite_movie_users_count")
 
 
 # class ReviewSerializer(serializers.ModelSerializer):

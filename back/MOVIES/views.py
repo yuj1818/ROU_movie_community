@@ -222,7 +222,14 @@ def movie_favorite(request, movie_id):
         movie.favorite_movie_users.add(user)
 
     serializer = MovieFavoriteSerializer(movie)
-    return Response(serializer.data)
+
+    data = {
+        "isFavorite": movie.favorite_movie_users.filter(pk=request.user.pk).exists(),
+    }
+
+    data.update(serializer.data)
+
+    return Response(data)
 
 
 @api_view(["GET"])
