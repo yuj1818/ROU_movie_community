@@ -9,7 +9,6 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
 } from '../../ui/sidebar';
 import {
   Balloon,
@@ -48,7 +47,11 @@ export default async function AppSideBar() {
               />
               {isLoggedIn && (
                 <>
-                  <SidebarMenuItem icon={<CircleUser />} title="My" href="/" />
+                  <SidebarMenuItem
+                    icon={<CircleUser />}
+                    title="My"
+                    href={`/profile/${session.user.id}`}
+                  />
                   <SidebarMenuItem icon={<Balloon />} title="Quiz" href="/" />
                 </>
               )}

@@ -2,7 +2,7 @@ import { MovieDetail } from '@/types/movie';
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleFavorite } from '@/lib/movie';
+import { toggleFavorite } from '@/lib/client/movie';
 
 export default function FavoriteToggle({ movieId }: { movieId: number }) {
   const queryClient = useQueryClient();

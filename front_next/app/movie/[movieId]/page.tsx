@@ -2,7 +2,7 @@ import CastInfo from '@/components/movie/CastInfo';
 import MovieInfo from '@/components/movie/MovieInfo';
 import RecommendList from '@/components/movie/RecommendList';
 import ReviewList from '@/components/movie/review/ReviewList';
-import { getMovieInfo } from '@/lib/movie';
+import { getMovieInfo } from '@/lib/server/movie';
 
 export default async function MovieDetailPage({
   params,

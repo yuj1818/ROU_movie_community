@@ -1,6 +1,6 @@
 'use client';
 
-import { getGenreMovieList, getSortedMovieList } from '@/lib/movie';
+import { getGenreMovieList, getSortedMovieList } from '@/lib/client/movie';
 import { Movie } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';

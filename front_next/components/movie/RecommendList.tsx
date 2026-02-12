@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Title from '../common/Title';
 import { Movie } from '@/types/movie';
-import { getRecommendMovieList } from '@/lib/movie';
+import { getRecommendMovieList } from '@/lib/client/movie';
 import { useSession } from 'next-auth/react';
 import MovieCard from '../common/MovieCard';
 

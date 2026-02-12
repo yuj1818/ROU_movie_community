@@ -1,6 +1,6 @@
 'use client';
 
-import { getMovieReviewList } from '@/lib/movie';
+import { getMovieReviewList } from '@/lib/client/movie';
 import { Review } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';

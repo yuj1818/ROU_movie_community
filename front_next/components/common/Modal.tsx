@@ -37,7 +37,7 @@ function Modal({
   return (
     <Dimmed>
       <div
-        className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded overflow-hidden z-1001 p-4 flex flex-col justify-center gap-8 border min-h-40 min-w-[20rem]"
+        className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded overflow-hidden z-1001 p-4 flex flex-col justify-center gap-8 border min-h-20 min-w-[20rem]"
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
@@ -60,6 +60,7 @@ function Modal({
                 size="sm"
                 variant={buttonVariant || 'default'}
                 className={clsx('cursor-pointer', rightBtnColor)}
+                
                 onClick={onRightBtnClick}
               >
                 {rightBtnLabel}

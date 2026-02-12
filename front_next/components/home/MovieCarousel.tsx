@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { getTrendMovieList } from '@/lib/movie';
+import { getTrendMovieList } from '@/lib/client/movie';
 import { LoaderCircle } from 'lucide-react';
 import { Movie } from '@/types/movie';
 import { MEDIA_BASE_URL } from '@/constants/url';
