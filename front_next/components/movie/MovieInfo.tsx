@@ -1,6 +1,6 @@
 'use client';
 
-import { getMovieInfo } from '@/lib/movie';
+import { getMovieInfo } from '@/lib/client/movie';
 import { MovieDetail } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
 import { Star, ThumbsDown, ThumbsUp, TvMinimal } from 'lucide-react';
@@ -15,12 +15,14 @@ import Title from '../common/Title';
 import WatchToggle from './movieActions/WatchToggle';
 import ReactionToggle from './movieActions/ReactionToggle';
 import FavoriteToggle from './movieActions/FavoriteToggle';
+import { useSession } from 'next-auth/react';
 
 export default function MovieInfo({
   initialData,
 }: {
   initialData: MovieDetail;
 }) {
+  const { status } = useSession();
   const { data: movie, isPending } = useQuery<MovieDetail>({
     queryKey: ['movie', initialData.movie_id],
     queryFn: async () => {
@@ -77,9 +79,13 @@ export default function MovieInfo({
         <span className="text-sm font-extralight">{movie.overview}</span>
         <Separator className="bg-muted-foreground" />
         <div className="flex gap-4 h-6">
-          <WatchToggle movieId={movie.movie_id} />
-          <ReactionToggle movieId={movie.movie_id} />
-          <FavoriteToggle movieId={movie.movie_id} />
+          {status === 'authenticated' && (
+            <>
+              <WatchToggle movieId={movie.movie_id} />
+              <ReactionToggle movieId={movie.movie_id} />
+              <FavoriteToggle movieId={movie.movie_id} />
+            </>
+          )}
           <Youtube
             className="cursor-pointer w-8 h-6"
             onClick={onOpenTrailerModal}

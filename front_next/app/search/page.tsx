@@ -1,5 +1,5 @@
 import SearchList from '@/components/search/SearchList';
-import { searchMovie } from '@/lib/movie';
+import { searchMovie } from '@/lib/server/movie';
 import { Suspense } from 'react';
 
 export default async function SearchPage({

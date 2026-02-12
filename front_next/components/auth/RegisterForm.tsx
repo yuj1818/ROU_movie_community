@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import FormField from './FormField';
 import RegionSelect from './RegionSelect';
 import TextInput from './TextInput';
-import { addInfoForSocial, register } from '@/lib/auth';
+import { addInfoForSocial, register } from '@/lib/client/auth';
 import { RegisterFormData } from '@/types/auth';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

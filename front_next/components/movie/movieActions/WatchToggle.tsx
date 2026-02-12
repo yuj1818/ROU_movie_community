@@ -2,7 +2,7 @@ import { MovieDetail } from '@/types/movie';
 import { TvMinimal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleWatch } from '@/lib/movie';
+import { toggleWatch } from '@/lib/client/movie';
 
 export default function WatchToggle({ movieId }: { movieId: number }) {
   const queryClient = useQueryClient();

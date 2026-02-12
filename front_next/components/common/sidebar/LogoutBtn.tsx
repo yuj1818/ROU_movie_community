@@ -1,7 +1,7 @@
 'use client';
 
 import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { logout } from '@/lib/auth';
+import { logout } from '@/lib/client/auth';
 import { signOut } from 'next-auth/react';
 import { LogOut } from 'lucide-react';
 

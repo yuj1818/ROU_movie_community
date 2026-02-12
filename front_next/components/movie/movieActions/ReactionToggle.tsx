@@ -2,7 +2,7 @@ import { MovieDetail } from '@/types/movie';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleReaction } from '@/lib/movie';
+import { toggleReaction } from '@/lib/client/movie';
 
 export default function ReactionToggle({ movieId }: { movieId: number }) {
   const queryClient = useQueryClient();

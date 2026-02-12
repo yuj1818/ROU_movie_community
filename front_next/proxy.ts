@@ -18,7 +18,7 @@ function startsWithAny(pathname: string, paths: string[]) {
 }
 
 export async function proxy(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXT_AUTH_SECRET });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = req.nextUrl;
 
   const isLoggedIn = !!token;

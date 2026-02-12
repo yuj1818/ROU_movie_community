@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials) return null;
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/accounts/login`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/login`,
           {
             method: 'POST',
             headers: {
@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
     }),
   ],
-  secret: process.env.NEXT_AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
