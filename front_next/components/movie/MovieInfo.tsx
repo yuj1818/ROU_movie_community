@@ -14,6 +14,7 @@ import { useModalContext } from '@/contexts/ModalContext';
 import Title from '../common/Title';
 import WatchToggle from './movieActions/WatchToggle';
 import ReactionToggle from './movieActions/ReactionToggle';
+import FavoriteToggle from './movieActions/FavoriteToggle';
 
 export default function MovieInfo({
   initialData,
@@ -78,15 +79,7 @@ export default function MovieInfo({
         <div className="flex gap-4 h-6">
           <WatchToggle movieId={movie.movie_id} />
           <ReactionToggle movieId={movie.movie_id} />
-          <div className="h-full flex items-center text-sm font-extralight gap-1">
-            <Star
-              className={cn(
-                'cursor-pointer',
-                movie.isFavorite ? 'fill-yellow-500' : '',
-              )}
-            />
-            <span>{movie.favorite_movie_users_count}</span>
-          </div>
+          <FavoriteToggle movieId={movie.movie_id} />
           <Youtube
             className="cursor-pointer w-8 h-6"
             onClick={onOpenTrailerModal}

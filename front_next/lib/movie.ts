@@ -80,3 +80,11 @@ export const toggleReaction = async (
 
   return res.json();
 };
+
+export const toggleFavorite = async (movieId: number | string) => {
+  const res = await fetch(`${URL}/${movieId}/favorite`, { method: 'POST' });
+
+  if (!res.ok) throw new Error('찜 토글 실패');
+
+  return res.json();
+};
