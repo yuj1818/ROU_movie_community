@@ -20,3 +20,7 @@ class User(AbstractUser):
     region = models.CharField(max_length=100)
     birth = models.DateField()
     nickname = models.TextField(max_length=20, default="nickname")
+
+    @property
+    def friends_queryset(self):
+        return self.followings.filter(followers=self)

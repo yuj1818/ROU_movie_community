@@ -71,23 +71,30 @@ class ProfileSerializer(UserDetailsSerializer):
     like_genres = GenreSerializer(many=True, read_only=True)
     followers = UserSerializer(many=True)
     followings = UserSerializer(many=True, read_only=True)
+    friends = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
             "id",
-            "followers",
             "username",
             "nickname",
             "profile_image",
-            "region",
+            "followers",
             "followings",
+            "friends",
+            "region",
             "hate_genres",
             "like_genres",
             "birth",
             "rate_image",
             "score",
         )
+
+    def get_friends(self, obj):
+        return UserSerializer(
+            obj.friends_queryset, many=True, context=self.context
+        ).data
 
 
 # 사용자 불호 장르 조회/수정
