@@ -34,7 +34,9 @@ def delete(request):
 @api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated])
 def profile(request, user_pk):
-    user = get_object_or_404(User, pk=user_pk)
+    user = get_object_or_404(
+        User.objects.prefetch_related("followers", "followings"), pk=user_pk
+    )
     if request.method == "GET":
         serializer = ProfileSerializer(user, context={"request": request})
         if request.user.pk != user_pk:
