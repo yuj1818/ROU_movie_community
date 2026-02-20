@@ -3,8 +3,8 @@
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import FormField from './FormField';
-import TextInput from './TextInput';
+import FormField from '../common/FormField';
+import TextInput from '../common/TextInput';
 import { useRouter } from 'next/navigation';
 import { LoginFormData } from '@/types/auth';
 import Image from 'next/image';

@@ -11,12 +11,16 @@ import {
 import { REGIONS } from '@/constants/region';
 
 export default function RegionSelect({
+  initCity = '',
+  initDistrict = '',
   onChange,
 }: {
+  initCity?: string;
+  initDistrict?: string;
   onChange: (region: string) => void;
 }) {
-  const [city, setCity] = useState('');
-  const [district, setDistrict] = useState('');
+  const [city, setCity] = useState(initCity);
+  const [district, setDistrict] = useState(initDistrict);
 
   useEffect(() => {
     if (city && district) {
@@ -38,7 +42,7 @@ export default function RegionSelect({
         <SelectTrigger className="h-8 p-2 flex-1 min-w-0 rounded border border-input text-base">
           <SelectValue placeholder="시/도 선택" />
         </SelectTrigger>
-        <SelectContent position="popper">
+        <SelectContent position="popper" className="z-9999">
           {Object.keys(REGIONS).map((c) => (
             <SelectItem key={c} value={c}>
               {c}
@@ -54,7 +58,7 @@ export default function RegionSelect({
         <SelectTrigger className="h-8 p-2 flex-1 min-w-0 rounded border border-input text-base">
           <SelectValue placeholder="시/군/구 선택" />
         </SelectTrigger>
-        <SelectContent position="popper">
+        <SelectContent position="popper" className="z-9999">
           {city &&
             REGIONS[city].map((d) => (
               <SelectItem key={d} value={d}>
