@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import FormField from './FormField';
-import RegionSelect from './RegionSelect';
-import TextInput from './TextInput';
+import FormField from '../common/FormField';
+import RegionSelect from '../common/RegionSelect';
+import TextInput from '../common/TextInput';
 import { addInfoForSocial, register } from '@/lib/client/auth';
 import { RegisterFormData } from '@/types/auth';
 import { cn } from '@/lib/utils';

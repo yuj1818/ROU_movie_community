@@ -15,3 +15,17 @@ export const follow = async (userId: number | string) => {
 
   return res.json();
 };
+
+export const updateProfileInfo = async (
+  userId: number | string,
+  data: FormData,
+) => {
+  const res = await fetch(`${URL}/profile/${userId}`, {
+    method: 'PUT',
+    body: data,
+  });
+
+  if (!res.ok) throw new Error(`사용자_${userId} 프로필 수정 실패`);
+
+  return res.json();
+};

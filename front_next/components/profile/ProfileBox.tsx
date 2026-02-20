@@ -9,6 +9,8 @@ import { Pencil } from 'lucide-react';
 import { Button } from '../ui/button';
 import FollowList from './FollowList';
 import PreferenceBox from './PreferenceBox';
+import { useModalContext } from '@/contexts/ModalContext';
+import ProfileEditForm from './ProfileEditForm';
 
 export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
   const session = useSession();
@@ -21,13 +23,25 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
     initialData,
   });
   const isMine = session.data?.user.id === profileInfo.id;
+  const { open } = useModalContext();
+
+  const onOpenProfileEditModal = () => {
+    open({
+      title: '기본 정보 편집',
+      content: <ProfileEditForm {...profileInfo} />,
+    });
+  };
 
   return (
     <div className="w-full flex flex-col gap-4 items-center md:h-full ">
-      <div className="h-32 rounded-full aspect-square overflow-hidden relative">
+      <div className="h-32 rounded-full aspect-square overflow-hidden relative bg-white">
         <Image
           className="object-cover"
-          src={profileInfo.profile_image || '/profile.png'}
+          src={
+            profileInfo.profile_image
+              ? `/api${profileInfo.profile_image}`
+              : '/profile.png'
+          }
           fill
           sizes="300px"
           alt={`profile_img_${profileInfo.id}`}
@@ -35,8 +49,13 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
       </div>
       <div className="flex gap-2 items-center">
         <span className="font-semibold text-2xl">{profileInfo.nickname}</span>
-        {isMine ? (
-          <Pencil className="size-4 cursor-pointer" />
+        {session.status === 'loading' ? (
+          <></>
+        ) : isMine ? (
+          <Pencil
+            className="size-4 cursor-pointer"
+            onClick={onOpenProfileEditModal}
+          />
         ) : (
           <Button
             size="sm"
