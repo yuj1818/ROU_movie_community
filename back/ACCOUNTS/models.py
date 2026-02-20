@@ -23,4 +23,6 @@ class User(AbstractUser):
 
     @property
     def friends_queryset(self):
-        return self.followings.filter(followers=self)
+        return self.followings.filter(
+            pk__in=self.followers.values_list('pk', flat=True)
+        )

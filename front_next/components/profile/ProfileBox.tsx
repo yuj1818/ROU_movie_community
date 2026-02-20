@@ -1,8 +1,8 @@
 'use client';
 
-import { getProfileInfo } from '@/lib/client/profile';
+import { follow, getProfileInfo } from '@/lib/client/profile';
 import { UserInfo } from '@/types/profile';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Pencil } from 'lucide-react';
@@ -14,6 +14,7 @@ import ProfileEditForm from './ProfileEditForm';
 
 export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
   const session = useSession();
+  const queryClient = useQueryClient();
   const { data: profileInfo, isPending } = useQuery<UserInfo>({
     queryKey: ['profile', initialData.id],
     queryFn: async () => {
@@ -24,6 +25,15 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
   });
   const isMine = session.data?.user.id === profileInfo.id;
   const { open } = useModalContext();
+
+  const mutation = useMutation({
+    mutationFn: () => follow(profileInfo.id),
+    onSuccess: (updatedProfile) => {
+      queryClient.setQueryData(['profile', profileInfo.id], (old: UserInfo) =>
+        old ? { ...old, ...updatedProfile } : old,
+      );
+    },
+  });
 
   const onOpenProfileEditModal = () => {
     open({
@@ -60,6 +70,7 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
           <Button
             size="sm"
             variant={profileInfo.isFollowing ? 'secondary' : 'default'}
+            onClick={() => mutation.mutate()}
           >
             {profileInfo.isFollowing ? '팔로잉' : '팔로우'}
           </Button>

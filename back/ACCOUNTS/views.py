@@ -38,7 +38,7 @@ def profile(request, user_pk):
         User.objects.prefetch_related("followers", "followings"), pk=user_pk
     )
     if request.method == "GET":
-        serializer = ProfileSerializer(user)
+        serializer = ProfileSerializer(user, context={"request": request})
         if request.user.pk != user_pk:
             data = {"isFollowing": user.followers.filter(pk=request.user.pk).exists()}
             data.update(serializer.data)
@@ -50,6 +50,7 @@ def profile(request, user_pk):
                 instance=user,
                 data=request.data,
                 partial=True,
+                context={"request": request},
             )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
@@ -87,13 +88,15 @@ def preference(request, pType):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def follow(request, user_pk):
-    user = get_object_or_404(User, pk=user_pk)
+    user = get_object_or_404(
+        User.objects.prefetch_related("followers", "followings"), pk=user_pk
+    )
     if request.user != user:
         if user.followers.filter(pk=request.user.pk).exists():
             user.followers.remove(request.user)
         else:
             user.followers.add(request.user)
-        serializer = ProfileSerializer(user)
+        serializer = ProfileSerializer(user, context={"request": request})
         data = {"isFollowing": user.followers.filter(pk=request.user.pk).exists()}
         data.update(serializer.data)
         return Response(data)
