@@ -1,4 +1,7 @@
+import { useModalContext } from '@/contexts/ModalContext';
 import { Genre } from '@/types/movie';
+import PreferenceEditForm from './PreferenceEditForm';
+import { Badge } from '../ui/badge';
 
 interface GenresListProps {
   type: 'like' | 'hate';
@@ -7,21 +10,40 @@ interface GenresListProps {
 }
 
 export default function GenresList({ type, genres, isMine }: GenresListProps) {
+  const { open } = useModalContext();
+
+  const onOpenPreferenceEditModal = () => {
+    open({
+      title: type === 'like' ? '선호 장르' : '불호 장르',
+      content: <PreferenceEditForm type={type} genres={genres} />,
+    });
+  };
+
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full flex flex-col gap-2">
       <div className="w-full flex items-center justify-between">
         <h4 className="font-semibold">
           {type === 'like' ? '선호' : '불호'} 장르
         </h4>
         {isMine && (
-          <span className="text-xs underline underline-offset-2 cursor-pointer">
+          <span
+            className="text-xs underline underline-offset-2 cursor-pointer"
+            onClick={onOpenPreferenceEditModal}
+          >
             편집
           </span>
         )}
       </div>
-      <div className="w-full flex flex-wrap gap-1 items-center">
+      <div className="w-full flex flex-wrap gap-2 items-center">
         {genres && genres.length > 0 ? (
-          <div></div>
+          genres.map((genre) => (
+            <Badge
+              key={genre.id}
+              variant={type === 'like' ? 'default' : 'destructive'}
+            >
+              {genre.name}
+            </Badge>
+          ))
         ) : (
           <span className="text-sm py-2 mx-auto font-extralight">
             {type === 'like' ? '선호' : '불호'} 장르가 없습니다

@@ -29,3 +29,18 @@ export const updateProfileInfo = async (
 
   return res.json();
 };
+
+export const updatePreference = async (
+  pType: 'like' | 'hate',
+  data: { genres: string },
+) => {
+  const res = await fetch(`${URL}/preference/${pType}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok)
+    throw new Error(`${pType === 'like' ? '선호' : '불호'}장르 수정 실패`);
+
+  return res.json();
+};
