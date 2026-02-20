@@ -11,7 +11,7 @@ export default function PreferenceBox({
   isMine,
 }: PreferenceBoxProps) {
   return (
-    <div className="w-full rounded bg-white/30 p-4 flex flex-col gap-2">
+    <div className="w-full rounded bg-white/30 p-4 flex flex-col gap-4">
       <GenreList type="like" genres={profileInfo.like_genres} isMine={isMine} />
       <GenreList type="hate" genres={profileInfo.hate_genres} isMine={isMine} />
     </div>
