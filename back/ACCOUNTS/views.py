@@ -8,7 +8,6 @@ from rest_framework.permissions import *
 from .serializers import *
 from MOVIES.models import Genre
 from django.http import JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Q, F, ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractYear
 from django.utils.timezone import now
@@ -17,8 +16,21 @@ from django.conf import settings
 from rest_framework.authtoken.models import Token
 from allauth.socialaccount.models import SocialAccount
 from django.core.files.base import ContentFile
+from rest_framework.pagination import PageNumberPagination
 
 User = get_user_model()
+
+
+class MoviePagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
+class RelationPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = "page_size"
+    max_page_size = 100
 
 
 @api_view(["POST"])
@@ -34,9 +46,7 @@ def delete(request):
 @api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated])
 def profile(request, user_pk):
-    user = get_object_or_404(
-        User.objects.prefetch_related("followers", "followings"), pk=user_pk
-    )
+    user = get_object_or_404(User, pk=user_pk)
     if request.method == "GET":
         serializer = ProfileSerializer(user, context={"request": request})
         if request.user.pk != user_pk:
@@ -88,65 +98,81 @@ def preference(request, pType):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def follow(request, user_pk):
+    user = get_object_or_404(User, pk=user_pk)
+    if request.method == 'POST':
+        if request.user != user:
+            if user.followers.filter(pk=request.user.pk).exists():
+                user.followers.remove(request.user)
+            else:
+                user.followers.add(request.user)
+            serializer = ProfileSerializer(user, context={"request": request})
+            data = {"isFollowing": user.followers.filter(pk=request.user.pk).exists()}
+            data.update(serializer.data)
+            return Response(data)
+        else:
+            return Response(
+                {"detail": "본인은 팔로우 불가"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def relations(request, user_pk):
+    relation_type = request.query_params.get("type")
+
+    if relation_type not in ["followers", "followings", "friends"]:
+        return Response(
+            {"error": "Invalid target parameter"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
     user = get_object_or_404(
         User.objects.prefetch_related("followers", "followings"), pk=user_pk
     )
-    if request.user != user:
-        if user.followers.filter(pk=request.user.pk).exists():
-            user.followers.remove(request.user)
-        else:
-            user.followers.add(request.user)
-        serializer = ProfileSerializer(user, context={"request": request})
-        data = {"isFollowing": user.followers.filter(pk=request.user.pk).exists()}
-        data.update(serializer.data)
-        return Response(data)
-    else:
-        return Response(
-            {"detail": "본인은 팔로우 불가"}, status=status.HTTP_400_BAD_REQUEST
-        )
+
+    if relation_type == "followers":
+        queryset = user.followers.all()
+    elif relation_type == "followings":
+        queryset = user.followings.all()
+    elif relation_type == "friends":
+        queryset = user.friends_queryset
+
+    queryset = queryset.order_by("nickname")
+    paginator = RelationPagination()
+    page = paginator.paginate_queryset(queryset, request)
+
+    serializer = UserSerializer(page, many=True, context={"request": request})
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def movie_list(request, user_pk):
-    target = request.GET.get("target", "").strip()
-    page = request.GET.get("page", 1)
-    limit = request.GET.get("limit", 12)
+    target = request.query_params.get("target")
+
+    if target not in ["like", "review", "favorite", "watch"]:
+        return Response(
+            {"error": "Invalid target parameter"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     user = get_object_or_404(User, pk=user_pk)
+
     if target == "like":
-        movies = user.like_movies.all().order_by("-release_date")
+        queryset = user.like_movies.all()
     elif target == "review":
-        movies = (
-            Movie.objects.filter(movie_review__review_writor=user)
-            .distinct()
-            .order_by("-release_date")
-        )
+        queryset = Movie.objects.filter(movie_review__review_writor=user).distinct()
     elif target == "favorite":
-        movies = user.favorite_movies.all().order_by("-release_date")
+        queryset = user.favorite_movies.all()
     elif target == "watch":
-        movies = user.watching_movies.all().order_by("-release_date")
-    else:
-        return Response({"error": "Invalid target parameter"}, status=400)
+        queryset = user.watching_movies.all()
 
-    paginator = Paginator(movies, limit)
-    try:
-        result_page = paginator.page(page)
-    except PageNotAnInteger:
-        result_page = paginator.page(1)
-    except EmptyPage:
-        result_page = paginator.page(paginator.num_pages)
+    queryset = queryset.order_by("-release_date")
+    paginator = MoviePagination()
+    page = paginator.paginate_queryset(queryset, request)
 
-    serializer = MovieListSerializer(result_page, many=True)
-    page_data = {
-        "current_page": result_page.number,
-        "total_pages": paginator.num_pages,
-        "has_next": result_page.has_next(),
-        "has_previous": result_page.has_previous(),
-        "results": serializer.data if result_page != None else [],
-    }
+    serializer = MovieListSerializer(page, many=True, context={"request": request})
 
-    return Response(page_data)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
