@@ -73,9 +73,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(UserDetailsSerializer):
     hate_genres = GenreSerializer(many=True, read_only=True)
     like_genres = GenreSerializer(many=True, read_only=True)
-    followers = UserSerializer(many=True)
-    followings = UserSerializer(many=True, read_only=True)
-    friends = serializers.SerializerMethodField()
+    followers_count = serializers.IntegerField(source='followers.count', read_only=True)
+    followings_count = serializers.IntegerField(
+        source="followings.count", read_only=True
+    )
+    friends_count = serializers.SerializerMethodField()
     profile_image = serializers.SerializerMethodField()
 
     class Meta:
@@ -85,9 +87,9 @@ class ProfileSerializer(UserDetailsSerializer):
             "username",
             "nickname",
             "profile_image",
-            "followers",
-            "followings",
-            "friends",
+            "followers_count",
+            "followings_count",
+            "friends_count",
             "region",
             "hate_genres",
             "like_genres",
@@ -96,10 +98,8 @@ class ProfileSerializer(UserDetailsSerializer):
             "score",
         )
 
-    def get_friends(self, obj):
-        return UserSerializer(
-            obj.friends_queryset, many=True, context=self.context
-        ).data
+    def get_friends_count(self, obj):
+        return obj.friends_queryset.count()
 
     def get_profile_image(self, obj):
         return obj.profile_image.url if obj.profile_image else None
