@@ -1,7 +1,7 @@
 import { useModalContext } from '@/contexts/ModalContext';
 import { Genre } from '@/types/movie';
 import PreferenceEditForm from './PreferenceEditForm';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 
 interface GenresListProps {
   type: 'like' | 'hate';

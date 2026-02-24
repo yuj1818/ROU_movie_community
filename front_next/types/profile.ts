@@ -3,7 +3,9 @@ import { Genre } from './movie';
 export interface User {
   id: number;
   username: string;
-  profile_image: string;
+  nickname: string;
+  profile_image: string | null;
+  isFollowing?: boolean;
 }
 
 export interface UserInfo {
@@ -12,9 +14,9 @@ export interface UserInfo {
   nickname: string;
   profile_image: string | null;
   region: string;
-  followers: User[];
-  followings: User[];
-  friends: User[];
+  followers_count: number;
+  followings_count: number;
+  friends_count: number;
   hate_genres: Genre[];
   like_genres: Genre[];
   birth: string;

@@ -44,3 +44,17 @@ export const updatePreference = async (
 
   return res.json();
 };
+
+export const getRelations = async (
+  userId: number | string,
+  type: string,
+  page: number,
+) => {
+  const res = await fetch(
+    `${URL}/relations/${userId}?type=${type}&page=${page}`,
+  );
+
+  if (!res.ok) throw new Error(`사용자_${userId} ${type} 목록 조회 실패`);
+
+  return res.json();
+};
