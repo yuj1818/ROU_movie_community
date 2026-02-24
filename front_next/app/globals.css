@@ -125,20 +125,35 @@
   }
 
   body ::-webkit-scrollbar {
+    height: 8px;
     width: 20px;
   }
 
   body ::-webkit-scrollbar-thumb {
     outline: none;
     background-color: #444444;
-    border-radius: 15px;
     border: 6px solid transparent;
     background-clip: padding-box;
     cursor: default;
   }
 
+  body ::-webkit-scrollbar-thumb:vertical {
+    border-radius: 15px;
+  }
+
+  body ::-webkit-scrollbar-thumb:horizontal {
+    border-radius: 6px;
+  }
+
   body ::-webkit-scrollbar-track {
     background-color: inherit;
+  }
+
+  body ::-webkit-scrollbar-track:vertical {
     border-radius: 20px;
+  }
+
+  body ::-webkit-scrollbar-track:horizontal {
+    border-radius: 8px;
   }
 }

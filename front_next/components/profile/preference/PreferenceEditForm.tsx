@@ -1,8 +1,8 @@
 import { UserInfo } from '@/types/profile';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 import { TAGS } from '@/constants/category';
 import { useState } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { Genre } from '@/types/movie';
 import { useSession } from 'next-auth/react';
 import { useModalContext } from '@/contexts/ModalContext';
@@ -73,7 +73,13 @@ export default function PreferenceEditForm({
             className="select-none"
             key={tag.id}
             onClick={() => onToggle(tag.name)}
-            variant={!!selectedGenres[tag.name] ? 'default' : 'outline'}
+            variant={
+              !!selectedGenres[tag.name]
+                ? type === 'like'
+                  ? 'default'
+                  : 'destructive'
+                : 'outline'
+            }
           >
             {tag.name}
           </Badge>
@@ -83,7 +89,12 @@ export default function PreferenceEditForm({
         <Button variant="outline" onClick={() => close()}>
           취소
         </Button>
-        <Button onClick={() => mutation.mutate()}>저장</Button>
+        <Button
+          onClick={() => mutation.mutate()}
+          variant={type === 'like' ? 'default' : 'destructive'}
+        >
+          저장
+        </Button>
       </div>
     </div>
   );

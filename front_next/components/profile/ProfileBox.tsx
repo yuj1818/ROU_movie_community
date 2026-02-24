@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { Pencil } from 'lucide-react';
 import { Button } from '../ui/button';
 import FollowList from './FollowList';
-import PreferenceBox from './PreferenceBox';
+import PreferenceBox from './preference/PreferenceBox';
 import { useModalContext } from '@/contexts/ModalContext';
 import ProfileEditForm from './ProfileEditForm';
 
@@ -32,6 +32,13 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
       queryClient.setQueryData(['profile', profileInfo.id], (old: UserInfo) =>
         old ? { ...old, ...updatedProfile } : old,
       );
+
+      queryClient.invalidateQueries({
+        queryKey: ['profile', profileInfo.id, 'relations', 'followers'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['profile', profileInfo.id, 'relations', 'friends'],
+      });
     },
   });
 
@@ -43,13 +50,13 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 items-center md:h-full ">
+    <div className="w-full flex flex-col gap-4 items-center md:h-full">
       <div className="h-32 rounded-full aspect-square overflow-hidden relative bg-white">
         <Image
           className="object-cover"
           src={
             profileInfo.profile_image
-              ? `/api${profileInfo.profile_image}`
+              ? `/api/media/${profileInfo.profile_image}`
               : '/profile.png'
           }
           fill
@@ -77,9 +84,9 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
         )}
       </div>
       <FollowList
-        followers={profileInfo.followers.length}
-        followings={profileInfo.followings.length}
-        friends={profileInfo.friends.length}
+        followers={profileInfo.followers_count}
+        followings={profileInfo.followings_count}
+        friends={profileInfo.friends_count}
       />
       <PreferenceBox isMine={isMine} profileInfo={profileInfo} />
     </div>
