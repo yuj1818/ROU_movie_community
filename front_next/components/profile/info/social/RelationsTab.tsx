@@ -108,7 +108,7 @@ export default function RelationsTab({ type }: { type: string }) {
     <TabsContent
       ref={observerRef}
       value={type}
-      className="p-4 w-full h-full overflow-y-auto grid max-md:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-sm:gap-1 sm:gap-2"
+      className="p-4 w-full h-full overflow-y-auto grid max-md:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 max-sm:gap-1 sm:gap-2"
     >
       {data?.pages.map((page) =>
         page.results.map((user: User) => (
@@ -122,7 +122,7 @@ export default function RelationsTab({ type }: { type: string }) {
         )),
       )}
       {status === 'pending' && (
-        <LoaderCircle className="col-span-5 flex items-center justify-center size-5 text-muted-foreground animate-spin" />
+        <LoaderCircle className="max-md:col-span-2 md:col-span-3 xl:col-span-5 flex items-center justify-center size-5 text-muted-foreground animate-spin" />
       )}
     </TabsContent>
   );

@@ -2,6 +2,8 @@ import { useModalContext } from '@/contexts/ModalContext';
 import { Genre } from '@/types/movie';
 import PreferenceEditForm from './PreferenceEditForm';
 import { Badge } from '../../ui/badge';
+import { useState } from 'react';
+import { CircleEllipsis, CircleX } from 'lucide-react';
 
 interface GenresListProps {
   type: 'like' | 'hate';
@@ -11,6 +13,7 @@ interface GenresListProps {
 
 export default function GenresList({ type, genres, isMine }: GenresListProps) {
   const { open } = useModalContext();
+  const [isOpen, setIsOpen] = useState(false);
 
   const onOpenPreferenceEditModal = () => {
     open({
@@ -36,14 +39,37 @@ export default function GenresList({ type, genres, isMine }: GenresListProps) {
       </div>
       <div className="w-full flex flex-wrap gap-2 items-center">
         {genres && genres.length > 0 ? (
-          genres.map((genre) => (
-            <Badge
-              key={genre.id}
-              variant={type === 'like' ? 'default' : 'destructive'}
-            >
-              {genre.name}
-            </Badge>
-          ))
+          <>
+            {isOpen
+              ? genres.map((genre) => (
+                  <Badge
+                    key={genre.id}
+                    variant={type === 'like' ? 'default' : 'destructive'}
+                  >
+                    {genre.name}
+                  </Badge>
+                ))
+              : genres.slice(0, 5).map((genre) => (
+                  <Badge
+                    key={genre.id}
+                    variant={type === 'like' ? 'default' : 'destructive'}
+                  >
+                    {genre.name}
+                  </Badge>
+                ))}
+            {genres.length > 5 &&
+              (isOpen ? (
+                <CircleX
+                  className="size-5 cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                />
+              ) : (
+                <CircleEllipsis
+                  className="size-5 cursor-pointer"
+                  onClick={() => setIsOpen(true)}
+                />
+              ))}
+          </>
         ) : (
           <span className="text-sm py-2 mx-auto font-extralight">
             {type === 'like' ? '선호' : '불호'} 장르가 없습니다

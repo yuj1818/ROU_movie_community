@@ -58,3 +58,18 @@ export const getRelations = async (
 
   return res.json();
 };
+
+export const getMovieList = async (
+  userId: number | string,
+  target: string,
+  page: number,
+) => {
+  const res = await fetch(
+    `${URL}/movie/${userId}?target=${target}&page=${page}`,
+  );
+
+  if (!res.ok)
+    throw new Error(`사용자_${userId} ${target} 영화 목록 조회 실패`);
+
+  return res.json();
+};
