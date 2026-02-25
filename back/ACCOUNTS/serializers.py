@@ -55,7 +55,7 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     isFollowing = serializers.SerializerMethodField()
-    profile_image = serializers.SerializerMethodField()
+    profile_image = serializers.ImageField(use_url=False)
 
     class Meta:
         model = User
@@ -64,9 +64,6 @@ class UserSerializer(serializers.ModelSerializer):
     def get_isFollowing(self, obj):
         request_user = self.context.get("request").user
         return obj.followers.filter(pk=request_user.id).exists()
-
-    def get_profile_image(self, obj):
-        return obj.profile_image.url if obj.profile_image else None
 
 
 # 프로필 조회 / 프로필 이미지, 지역, 생년월일 수정
@@ -78,7 +75,7 @@ class ProfileSerializer(UserDetailsSerializer):
         source="followings.count", read_only=True
     )
     friends_count = serializers.SerializerMethodField()
-    profile_image = serializers.SerializerMethodField()
+    profile_image = serializers.ImageField(use_url=False)
 
     class Meta:
         model = User
@@ -100,9 +97,6 @@ class ProfileSerializer(UserDetailsSerializer):
 
     def get_friends_count(self, obj):
         return obj.friends_queryset.count()
-
-    def get_profile_image(self, obj):
-        return obj.profile_image.url if obj.profile_image else None
 
 
 # 사용자 불호 장르 조회/수정
