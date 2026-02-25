@@ -5,7 +5,7 @@ import { useState } from 'react';
 export default function SocialTab() {
   const [activeTab, setActiveTab] = useState('followers');
   return (
-    <TabsContent value="social" className="w-full h-full overflow-hidden">
+    <TabsContent value="social" className="w-full h-full">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}

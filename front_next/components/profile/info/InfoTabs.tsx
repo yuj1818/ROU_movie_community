@@ -10,9 +10,10 @@ import {
 } from 'lucide-react';
 import SocialTab from './social/SocialTab';
 import { useState } from 'react';
+import MoviesTab from './MoviesTab';
 
 export default function InfoTabs() {
-  const [activeTab, setActiveTab] = useState<string>('social');
+  const [activeTab, setActiveTab] = useState<string>('like');
 
   return (
     <Tabs
@@ -24,9 +25,6 @@ export default function InfoTabs() {
         variant="line"
         className="w-full overflow-x-auto overflow-y-hidden shrink-0 mb-4"
       >
-        <TabsTrigger value="social">
-          <Contact /> 소셜
-        </TabsTrigger>
         <TabsTrigger value="like">
           <Heart /> 좋아요
         </TabsTrigger>
@@ -40,8 +38,15 @@ export default function InfoTabs() {
           <TvMinimal />
           시청
         </TabsTrigger>
+        <TabsTrigger value="social">
+          <Contact /> 소셜
+        </TabsTrigger>
       </TabsList>
-      {activeTab === 'social' && <SocialTab />}
+      {activeTab === 'social' ? (
+        <SocialTab />
+      ) : (
+        <MoviesTab target={activeTab} />
+      )}
     </Tabs>
   );
 }

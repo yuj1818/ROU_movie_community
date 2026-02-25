@@ -16,7 +16,10 @@ export default function MovieCard({
   const router = useRouter();
   return (
     <li
-      className={cn('flex w-full aspect-3/4 cursor-pointer', className)}
+      className={cn(
+        'flex w-full aspect-3/4 cursor-pointer relative',
+        className,
+      )}
       onClick={() => router.push(`/movie/${movie_id}`)}
     >
       {poster_path ? (

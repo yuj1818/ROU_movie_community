@@ -50,7 +50,7 @@ export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 items-center md:h-full">
+    <div className="w-full flex flex-col gap-4 items-center md:h-full md:min-h-0">
       <div className="h-32 rounded-full aspect-square overflow-hidden relative bg-white">
         <Image
           className="object-cover"
