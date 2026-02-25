@@ -8,9 +8,11 @@ import ReviewItem from './ReviewItem';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import Title from '@/components/common/Title';
+import { useRouter } from 'next/navigation';
 
-export default function ReviewList({ movieId }: { movieId: string }) {
+export default function ReviewList({ movieId }: { movieId: number }) {
   const { status } = useSession();
+  const router = useRouter();
   const [isAll, setIsAll] = useState(false);
   const { data: reviews, isPending } = useQuery<Review[]>({
     queryKey: ['reviews', movieId],
@@ -24,7 +26,11 @@ export default function ReviewList({ movieId }: { movieId: string }) {
     <div className="flex flex-col w-full gap-2">
       <div className="w-full flex justify-between items-center">
         <Title>사용자 리뷰</Title>
-        {status === 'authenticated' && <Button>리뷰 작성</Button>}
+        {status === 'authenticated' && (
+          <Button onClick={() => router.push(`/post/create/${movieId}`)}>
+            리뷰 작성
+          </Button>
+        )}
       </div>
       <div className="flex flex-col w-full p-6 gap-2 rounded-md border border-foreground">
         {reviews && reviews.length > 0 ? (

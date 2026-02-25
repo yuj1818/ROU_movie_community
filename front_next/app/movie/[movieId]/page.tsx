@@ -9,7 +9,8 @@ export default async function MovieDetailPage({
 }: {
   params: Promise<{ movieId: string }>;
 }) {
-  const { movieId } = await params;
+  const p = await params;
+  const movieId = Number(p.movieId);
 
   const movie = await getMovieInfo(movieId);
 
