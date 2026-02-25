@@ -12,7 +12,7 @@ export default function RecommendList({
   movieId,
 }: {
   title: string;
-  movieId: string;
+  movieId: number;
 }) {
   const { status } = useSession();
   const { data: movies, isPending } = useQuery<Movie[]>({

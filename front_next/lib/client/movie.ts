@@ -2,6 +2,11 @@ import { SortKey } from '@/constants/category';
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + '/api/movies';
 
+interface MoveiReviewData {
+  title: string;
+  content: string;
+}
+
 export const getTrendMovieList = async () => {
   const res = await fetch(`${URL}/trends`, { method: 'GET' });
 
@@ -77,6 +82,20 @@ export const toggleFavorite = async (movieId: number | string) => {
   const res = await fetch(`${URL}/${movieId}/favorite`, { method: 'POST' });
 
   if (!res.ok) throw new Error('찜 토글 실패');
+
+  return res.json();
+};
+
+export const createMovieReview = async (
+  movieId: number | string,
+  data: MoveiReviewData,
+) => {
+  const res = await fetch(`${URL}/${movieId}/review`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error('리뷰 작성 실패');
 
   return res.json();
 };

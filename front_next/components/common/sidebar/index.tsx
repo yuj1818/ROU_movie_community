@@ -42,8 +42,8 @@ export default async function AppSideBar() {
               <SidebarMenuItem icon={<Home />} title="Home" href="/" />
               <SidebarMenuItem
                 icon={<MessageSquareText />}
-                title="Review"
-                href="/"
+                title="Community"
+                href="/post"
               />
               {isLoggedIn && (
                 <>
