@@ -22,13 +22,13 @@ User = get_user_model()
 
 
 class MoviePagination(PageNumberPagination):
-    page_size = 15
+    page_size = 12
     page_size_query_param = "page_size"
     max_page_size = 100
 
 
 class RelationPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 15
     page_size_query_param = "page_size"
     max_page_size = 100
 
@@ -293,7 +293,6 @@ def kakao_login(request):
             {"err_msg": "failed to get userinfo"}, status=status.HTTP_400_BAD_REQUEST
         )
     info_res_json = info_res.json()
-    print(info_res_json)
     email = info_res_json.get("email")
     uid = info_res_json.get("sub")
     profile_image = None
