@@ -1,8 +1,10 @@
 import { Review } from '@/types/movie';
 import { MessageSquareMore, ThumbsDown, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function ReviewItem({
+  id,
   review_writor,
   title,
   content,
@@ -10,8 +12,13 @@ export default function ReviewItem({
   like_count,
   dislike_count,
 }: Review) {
+  const router = useRouter();
+
   return (
-    <li className="flex items-center gap-4 w-full h-20 px-6 py-4 bg-white rounded-md">
+    <li
+      className="flex items-center gap-4 w-full h-20 px-6 py-4 bg-white rounded-md cursor-pointer"
+      onClick={() => router.push(`/post/${id}`)}
+    >
       <Image
         className="w-12 h-12 rounded-full object-fit shrink-0"
         src={

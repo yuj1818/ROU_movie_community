@@ -3,11 +3,10 @@
 import { getMovieInfo } from '@/lib/client/movie';
 import { MovieDetail } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
-import { Star, ThumbsDown, ThumbsUp, TvMinimal } from 'lucide-react';
+import { Star } from 'lucide-react';
 import Youtube from '@/components/common/icons/Youtube';
 import { Separator } from '../ui/separator';
 import { Badge } from '../ui/badge';
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import { useModalContext } from '@/contexts/ModalContext';
@@ -79,13 +78,9 @@ export default function MovieInfo({
         <span className="text-sm font-extralight">{movie.overview}</span>
         <Separator className="bg-muted-foreground" />
         <div className="flex gap-4 h-6">
-          {status === 'authenticated' && (
-            <>
-              <WatchToggle movieId={movie.movie_id} />
-              <ReactionToggle movieId={movie.movie_id} />
-              <FavoriteToggle movieId={movie.movie_id} />
-            </>
-          )}
+          <WatchToggle />
+          <ReactionToggle />
+          <FavoriteToggle />
           <Youtube
             className="cursor-pointer w-8 h-6"
             onClick={onOpenTrailerModal}
