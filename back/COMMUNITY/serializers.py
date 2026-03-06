@@ -177,31 +177,68 @@ class ReviewSerializer(serializers.ModelSerializer):
         return obj.review_comment.filter(super_comment__isnull=True).count()
 
 
-# 게시글 좋아요 등록 및 해제
-class ReviewLikeSerializer(serializers.ModelSerializer):
+class ReviewReactionSerilaizer(serializers.ModelSerializer):
     like_count = serializers.IntegerField(
         source="like_review_users.count", read_only=True
     )
-
-    class Meta:
-        model = Review
-        # 게시글 id, 좋아요한 사용자 목록
-        fields = (
-            "id",
-            "like_count",
-        )
-
-
-# 게시글 싫어요 등록 및 해제
-class ReviewDisLikeSerializer(serializers.ModelSerializer):
     dislike_count = serializers.IntegerField(
         source="dislike_review_users.count", read_only=True
     )
+    reaction = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        # 게시글 id, 싫어요한 사용자 목록
-        fields = ("id", "dislike_count")
+        fields = (
+            "id",
+            "reaction",
+            "like_count",
+            "dislike_count",
+        )
+
+    def get_reaction(self, obj):
+        request = self.context.get("request")
+        if not request or not hasattr(request, 'user'):
+            return None
+
+        user = request.user
+
+        if not user.is_authenticated:
+            return None
+
+        if obj.like_review_users.filter(pk=user.pk).exists():
+            return "LIKE"
+
+        if obj.dislike_review_users.filter(pk=user.pk).exists():
+            return "DISLIKE"
+
+        return None
+
+
+# # 게시글 좋아요 등록 및 해제
+# class ReviewLikeSerializer(serializers.ModelSerializer):
+#     like_count = serializers.IntegerField(
+#         source="like_review_users.count", read_only=True
+#     )
+
+#     class Meta:
+#         model = Review
+#         # 게시글 id, 좋아요한 사용자 목록
+#         fields = (
+#             "id",
+#             "like_count",
+#         )
+
+
+# # 게시글 싫어요 등록 및 해제
+# class ReviewDisLikeSerializer(serializers.ModelSerializer):
+#     dislike_count = serializers.IntegerField(
+#         source="dislike_review_users.count", read_only=True
+#     )
+
+#     class Meta:
+#         model = Review
+#         # 게시글 id, 싫어요한 사용자 목록
+#         fields = ("id", "dislike_count")
 
 
 # class CommentLikeSerializer(serializers.ModelSerializer):

@@ -71,9 +71,7 @@ def movie_detail(request, movie_id):
 
     data = {
         "reaction": reaction,
-        "isLike": isLike,
         "isFavorite": movie.favorite_movie_users.filter(pk=request.user.pk).exists(),
-        "isDislike": isDislike,
         "isWatch": movie.watching_movie_users.filter(pk=request.user.pk).exists(),
     }
 
