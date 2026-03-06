@@ -8,9 +8,11 @@ import ReviewItem from './ReviewItem';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import Title from '@/components/common/Title';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-export default function ReviewList({ movieId }: { movieId: number }) {
+export default function ReviewList() {
+  const params = useParams();
+  const movieId = Number(params.movieId);
   const { status } = useSession();
   const router = useRouter();
   const [isAll, setIsAll] = useState(false);

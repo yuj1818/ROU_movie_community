@@ -3,7 +3,7 @@
 import { getGenreMovieList, getSortedMovieList } from '@/lib/client/movie';
 import { Movie } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { useKeenSlider } from 'keen-slider/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SortKey } from '@/constants/category';

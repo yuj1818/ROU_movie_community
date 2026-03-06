@@ -5,7 +5,7 @@ import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { getTrendMovieList } from '@/lib/client/movie';
 import { LoaderCircle } from 'lucide-react';
 import { Movie } from '@/types/movie';
