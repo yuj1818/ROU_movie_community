@@ -18,8 +18,8 @@ export default async function MovieDetailPage({
     <div className="w-5/6 py-8 flex flex-col gap-8">
       <MovieInfo initialData={movie} />
       <CastInfo actors={movie.actors} />
-      <ReviewList movieId={movieId} />
-      <RecommendList movieId={movieId} title={movie.title} />
+      <ReviewList />
+      <RecommendList title={movie.title} />
     </div>
   );
 }
