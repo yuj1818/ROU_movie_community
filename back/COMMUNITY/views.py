@@ -62,11 +62,16 @@ def review_detail(request, review_id):
     review = get_object_or_404(Review, pk=review_id)
     if request.method == "GET":
         serializer = ReviewSerializer(review)
+        isLike = review.like_review_users.filter(pk=request.user.pk).exists()
+        isDislike = review.dislike_review_users.filter(pk=request.user.pk).exists()
+        reaction = None
+        if isLike:
+            reaction = "LIKE"
+        elif isDislike:
+            reaction = "DISLIKE"
+
         data = {
-            "isLike": review.like_review_users.filter(pk=request.user.pk).exists(),
-            "isDislike": review.dislike_review_users.filter(
-                pk=request.user.pk
-            ).exists(),
+            "reaction": reaction,
         }
         data.update(serializer.data)
         return Response(data)
@@ -97,29 +102,25 @@ def review_detail(request, review_id):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def review_like(request, review_id):
+def review_reaction(request, review_id):
     review = get_object_or_404(Review, pk=review_id)
     user = request.user
-    if review.like_review_users.filter(pk=user.pk).exists():
-        review.like_review_users.remove(user)
-    else:
-        review.like_review_users.add(user)
+    reaction_type = request.data.get("type")
 
-    serializer = ReviewLikeSerializer(review)
-    return Response(serializer.data)
+    if reaction_type == 'LIKE':
+        if review.like_review_users.filter(pk=user.pk).exists():
+            review.like_review_users.remove(user)
+        else:
+            review.dislike_review_users.remove(user)
+            review.like_review_users.add(user)
+    elif reaction_type == 'DISLIKE':
+        if review.dislike_review_users.filter(pk=user.pk).exists():
+            review.dislike_review_users.remove(user)
+        else:
+            review.like_review_users.remove(user)
+            review.dislike_review_users.add(user)
 
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def review_dislike(request, review_id):
-    review = get_object_or_404(Review, pk=review_id)
-    user = request.user
-    if review.dislike_review_users.filter(pk=user.pk).exists():
-        review.dislike_review_users.remove(user)
-    else:
-        review.dislike_review_users.add(user)
-
-    serializer = ReviewDisLikeSerializer(review)
+    serializer = ReviewReactionSerilaizer(review, context={"request": request})
     return Response(serializer.data)
 
 
