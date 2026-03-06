@@ -6,14 +6,11 @@ import { Movie } from '@/types/movie';
 import { getRecommendMovieList } from '@/lib/client/movie';
 import { useSession } from 'next-auth/react';
 import MovieCard from '../common/MovieCard';
+import { useParams } from 'next/navigation';
 
-export default function RecommendList({
-  title,
-  movieId,
-}: {
-  title: string;
-  movieId: number;
-}) {
+export default function RecommendList({ title }: { title: string }) {
+  const params = useParams();
+  const movieId = Number(params.movieId);
   const { status } = useSession();
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['recommend', movieId],

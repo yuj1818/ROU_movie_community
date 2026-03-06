@@ -3,8 +3,11 @@ import { TvMinimal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleWatch } from '@/lib/client/movie';
+import { useParams } from 'next/navigation';
 
-export default function WatchToggle({ movieId }: { movieId: number }) {
+export default function WatchToggle() {
+  const params = useParams();
+  const movieId = Number(params.movieId);
   const queryClient = useQueryClient();
   const movie = queryClient.getQueryData<MovieDetail>(['movie', movieId]);
 
