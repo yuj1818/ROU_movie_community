@@ -2,7 +2,7 @@ import { SortKey } from '@/constants/category';
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + '/api/movies';
 
-interface MoveiReviewData {
+interface MovieReviewData {
   title: string;
   content: string;
 }
@@ -88,7 +88,7 @@ export const toggleFavorite = async (movieId: number | string) => {
 
 export const createMovieReview = async (
   movieId: number | string,
-  data: MoveiReviewData,
+  data: MovieReviewData,
 ) => {
   const res = await fetch(`${URL}/${movieId}/review`, {
     method: 'POST',

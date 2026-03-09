@@ -23,3 +23,20 @@ export const toggleReaction = async (
 
   return res.json();
 };
+
+export const editPostInfo = async (
+  reviewId: number | string,
+  data: {
+    title?: string;
+    content?: string;
+  },
+) => {
+  const res = await fetch(`${URL}/${reviewId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error('리뷰 수정 실패');
+
+  return res.json();
+};

@@ -21,3 +21,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const body = await req.json();
+
+  try {
+    const pathname = req.nextUrl.pathname;
+    const res = await fetch(`${URL}${pathname}/`, {
+      method: 'PUT',
+      headers: {
+        Authorization: session ? `Token ${session.backendToken}` : '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (err) {
+    return NextResponse.json({ error: 'Server Error' }, { status: 500 });
+  }
+}
