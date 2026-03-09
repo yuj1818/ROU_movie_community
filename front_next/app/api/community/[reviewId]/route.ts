@@ -43,3 +43,21 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  try {
+    const pathname = req.nextUrl.pathname;
+    const res = await fetch(`${URL}${pathname}/`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: session ? `Token ${session.backendToken}` : '',
+      },
+    });
+
+    return new NextResponse(null, { status: res.status });
+  } catch (err) {
+    return NextResponse.json({ error: 'Server Error' }, { status: 500 });
+  }
+}

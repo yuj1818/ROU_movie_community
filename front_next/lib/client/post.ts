@@ -40,3 +40,15 @@ export const editPostInfo = async (
 
   return res.json();
 };
+
+export const deletePost = async (reviewId: number | string) => {
+  const res = await fetch(`${URL}/${reviewId}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) throw new Error('리뷰 삭제 실패');
+
+  if (res.status === 204) return null;
+
+  return res.json();
+};
