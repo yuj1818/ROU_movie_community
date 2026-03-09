@@ -1,8 +1,8 @@
 'use client';
 
-import { getPostInfo } from '@/lib/client/post';
+import { deletePost, getPostInfo } from '@/lib/client/post';
 import { PostDetail } from '@/types/post';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from '@/lib/dayjs';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -11,11 +11,14 @@ import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import ReactionToggle from './ReactionToggle';
 import { Button } from '../ui/button';
+import { useModalContext } from '@/contexts/ModalContext';
 
 export default function PostInfo({ initialData }: { initialData: PostDetail }) {
+  const queryClient = useQueryClient();
   const session = useSession();
   const router = useRouter();
   const { status } = useSession();
+  const { open, close } = useModalContext();
   const { data: post, isPending } = useQuery<PostDetail>({
     queryKey: ['post', initialData.id],
     queryFn: async () => {
@@ -24,6 +27,32 @@ export default function PostInfo({ initialData }: { initialData: PostDetail }) {
     },
     initialData,
   });
+
+  const mutation = useMutation({
+    mutationFn: () => deletePost(post.id),
+    onSuccess: () => {
+      close();
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      if (post.review_movie) {
+        queryClient.invalidateQueries({
+          queryKey: ['reviews', post.review_movie.movie_id],
+        });
+      }
+      queryClient.removeQueries({ queryKey: ['post', post.id] });
+      router.back();
+    },
+  });
+
+  const onDelete = () => {
+    open({
+      title: '게시글을 삭제하시겠습니까?',
+      rightBtnLabel: '삭제',
+      buttonVariant: 'destructive',
+      onRightBtnClick: () => mutation.mutate(),
+      leftBtnLabel: '취소',
+      onLeftBtnClick: () => close(),
+    });
+  };
 
   return (
     <div className="w-full flex flex-col justify-center gap-4 rounded p-6 border border-white">
@@ -72,7 +101,9 @@ export default function PostInfo({ initialData }: { initialData: PostDetail }) {
       </div>
       {post.review_writor.id == session.data?.user.id && (
         <div className="flex gap-2 justify-end">
-          <Button variant="destructive">삭제</Button>
+          <Button variant="destructive" onClick={onDelete}>
+            삭제
+          </Button>
           <Button
             variant="secondary"
             className="border border-input"
