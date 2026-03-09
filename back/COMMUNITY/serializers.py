@@ -113,37 +113,6 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ("movie_id", "title", "poster_path")
 
 
-# 전체 게시글 목록 조회 및 영화를 선택하지 않은 게시글 생성
-class ReviewListSerializer(serializers.ModelSerializer):
-    review_movie = MovieSerializer(read_only=True)  # 게시글이 달린 영화
-    review_writor = UserSerializer(read_only=True)  # 게시글 작성자
-    comment_count = serializers.IntegerField(
-        source="review_comment.count", read_only=True
-    )  # 댓글 수
-    like_count = serializers.IntegerField(
-        source="like_review_users.count", read_only=True
-    )  # 좋아요 수
-    dislike_count = serializers.IntegerField(
-        source="dislike_review_users.count", read_only=True
-    )  # 싫어요 수
-
-    class Meta:
-        model = Review
-        # 전체 게시글 출력 필드
-        # id, 제목, 생성 시간, 좋아요 수, 댓글 수, 작성자, 리뷰한 영화 제목
-        fields = (
-            "id",
-            "title",
-            "content",
-            "created_at",
-            "like_count",
-            "dislike_count",
-            "comment_count",
-            "review_writor",
-            "review_movie",
-        )
-
-
 # 단일 게시글 조회, 수정, 삭제
 class ReviewSerializer(serializers.ModelSerializer):
     review_movie = MovieSerializer(read_only=True)  # 게시글이 달린 영화
@@ -155,6 +124,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         source="dislike_review_users.count", read_only=True
     )
     comment_count = serializers.SerializerMethodField()  # 댓글 수
+    reaction = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
@@ -171,10 +141,29 @@ class ReviewSerializer(serializers.ModelSerializer):
             "comment_count",
             "review_movie",
             "dislike_count",
+            "reaction",
         )
 
     def get_comment_count(self, obj):
         return obj.review_comment.filter(super_comment__isnull=True).count()
+
+    def get_reaction(self, obj):
+        request = self.context.get("request")
+        if not request or not hasattr(request, 'user'):
+            return None
+
+        user = request.user
+
+        if not user.is_authenticated:
+            return None
+
+        if obj.like_review_users.filter(pk=user.pk).exists():
+            return "LIKE"
+
+        if obj.dislike_review_users.filter(pk=user.pk).exists():
+            return "DISLIKE"
+
+        return None
 
 
 class ReviewReactionSerilaizer(serializers.ModelSerializer):

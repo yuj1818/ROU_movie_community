@@ -7,48 +7,38 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.pagination import PageNumberPagination
+
+
+class ReviewPagination(PageNumberPagination):
+    page_size = 10
+    page_query_param = "page"
 
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def review(request):
     if request.method == "GET":
-        page = int(request.GET.get("page", 1))
-        sort_key = int(request.GET.get("sort", 0))
+        sort_key = request.GET.get("sort", 'recent')
         reviews = Review.objects.annotate(
             comment_count=Count("review_comment", distinct=True),
             like_count=Count("like_review_users", distinct=True),
         )
         # 최신 순
-        if sort_key == 0:
+        if sort_key == 'recent':
             reviews = reviews.order_by("-pk", "-like_count", "-comment_count")
         # 좋아요 많은 순
-        elif sort_key == 1:
+        elif sort_key == 'likeDesc':
             reviews = reviews.order_by("-like_count", "-comment_count", "-pk")
         # 댓글 많은 순
-        elif sort_key == 2:
+        elif sort_key == 'commentDesc':
             reviews = reviews.order_by("-comment_count", "-like_count", "-pk")
 
-        paginator = Paginator(reviews, 10)
-        try:
-            reviews_page = paginator.page(page)
-        except PageNotAnInteger:
-            reviews_page = paginator.page(1)
-        except EmptyPage:
-            reviews_page = paginator.page(paginator.num_pages)
+        paginator = ReviewPagination()
+        page = paginator.paginate_queryset(reviews, request)
+        serializer = ReviewSerializer(page, many=True, context={"request": request})
 
-        serializer = ReviewListSerializer(
-            reviews_page, many=True, context={"request": request}
-        )
-        page_data = {
-            "current_page": reviews_page.number,
-            "total_pages": paginator.num_pages,
-            "has_next": reviews_page.has_next(),
-            "has_previous": reviews_page.has_previous(),
-            "results": serializer.data,
-        }
-        return Response(page_data)
+        return paginator.get_paginated_response(serializer.data)
     elif request.method == "POST":
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
