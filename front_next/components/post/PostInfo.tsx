@@ -6,12 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from '@/lib/dayjs';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ThumbsDown, ThumbsUp, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import ReactionToggle from './ReactionToggle';
+import { Button } from '../ui/button';
 
 export default function PostInfo({ initialData }: { initialData: PostDetail }) {
+  const session = useSession();
   const router = useRouter();
   const { status } = useSession();
   const { data: post, isPending } = useQuery<PostDetail>({
@@ -45,7 +47,7 @@ export default function PostInfo({ initialData }: { initialData: PostDetail }) {
             </span>
           </div>
         </div>
-        <X className="cursor-pointer size-7" />
+        <X className="cursor-pointer size-7" onClick={() => router.back()} />
       </div>
       <ReactionToggle />
       <div className="w-full flex">
@@ -68,6 +70,18 @@ export default function PostInfo({ initialData }: { initialData: PostDetail }) {
         )}
         <div className="w-3/4 whitespace-pre-line">{post.content}</div>
       </div>
+      {post.review_writor.id == session.data?.user.id && (
+        <div className="flex gap-2 justify-end">
+          <Button variant="destructive">삭제</Button>
+          <Button
+            variant="secondary"
+            className="border border-input"
+            onClick={() => router.push(`/post/${post.id}/edit`)}
+          >
+            수정
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
