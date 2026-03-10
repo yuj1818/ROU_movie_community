@@ -2,27 +2,27 @@ import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleReaction } from '@/lib/client/post';
-import { PostDetail } from '@/types/post';
+import { Post } from '@/types/post';
 import { useParams } from 'next/navigation';
 
 export default function ReactionToggle() {
   const params = useParams();
   const reviewId = Number(params.reviewId);
   const queryClient = useQueryClient();
-  const post = queryClient.getQueryData<PostDetail>(['post', reviewId]);
+  const post = queryClient.getQueryData<Post>(['post', reviewId]);
+
+  console.log(params.reviewId);
 
   const mutation = useMutation({
     mutationFn: (type: 'LIKE' | 'DISLIKE') => toggleReaction(reviewId, type),
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ['post', reviewId],
-        (old: PostDetail | undefined) =>
-          old
-            ? {
-                ...old,
-                ...data,
-              }
-            : old,
+      queryClient.setQueryData(['post', reviewId], (old: Post | undefined) =>
+        old
+          ? {
+              ...old,
+              ...data,
+            }
+          : old,
       );
     },
   });

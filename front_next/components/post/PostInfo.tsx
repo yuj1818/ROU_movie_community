@@ -1,7 +1,7 @@
 'use client';
 
 import { deletePost, getPostInfo } from '@/lib/client/post';
-import { PostDetail } from '@/types/post';
+import { Post } from '@/types/post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from '@/lib/dayjs';
 import { useSession } from 'next-auth/react';
@@ -13,13 +13,13 @@ import ReactionToggle from './ReactionToggle';
 import { Button } from '../ui/button';
 import { useModalContext } from '@/contexts/ModalContext';
 
-export default function PostInfo({ initialData }: { initialData: PostDetail }) {
+export default function PostInfo({ initialData }: { initialData: Post }) {
   const queryClient = useQueryClient();
   const session = useSession();
   const router = useRouter();
   const { status } = useSession();
   const { open, close } = useModalContext();
-  const { data: post, isPending } = useQuery<PostDetail>({
+  const { data: post, isPending } = useQuery<Post>({
     queryKey: ['post', initialData.id],
     queryFn: async () => {
       const res = await getPostInfo(initialData.id.toString());

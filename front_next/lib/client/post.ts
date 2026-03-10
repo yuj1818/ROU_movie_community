@@ -1,4 +1,5 @@
 import { ReactionType } from '@/types/movie';
+import { SortKey } from '@/types/post';
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + '/api/community';
 
@@ -49,6 +50,14 @@ export const deletePost = async (reviewId: number | string) => {
   if (!res.ok) throw new Error('리뷰 삭제 실패');
 
   if (res.status === 204) return null;
+
+  return res.json();
+};
+
+export const getPostList = async (page: number, sort: SortKey) => {
+  const res = await fetch(`${URL}?page=${page}&sort=${sort}`);
+
+  if (!res.ok) throw new Error('게시글 목록 조회 실패');
 
   return res.json();
 };

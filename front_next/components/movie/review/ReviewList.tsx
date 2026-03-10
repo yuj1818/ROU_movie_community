@@ -1,14 +1,14 @@
 'use client';
 
 import { getMovieReviewList } from '@/lib/client/movie';
-import { Review } from '@/types/movie';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import ReviewItem from './ReviewItem';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import Title from '@/components/common/Title';
 import { useParams, useRouter } from 'next/navigation';
+import PostItem from '@/components/post/PostItem';
+import { Post } from '@/types/post';
 
 export default function ReviewList() {
   const params = useParams();
@@ -16,7 +16,7 @@ export default function ReviewList() {
   const { status } = useSession();
   const router = useRouter();
   const [isAll, setIsAll] = useState(false);
-  const { data: reviews, isPending } = useQuery<Review[]>({
+  const { data: reviews, isPending } = useQuery<Post[]>({
     queryKey: ['reviews', movieId],
     queryFn: async () => {
       const res = await getMovieReviewList(movieId);
@@ -47,7 +47,7 @@ export default function ReviewList() {
             )}
             <ul className="flex flex-col w-full gap-2">
               {(isAll ? reviews : reviews.slice(0, 3)).map((review) => (
-                <ReviewItem key={review.id} {...review} />
+                <PostItem key={review.id} {...review} />
               ))}
             </ul>
           </>
