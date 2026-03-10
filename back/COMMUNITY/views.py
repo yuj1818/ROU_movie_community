@@ -51,7 +51,7 @@ def review(request):
 def review_detail(request, review_id):
     review = get_object_or_404(Review, pk=review_id)
     if request.method == "GET":
-        serializer = ReviewSerializer(review)
+        serializer = ReviewSerializer(review, context={"request": request})
         isLike = review.like_review_users.filter(pk=request.user.pk).exists()
         isDislike = review.dislike_review_users.filter(pk=request.user.pk).exists()
         reaction = None
@@ -67,7 +67,9 @@ def review_detail(request, review_id):
         return Response(data)
     elif request.method == "PUT":
         if request.user == review.review_writor:
-            serializer = ReviewSerializer(review, data=request.data, partial=True)
+            serializer = ReviewSerializer(
+                review, data=request.data, partial=True, context={"request": request}
+            )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
