@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { createMovieReview, getMovieInfo } from '@/lib/client/movie';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { PostDetail } from '@/types/post';
+import { Post } from '@/types/post';
 import { editPostInfo, getPostInfo } from '@/lib/client/post';
 
 export default function PostCreationForm({
@@ -32,7 +32,7 @@ export default function PostCreationForm({
     enabled: isReview,
   });
 
-  const { data: post } = useQuery<PostDetail>({
+  const { data: post } = useQuery<Post>({
     queryKey: ['post', reviewId],
     queryFn: async () => {
       const res = await getPostInfo(reviewId);
@@ -44,7 +44,7 @@ export default function PostCreationForm({
   const mutation = useMutation({
     mutationFn: () => editPostInfo(reviewId, formValues),
     onSuccess: (updatedPost) => {
-      queryClient.setQueryData(['post', reviewId], (old: PostDetail) =>
+      queryClient.setQueryData(['post', reviewId], (old: Post) =>
         old ? { ...old, ...updatedPost } : old,
       );
       router.replace(`/post/${reviewId}`);

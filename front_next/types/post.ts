@@ -1,6 +1,8 @@
 import { ReactionType } from './movie';
 
-export interface PostDetail {
+export type SortKey = 'recent' | 'likeDesc' | 'commentDesc';
+
+export interface Post {
   reaction: ReactionType;
   id: number;
   title: string;
