@@ -23,6 +23,8 @@ class SuperCommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_image = serializers.ImageField(use_url=False)
+
     class Meta:
         model = User
         fields = (
