@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   try {
     const title = req.nextUrl.searchParams.get('title');
     const pathname = req.nextUrl.pathname;
-    const res = await fetch(`${URL}${pathname}?title=${title}`, {
+    const res = await fetch(`${URL}${pathname}/?title=${title}`, {
       headers: {
         Authorization: `Token ${session.backendToken}`,
       },

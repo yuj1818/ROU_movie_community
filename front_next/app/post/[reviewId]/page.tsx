@@ -1,5 +1,10 @@
 import PostInfo from '@/components/post/PostInfo';
 import { getPostInfo } from '@/lib/server/post';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
 
 export default async function PostDetailPage({
   params,
@@ -8,11 +13,18 @@ export default async function PostDetailPage({
 }) {
   const { reviewId } = await params;
 
-  const postInfo = await getPostInfo(reviewId);
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['post', reviewId],
+    queryFn: () => getPostInfo(reviewId),
+  });
 
   return (
-    <div className="w-4/5 flex flex-col gap-4 py-12">
-      <PostInfo initialData={postInfo} />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="w-4/5 flex flex-col gap-4 py-12">
+        <PostInfo />
+      </div>
+    </HydrationBoundary>
   );
 }

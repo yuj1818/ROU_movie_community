@@ -36,15 +36,8 @@ export default function MovieSection({
   );
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['movies', id, dayjs().format('YYYY-MM-DD')],
-    queryFn: async () => {
-      let res;
-      if (type === 'genre') {
-        res = await getGenreMovieList(id);
-      } else {
-        res = await getSortedMovieList(sortKey!!);
-      }
-      return res;
-    },
+    queryFn: () =>
+      type === 'genre' ? getGenreMovieList(id) : getSortedMovieList(sortKey!),
     staleTime: Infinity,
     gcTime: Infinity,
   });

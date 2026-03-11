@@ -29,19 +29,13 @@ export default function PostCreationForm({
 
   const { data: movie } = useQuery<MovieDetail>({
     queryKey: ['movie', movieId],
-    queryFn: async () => {
-      const res = await getMovieInfo(movieId!);
-      return res;
-    },
+    queryFn: () => getMovieInfo(movieId!),
     enabled: isReview,
   });
 
   const { data: post } = useQuery<Post>({
     queryKey: ['post', reviewId],
-    queryFn: async () => {
-      const res = await getPostInfo(reviewId);
-      return res;
-    },
+    queryFn: async () => getPostInfo(reviewId),
     enabled: isEdit,
   });
 

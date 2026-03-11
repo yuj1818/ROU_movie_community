@@ -5,7 +5,7 @@ import { Post } from '@/types/post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from '@/lib/dayjs';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { MEDIA_BASE_URL } from '@/constants/url';
@@ -13,20 +13,20 @@ import ReactionToggle from './ReactionToggle';
 import { Button } from '../ui/button';
 import { useModalContext } from '@/contexts/ModalContext';
 
-export default function PostInfo({ initialData }: { initialData: Post }) {
+export default function PostInfo() {
   const queryClient = useQueryClient();
   const session = useSession();
   const router = useRouter();
+  const params = useParams();
+  const reviewId = Number(params.reviewId);
   const { status } = useSession();
   const { open, close } = useModalContext();
   const { data: post, isPending } = useQuery<Post>({
-    queryKey: ['post', initialData.id],
-    queryFn: async () => {
-      const res = await getPostInfo(initialData.id.toString());
-      return res;
-    },
-    initialData,
+    queryKey: ['post', reviewId],
+    queryFn: () => getPostInfo(reviewId),
   });
+
+  if (!post) return <div>Loading...</div>;
 
   const mutation = useMutation({
     mutationFn: () => deletePost(post.id),
