@@ -24,7 +24,7 @@ export default function ProfileEditForm({
     nickname: nickname,
     region: region,
     birth: birth,
-    profile_image: `/api${profile_image}`,
+    profile_image: `/api/media/${profile_image}`,
   });
   const fileRef = useRef(null);
 

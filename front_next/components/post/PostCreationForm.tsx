@@ -4,10 +4,15 @@ import { MovieDetail } from '@/types/movie';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '../ui/button';
 import { createMovieReview, getMovieInfo } from '@/lib/client/movie';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Post } from '@/types/post';
-import { editPostInfo, getPostInfo } from '@/lib/client/post';
+import { createPost, editPostInfo, getPostInfo } from '@/lib/client/post';
+
+interface FormValues {
+  title: string;
+  content: string;
+}
 
 export default function PostCreationForm({
   movieId,
@@ -25,8 +30,7 @@ export default function PostCreationForm({
   const { data: movie } = useQuery<MovieDetail>({
     queryKey: ['movie', movieId],
     queryFn: async () => {
-      if (!isReview) return null;
-      const res = await getMovieInfo(movieId);
+      const res = await getMovieInfo(movieId!);
       return res;
     },
     enabled: isReview,
@@ -42,21 +46,24 @@ export default function PostCreationForm({
   });
 
   const mutation = useMutation({
-    mutationFn: () => editPostInfo(reviewId, formValues),
-    onSuccess: (updatedPost) => {
-      queryClient.setQueryData(['post', reviewId], (old: Post) =>
-        old ? { ...old, ...updatedPost } : old,
-      );
-      router.replace(`/post/${reviewId}`);
+    mutationFn: async (form: FormValues) => {
+      if (isEdit) return editPostInfo(reviewId, form);
+      if (isReview) return createMovieReview(movieId, form);
+      return createPost(form);
+    },
+    onSuccess: (data) => {
+      if (isEdit) {
+        queryClient.setQueryData(['post', reviewId], (old: Post) =>
+          old ? { ...old, ...data } : old,
+        );
+      }
+      router.replace(`/post/${data.id}`);
     },
   });
 
-  const [formValues, setFormValues] = useState<{
-    title: string;
-    content: string;
-  }>({
-    title: isEdit ? post!.title : '',
-    content: isEdit ? post!.content : '',
+  const [formValues, setFormValues] = useState<FormValues>({
+    title: '',
+    content: '',
   });
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,17 +75,17 @@ export default function PostCreationForm({
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    if (isEdit) {
-      mutation.mutate();
-    } else {
-      if (isReview) {
-        const res = await createMovieReview(movieId, formValues);
-        if (res) router.replace(`/post/${res.id}`);
-      } else {
-      }
-    }
+    mutation.mutate(formValues);
   };
+
+  useEffect(() => {
+    if (post) {
+      setFormValues({
+        title: post.title,
+        content: post.content,
+      });
+    }
+  }, [post]);
 
   return (
     <form
@@ -122,7 +129,9 @@ export default function PostCreationForm({
         <Button
           type="submit"
           disabled={
-            formValues.title.trim() === '' || formValues.content.trim() === ''
+            mutation.isPending ||
+            formValues.title.trim() === '' ||
+            formValues.content.trim() === ''
           }
         >
           {isEdit ? '수정' : '작성'}

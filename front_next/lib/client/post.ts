@@ -61,3 +61,14 @@ export const getPostList = async (page: number, sort: SortKey) => {
 
   return res.json();
 };
+
+export const createPost = async (data: { title: string; content: string }) => {
+  const res = await fetch(`${URL}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error('게시글 작성 실패');
+
+  return res.json();
+};
