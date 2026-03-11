@@ -1,3 +1,4 @@
+import { authOptions } from '@/auth';
 import PostList from '@/components/post/PostList';
 import SortSelect from '@/components/post/SortSelect';
 import { Button } from '@/components/ui/button';
@@ -7,10 +8,12 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
+import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
 export default async function PostListPage() {
   const queryClient = new QueryClient();
+  const session = await getServerSession(authOptions);
 
   await queryClient.prefetchQuery({
     queryKey: ['posts', 1, 'recent'],
@@ -25,9 +28,11 @@ export default async function PostListPage() {
             <h1 className="text-3xl font-semibold">ROU 커뮤니티</h1>
             <div className="flex gap-4 items-center">
               <SortSelect />
-              <Button>
-                <Link href="/post/create">새글 작성</Link>
-              </Button>
+              {session?.user && (
+                <Button>
+                  <Link href="/post/create">새글 작성</Link>
+                </Button>
+              )}
             </div>
           </div>
           <PostList />

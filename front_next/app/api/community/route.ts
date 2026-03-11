@@ -23,3 +23,29 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session)
+    return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
+
+  const body = await req.json();
+  const pathname = req.nextUrl.pathname;
+
+  try {
+    const res = await fetch(`${URL}${pathname}/`, {
+      method: 'POST',
+      headers: {
+        Authorization: session ? `Token ${session.backendToken}` : '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err) {
+    return NextResponse.json({ error: 'Server Error' }, { status: 500 });
+  }
+}
