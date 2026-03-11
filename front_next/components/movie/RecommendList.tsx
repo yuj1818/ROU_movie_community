@@ -2,25 +2,32 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Title from '../common/Title';
-import { Movie } from '@/types/movie';
-import { getRecommendMovieList } from '@/lib/client/movie';
+import { Movie, MovieDetail } from '@/types/movie';
+import { getMovieInfo, getRecommendMovieList } from '@/lib/client/movie';
 import { useSession } from 'next-auth/react';
 import MovieCard from '../common/MovieCard';
 import { useParams } from 'next/navigation';
 
-export default function RecommendList({ title }: { title: string }) {
+export default function RecommendList() {
   const params = useParams();
   const movieId = Number(params.movieId);
   const { status } = useSession();
-  const { data: movies, isPending } = useQuery<Movie[]>({
+  const { data: movie } = useQuery<MovieDetail>({
+    queryKey: ['movie', movieId],
+    queryFn: () => getMovieInfo(movieId),
+  });
+
+  if (!movie) return <div>Loading...</div>;
+
+  const { data: movies } = useQuery<Movie[]>({
     queryKey: ['recommend', movieId],
-    queryFn: () => getRecommendMovieList(title),
-    enabled: status === 'authenticated',
+    queryFn: () => getRecommendMovieList(movie.title),
+    enabled: !!movie && status === 'authenticated',
   });
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <Title>"{title}"와(과) 비슷한 영화</Title>
+      <Title>"{movie.title}"와(과) 비슷한 영화</Title>
       <ul className="w-full grid grid-cols-6 gap-2">
         {status === 'authenticated' ? (
           movies &&

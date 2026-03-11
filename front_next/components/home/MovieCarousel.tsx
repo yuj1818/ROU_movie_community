@@ -20,10 +20,7 @@ export default function MovieCarousel() {
 
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['trendMovies', dayjs().format('YYYY-MM-DD')],
-    queryFn: async () => {
-      const res = await getTrendMovieList();
-      return res;
-    },
+    queryFn: () => getTrendMovieList(),
     staleTime: Infinity,
     gcTime: Infinity,
   });

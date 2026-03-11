@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 const URL = process.env.NEXT_PUBLIC_API_BASE_URL + '/api/movies';
 
 export const searchMovie = async (query: string) => {
-  const res = await fetch(`${URL}/search?q=${query}`);
+  const res = await fetch(`${URL}/search/?q=${query}`);
 
   if (!res.ok) throw new Error(`검색어_${query} 검색 실패`);
 
@@ -14,7 +14,7 @@ export const searchMovie = async (query: string) => {
 export const getMovieInfo = async (movieId: number | string) => {
   const session = await getServerSession(authOptions);
 
-  const res = await fetch(`${URL}/${movieId}`, {
+  const res = await fetch(`${URL}/${movieId}/`, {
     headers: {
       Authorization: session ? `Token ${session?.backendToken}` : '',
     },

@@ -15,22 +15,19 @@ import WatchToggle from './movieActions/WatchToggle';
 import ReactionToggle from './movieActions/ReactionToggle';
 import FavoriteToggle from './movieActions/FavoriteToggle';
 import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
 
-export default function MovieInfo({
-  initialData,
-}: {
-  initialData: MovieDetail;
-}) {
+export default function MovieInfo() {
   const { status } = useSession();
+  const params = useParams();
+  const movieId = Number(params.movieId);
   const { data: movie, isPending } = useQuery<MovieDetail>({
-    queryKey: ['movie', initialData.movie_id],
-    queryFn: async () => {
-      const res = await getMovieInfo(initialData.movie_id.toString());
-      return res;
-    },
-    initialData,
+    queryKey: ['movie', movieId],
+    queryFn: async () => getMovieInfo(movieId),
   });
   const { open } = useModalContext();
+
+  if (!movie) return <div>Loading...</div>;
 
   const onOpenTrailerModal = () => {
     open({

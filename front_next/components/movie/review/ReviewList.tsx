@@ -18,10 +18,7 @@ export default function ReviewList() {
   const [isAll, setIsAll] = useState(false);
   const { data: reviews, isPending } = useQuery<Post[]>({
     queryKey: ['reviews', movieId],
-    queryFn: async () => {
-      const res = await getMovieReviewList(movieId);
-      return res;
-    },
+    queryFn: () => getMovieReviewList(movieId),
   });
 
   return (

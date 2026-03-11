@@ -11,20 +11,21 @@ import FollowList from './FollowList';
 import PreferenceBox from './preference/PreferenceBox';
 import { useModalContext } from '@/contexts/ModalContext';
 import ProfileEditForm from './ProfileEditForm';
+import { useParams } from 'next/navigation';
 
-export default function ProfileBox({ initialData }: { initialData: UserInfo }) {
+export default function ProfileBox() {
   const session = useSession();
   const queryClient = useQueryClient();
+  const params = useParams();
+  const userId = Number(params.userId);
   const { data: profileInfo, isPending } = useQuery<UserInfo>({
-    queryKey: ['profile', initialData.id],
-    queryFn: async () => {
-      const res = await getProfileInfo(initialData.id);
-      return res;
-    },
-    initialData,
+    queryKey: ['profile', userId],
+    queryFn: () => getProfileInfo(userId),
   });
-  const isMine = session.data?.user.id === profileInfo.id;
+  const isMine = session.data?.user.id === userId;
   const { open } = useModalContext();
+
+  if (!profileInfo) return <div>Loading...</div>;
 
   const mutation = useMutation({
     mutationFn: () => follow(profileInfo.id),
