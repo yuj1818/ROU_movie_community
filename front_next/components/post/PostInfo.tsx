@@ -26,19 +26,17 @@ export default function PostInfo() {
     queryFn: () => getPostInfo(reviewId),
   });
 
-  if (!post) return <div>Loading...</div>;
-
   const mutation = useMutation({
-    mutationFn: () => deletePost(post.id),
+    mutationFn: (postId: number) => deletePost(postId),
     onSuccess: () => {
       close();
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      if (post.review_movie) {
+      if (post!.review_movie) {
         queryClient.invalidateQueries({
-          queryKey: ['reviews', post.review_movie.movie_id],
+          queryKey: ['reviews', post!.review_movie.movie_id],
         });
       }
-      queryClient.removeQueries({ queryKey: ['post', post.id] });
+      queryClient.removeQueries({ queryKey: ['post', post!.id] });
       router.back();
     },
   });
@@ -48,11 +46,13 @@ export default function PostInfo() {
       title: '게시글을 삭제하시겠습니까?',
       rightBtnLabel: '삭제',
       buttonVariant: 'destructive',
-      onRightBtnClick: () => mutation.mutate(),
+      onRightBtnClick: () => mutation.mutate(reviewId),
       leftBtnLabel: '취소',
       onLeftBtnClick: () => close(),
     });
   };
+
+  if (!post) return <div>Loading...</div>;
 
   return (
     <div className="w-full flex flex-col justify-center gap-4 rounded p-6 border border-white">

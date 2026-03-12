@@ -1,3 +1,4 @@
+import CommentList from '@/components/post/comment/CommentList';
 import PostInfo from '@/components/post/PostInfo';
 import { getPostInfo } from '@/lib/server/post';
 import {
@@ -24,6 +25,7 @@ export default async function PostDetailPage({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="w-4/5 flex flex-col gap-4 py-12">
         <PostInfo />
+        <CommentList />
       </div>
     </HydrationBoundary>
   );
