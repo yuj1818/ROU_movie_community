@@ -72,3 +72,11 @@ export const createPost = async (data: { title: string; content: string }) => {
 
   return res.json();
 };
+
+export const getCommentList = async (reviewId: number | string, page = 1) => {
+  const res = await fetch(`${URL}/comment/${reviewId}?page=${page}`);
+
+  if (!res.ok) throw new Error('게시글 댓글 조회 실패');
+
+  return res.json();
+};
