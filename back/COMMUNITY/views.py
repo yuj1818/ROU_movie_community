@@ -15,6 +15,12 @@ class ReviewPagination(PageNumberPagination):
     page_query_param = "page"
 
 
+class CommentPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_parm = "page_size"
+    max_page_size = 50
+
+
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def review(request):
@@ -116,69 +122,69 @@ def review_reaction(request, review_id):
     return Response(serializer.data)
 
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "POST", "PUT", "DELETE"])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def review_comment(request, review_id):
+def review_comment(request, review_id, comment_id=None):
+    """
+    GET: 최상위 댓글 + 대댓글 페이징
+    POST: 댓글 작성 (comment_id 없으면 최상위, 있으면 대댓글)
+    PUT: comment_id 있으면 댓글 수정
+    DELETE: comment_id 있으면 댓글 삭제
+    """
     review = get_object_or_404(Review, pk=review_id)
-    if request.method == "GET":
-        serializer = CommentListSerializer(review, context={"request": request})
-        return Response(serializer.data)
-    elif request.method == "POST":
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(commented_review=review, comment_writor=request.user)
-            serializer = CommentListSerializer(review, context={"request": request})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-@api_view(["POST", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
-def review_recomment(request, review_id, comment_id):
-    review = get_object_or_404(Review, pk=review_id)
-    comment = get_object_or_404(Comment, pk=comment_id)
-    if request.method == "POST":
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(
-                commented_review=review,
-                comment_writor=request.user,
-                super_comment=comment,
+    if request.method in ["PUT", "DELETE"]:
+        if not comment_id:
+            return Response(
+                {"message": "commentId가 없습니다"}, status=status.HTTP_400_BAD_REQUEST
             )
-            serializer = CommentListSerializer(review, context={"request": request})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-    elif request.method == "PUT":
-        if request.user == comment.comment_writor:
+        comment = get_object_or_404(Comment, pk=comment_id)
+        if request.user != comment.comment_writor:
+            return Response(
+                {"message": "작성자 본인만 수정 및 삭제가 가능합니다"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        if request.method == "PUT":
             serializer = CommentSerializer(comment, data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                serializer = CommentListSerializer(review, context={"request": request})
-                return Response(serializer.data)
         else:
-            return Response(
-                {"message": "작성자 본인만 수정 및 삭제가 가능합니다"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-    elif request.method == "DELETE":
-        if request.user == comment.comment_writor:
             comment.delete()
-            serializer = CommentListSerializer(review, context={"request": request})
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
             return Response(
-                {"message": "작성자 본인만 수정 및 삭제가 가능합니다"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                {"message": f"댓글 {comment_id}이 삭제되었습니다."},
+                status=status.HTTP_204_NO_CONTENT,
             )
+    elif request.method == "POST":
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        super_comment = None
+        if comment_id:
+            super_comment = get_object_or_404(Comment, pk=comment_id)
+        serializer.save(
+            commented_review=review,
+            comment_writor=request.user,
+            super_comment=super_comment,
+        )
+
+    top_comments = review.review_comment.filter(super_comment=None).order_by(
+        "-created_at"
+    )
+    paginator = CommentPagination()
+    page = paginator.paginate_queryset(top_comments, request)
+    serializer = NewSuperCommentSerializer(
+        page, many=True, context={"request": request}
+    )
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def comment_like(request, review_id, comment_id):
-    review = get_object_or_404(Review, pk=review_id)
+def comment_like(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     user = request.user
     if comment.like_comment_users.filter(pk=user.pk).exists():
         comment.like_comment_users.remove(user)
     else:
         comment.like_comment_users.add(user)
-    serializer = CommentListSerializer(review, context={"request": request})
+
+    serializer = CommentLikeSerializer(comment, context={"request": request})
     return Response(serializer.data)
