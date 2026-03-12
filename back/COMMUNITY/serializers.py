@@ -67,21 +67,20 @@ class NewSuperCommentSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "comment_writor",
-            "like_comment_users",
+            "content",
             "commented_review",
             "super_comment",
-            "content",
             "created_at",
-            "commented",
             "updated_at",
+            "commented",
             "isLike",
             "like_count",
         )
 
     # 댓글 번호, 댓글 작성자,
     def get_commented(self, instance):
-        serializer = self.__class__(instance.commented, many=True)
-        serializer.bind("", self)
+        replies = instance.commented.all().order_by("created_at")
+        serializer = NewSuperCommentSerializer(replies, many=True, context=self.context)
         return serializer.data
 
     def get_isLike(self, instance):
@@ -89,24 +88,19 @@ class NewSuperCommentSerializer(serializers.ModelSerializer):
         return instance.like_comment_users.filter(id=user.id).exists()
 
 
-# 댓글 조회(대댓글 포함)
-class CommentListSerializer(serializers.ModelSerializer):
-    reply_comments = serializers.SerializerMethodField()
+class CommentLikeSerializer(serializers.ModelSerializer):
+    isLike = serializers.SerializerMethodField()
+    like_count = serializers.IntegerField(
+        source="like_comment_users.count", read_only=True
+    )
 
     class Meta:
-        model = Review
-        # 게시글 번호, 댓글 정보 목록
-        fields = (
-            "id",
-            "reply_comments",
-        )
+        model = Comment
+        fields = ("id", "isLike", "like_count")
 
-    def get_reply_comments(self, obj):
-        reply_comments = obj.review_comment.filter(super_comment=None)
-        serializer = NewSuperCommentSerializer(
-            reply_comments, many=True, context=self.context
-        )
-        return serializer.data
+    def get_isLike(self, instance):
+        user = self.context["request"].user
+        return instance.like_comment_users.filter(id=user.id).exists()
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -203,38 +197,3 @@ class ReviewReactionSerilaizer(serializers.ModelSerializer):
             return "DISLIKE"
 
         return None
-
-
-# # 게시글 좋아요 등록 및 해제
-# class ReviewLikeSerializer(serializers.ModelSerializer):
-#     like_count = serializers.IntegerField(
-#         source="like_review_users.count", read_only=True
-#     )
-
-#     class Meta:
-#         model = Review
-#         # 게시글 id, 좋아요한 사용자 목록
-#         fields = (
-#             "id",
-#             "like_count",
-#         )
-
-
-# # 게시글 싫어요 등록 및 해제
-# class ReviewDisLikeSerializer(serializers.ModelSerializer):
-#     dislike_count = serializers.IntegerField(
-#         source="dislike_review_users.count", read_only=True
-#     )
-
-#     class Meta:
-#         model = Review
-#         # 게시글 id, 싫어요한 사용자 목록
-#         fields = ("id", "dislike_count")
-
-
-# class CommentLikeSerializer(serializers.ModelSerializer):
-#   like_count = serializers.IntegerField(source='like_comment_users.count', read_only=True)
-
-#   class Meta:
-#     model = Comment
-#     fields = ('id', 'like_count')

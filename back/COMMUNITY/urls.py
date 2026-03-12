@@ -8,9 +8,7 @@ urlpatterns = [
     path("", views.review),
     path("<int:review_id>/", views.review_detail),
     path("<int:review_id>/reaction/", views.review_reaction),
-    # path("like/<int:review_id>/", views.review_like),
-    # path("dislike/<int:review_id>/", views.review_dislike),
     path("comment/<int:review_id>/", views.review_comment),
-    path("comment/<int:review_id>/<int:comment_id>/", views.review_recomment),
-    path("comment/like/<int:review_id>/<int:comment_id>/", views.comment_like),
+    path("comment/<int:review_id>/<int:comment_id>/", views.review_comment),
+    path("comment/<int:comment_id>/like/", views.comment_like),
 ]
