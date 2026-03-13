@@ -80,3 +80,21 @@ export const getCommentList = async (reviewId: number | string, page = 1) => {
 
   return res.json();
 };
+
+export const createComment = async (
+  reviewId: number | string,
+  data: { content: string },
+  commentId?: number | string,
+) => {
+  const res = await fetch(
+    `${URL}/comment/${reviewId}/${commentId ? commentId : ''}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    },
+  );
+
+  if (!res.ok) throw new Error('댓글 작성 실패');
+
+  return res.json();
+};

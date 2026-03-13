@@ -25,11 +25,10 @@ export default function ProfileBox() {
   const isMine = session.data?.user.id === userId;
   const { open } = useModalContext();
 
-  if (!profileInfo) return <div>Loading...</div>;
-
   const mutation = useMutation({
-    mutationFn: () => follow(profileInfo.id),
+    mutationFn: (userId: number) => follow(userId),
     onSuccess: (updatedProfile) => {
+      if (!profileInfo) return;
       queryClient.setQueryData(['profile', profileInfo.id], (old: UserInfo) =>
         old ? { ...old, ...updatedProfile } : old,
       );
@@ -44,11 +43,15 @@ export default function ProfileBox() {
   });
 
   const onOpenProfileEditModal = () => {
+    if (!profileInfo) return;
+
     open({
       title: '기본 정보 편집',
       content: <ProfileEditForm {...profileInfo} />,
     });
   };
+
+  if (!profileInfo) return <div>Loading...</div>;
 
   return (
     <div className="w-full flex flex-col gap-4 items-center md:h-full md:min-h-0">
@@ -78,7 +81,7 @@ export default function ProfileBox() {
           <Button
             size="sm"
             variant={profileInfo.isFollowing ? 'secondary' : 'default'}
-            onClick={() => mutation.mutate()}
+            onClick={() => mutation.mutate(profileInfo.id)}
           >
             {profileInfo.isFollowing ? '팔로잉' : '팔로우'}
           </Button>

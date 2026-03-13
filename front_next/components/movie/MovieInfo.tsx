@@ -27,9 +27,9 @@ export default function MovieInfo() {
   });
   const { open } = useModalContext();
 
-  if (!movie) return <div>Loading...</div>;
-
   const onOpenTrailerModal = () => {
+    if (!movie) return;
+
     open({
       title: `${movie.title} 트레일러`,
       content: (
@@ -42,6 +42,8 @@ export default function MovieInfo() {
       ),
     });
   };
+
+  if (!movie) return <div>Loading...</div>;
 
   return (
     <div className="w-full flex gap-4 items-start">
