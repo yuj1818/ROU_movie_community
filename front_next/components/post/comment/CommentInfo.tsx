@@ -19,7 +19,7 @@ export default function CommentInfo({
   const [isReply, setIsReply] = useState(false);
 
   return (
-    <li className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col gap-2">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
@@ -80,6 +80,6 @@ export default function CommentInfo({
           <CommentInfo depth={depth + 1} {...recomment} />
         </div>
       ))}
-    </li>
+    </div>
   );
 }
