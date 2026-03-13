@@ -165,8 +165,16 @@ def review_comment(request, review_id, comment_id=None):
             super_comment=super_comment,
         )
 
-    top_comments = review.review_comment.filter(super_comment=None).order_by(
-        "-created_at"
+    top_comments = (
+        review.review_comment.filter(super_comment=None)
+        .select_related("comment_writor")
+        .prefetch_related(
+            "like_comment_users",
+            "commented",
+            "commented__comment_writor",
+            "commented__like_comment_users",
+        )
+        .order_by("-created_at")
     )
     paginator = CommentPagination()
     page = paginator.paginate_queryset(top_comments, request)
