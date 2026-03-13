@@ -79,7 +79,7 @@ class NewSuperCommentSerializer(serializers.ModelSerializer):
 
     # 댓글 번호, 댓글 작성자,
     def get_commented(self, instance):
-        replies = instance.commented.all().order_by("created_at")
+        replies = instance.commented.all().order_by("created_at")[:5]
         serializer = NewSuperCommentSerializer(replies, many=True, context=self.context)
         return serializer.data
 
@@ -119,7 +119,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     dislike_count = serializers.IntegerField(
         source="dislike_review_users.count", read_only=True
     )
-    comment_count = serializers.SerializerMethodField()  # 댓글 수
+    comment_count = serializers.IntegerField(read_only=True)  # 댓글 수
     reaction = serializers.SerializerMethodField()
 
     class Meta:
