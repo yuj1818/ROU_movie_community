@@ -8,8 +8,14 @@ import CommentTextarea from './CommentTextarea';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { createComment, deleteComment, editComment } from '@/lib/client/post';
+import {
+  createComment,
+  deleteComment,
+  editComment,
+  likeComment,
+} from '@/lib/client/post';
 import { useModalContext } from '@/contexts/ModalContext';
+import { PaginatedResponse } from '@/types/common';
 
 export default function CommentInfo({
   id,
@@ -31,6 +37,27 @@ export default function CommentInfo({
   const [editedContent, setEditedContent] = useState(content);
   const [replContent, setReplContent] = useState('');
 
+  const toggleLikeOnComments = (
+    comments: Comment[],
+    updatedComment: { id: number; isLike: boolean; like_count: number },
+  ): Comment[] => {
+    return comments.map((c) => {
+      if (c.id === updatedComment.id) {
+        return {
+          ...c,
+          ...updatedComment,
+        };
+      } else if (c.commented.length > 0) {
+        return {
+          ...c,
+          commented: toggleLikeOnComments(c.commented, updatedComment),
+        };
+      } else {
+        return c;
+      }
+    });
+  };
+
   const mutation = useMutation({
     mutationFn: ({
       content,
@@ -39,26 +66,46 @@ export default function CommentInfo({
     }: {
       content?: string;
       commentId: number;
-      type: 'reply' | 'edit' | 'delete';
+      type: 'reply' | 'edit' | 'delete' | 'like';
     }) => {
       if (type === 'reply') {
         return createComment(reviewId, { content: content || '' }, commentId);
       } else if (type === 'edit') {
         return editComment(reviewId, commentId, { content: content || '' });
-      } else {
+      } else if (type === 'delete') {
         close();
         return deleteComment(reviewId, commentId);
+      } else {
+        return likeComment(reviewId, commentId);
       }
     },
-    onSuccess: (updated) => {
-      queryClient.invalidateQueries({
-        queryKey: ['post', reviewId, 'comments'],
-      });
-      if (isEdit) {
-        setIsEdit(false);
-      } else if (isReply) {
-        setIsReply(false);
-        setReplContent('');
+    onSuccess: (updated, variables) => {
+      const { type } = variables;
+
+      if (type === 'like') {
+        queryClient.setQueryData<{
+          pages: PaginatedResponse<Comment>[];
+          pageParams: (number | undefined)[];
+        }>(['post', reviewId, 'comments'], (old) => {
+          if (!old) return old;
+
+          const newPages = old.pages.map((page) => ({
+            ...page,
+            results: toggleLikeOnComments(page.results, updated),
+          }));
+
+          return { ...old, pages: newPages };
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ['post', reviewId, 'comments'],
+        });
+        if (isEdit) {
+          setIsEdit(false);
+        } else if (isReply) {
+          setIsReply(false);
+          setReplContent('');
+        }
       }
     },
   });
@@ -146,6 +193,7 @@ export default function CommentInfo({
                   'cursor-pointer size-4',
                   isLike ? 'fill-primary' : '',
                 )}
+                onClick={() => mutation.mutate({ commentId: id, type: 'like' })}
               />
               <span className="text-xs text-muted-foreground">
                 {like_count}
