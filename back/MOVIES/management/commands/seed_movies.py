@@ -122,6 +122,22 @@ def bulk_insert_movies(details):
 
     for d in details:
         kr_date = extract_kr_release_date(d.get("release_dates", {}).get("results", []))
+
+        videos = d.get("videos", {}).get("results", [])
+        video = (
+            next(
+                v["key"]
+                for v in videos
+                if v.get("type") == "Trailer"
+                and v.get("official")
+                and v.get("site") == "Youtube"
+            ),
+            None,
+        )
+
+        if not video:
+            video = next((v["key"] for v in videos if v.get("site") == "Youtube"), None)
+
         movies.append(
             Movie(
                 movie_id=d["id"],
@@ -145,14 +161,7 @@ def bulk_insert_movies(details):
                     ),
                     None,
                 ),
-                videos=next(
-                    (
-                        v["key"]
-                        for v in d.get("videos", {}).get("results", [])
-                        if v.get("site") == "YouTube"
-                    ),
-                    None,
-                ),
+                videos=video,
                 last_detail_fetched_at=timezone.now(),
             )
         )

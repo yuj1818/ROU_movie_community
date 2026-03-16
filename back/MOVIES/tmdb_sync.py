@@ -92,14 +92,24 @@ def save_movie(movie):
             None,
         )
 
+        videos = movie.get("videos", {}).get("results", [])
+
         video = next(
             (
                 v["key"]
-                for v in movie.get("videos", {}).get("results", [])
-                if v.get("site") == "YouTube"
+                for v in videos
+                if v.get("type") == 'Trailer'
+                and v.get("official")
+                and v.get("site") == 'Youtube'
             ),
             None,
         )
+
+        if not video:
+            video = next(
+                (v["key"] for v in videos if v.get("site") == "YouTube"),
+                None,
+            )
 
         release_date_kr = extract_kr_release_date(movie)
 
