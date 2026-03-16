@@ -8,7 +8,8 @@ import CommentTextarea from './CommentTextarea';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { editComment } from '@/lib/client/post';
+import { createComment, deleteComment, editComment } from '@/lib/client/post';
+import { useModalContext } from '@/contexts/ModalContext';
 
 export default function CommentInfo({
   id,
@@ -24,27 +25,54 @@ export default function CommentInfo({
   const reviewId = Number(params.reviewId);
   const session = useSession();
   const queryClient = useQueryClient();
+  const { open, close } = useModalContext();
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+  const [replContent, setReplContent] = useState('');
 
   const mutation = useMutation({
     mutationFn: ({
       content,
       commentId,
+      type,
     }: {
-      content: string;
+      content?: string;
       commentId: number;
+      type: 'reply' | 'edit' | 'delete';
     }) => {
-      return editComment(reviewId, commentId, { content });
+      if (type === 'reply') {
+        return createComment(reviewId, { content: content || '' }, commentId);
+      } else if (type === 'edit') {
+        return editComment(reviewId, commentId, { content: content || '' });
+      } else {
+        close();
+        return deleteComment(reviewId, commentId);
+      }
     },
     onSuccess: (updated) => {
       queryClient.invalidateQueries({
         queryKey: ['post', reviewId, 'comments'],
       });
-      setIsEdit(false);
+      if (isEdit) {
+        setIsEdit(false);
+      } else if (isReply) {
+        setIsReply(false);
+        setReplContent('');
+      }
     },
   });
+
+  const onDelete = () => {
+    open({
+      title: '댓글을 삭제하시겠습니까?',
+      rightBtnLabel: '삭제',
+      buttonVariant: 'destructive',
+      onRightBtnClick: () => mutation.mutate({ commentId: id, type: 'delete' }),
+      leftBtnLabel: '취소',
+      onLeftBtnClick: () => close(),
+    });
+  };
 
   return (
     <div className="w-full flex flex-col gap-2 p-2">
@@ -61,7 +89,7 @@ export default function CommentInfo({
           <div className="flex gap-1 text-muted-foreground">
             {comment_writor.id === session.data?.user.id && (
               <>
-                <Trash2 className="cursor-pointer size-4" />
+                <Trash2 className="cursor-pointer size-4" onClick={onDelete} />
                 {isEdit ? (
                   <CircleX
                     className="cursor-pointer size-4"
@@ -99,7 +127,11 @@ export default function CommentInfo({
               className="h-full"
               disabled={editedContent.trim() === ''}
               onClick={() =>
-                mutation.mutate({ content: editedContent, commentId: id })
+                mutation.mutate({
+                  content: editedContent,
+                  commentId: id,
+                  type: 'edit',
+                })
               }
             >
               댓글 수정
@@ -122,6 +154,29 @@ export default function CommentInfo({
           </div>
         )}
       </div>
+      {isReply && (
+        <div className="flex gap-2">
+          <CornerDownRight className="size-4" />
+          <CommentTextarea
+            rows={3}
+            value={replContent}
+            onChange={(e) => setReplContent(e.target.value)}
+          />
+          <Button
+            className="h-full"
+            disabled={replContent.trim() === ''}
+            onClick={() =>
+              mutation.mutate({
+                content: replContent,
+                commentId: id,
+                type: 'reply',
+              })
+            }
+          >
+            답변 작성
+          </Button>
+        </div>
+      )}
       {commented.map((recomment) => (
         <div
           key={recomment.id}

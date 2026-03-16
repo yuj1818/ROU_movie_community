@@ -113,3 +113,18 @@ export const editComment = async (
 
   return res.json();
 };
+
+export const deleteComment = async (
+  reviewId: number | string,
+  commentId: number | string,
+) => {
+  const res = await fetch(`${URL}/comment/${reviewId}/${commentId}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) throw new Error('리뷰 삭제 실패');
+
+  if (res.status === 204) return null;
+
+  return res.json();
+};
