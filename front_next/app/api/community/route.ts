@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
     const page = req.nextUrl.searchParams.get('page');
     const sort = req.nextUrl.searchParams.get('sort');
-    const res = await fetch(`${URL}${pathname}?page=${page}&sort=${sort}`, {
+    const res = await fetch(`${URL}${pathname}/?page=${page}&sort=${sort}`, {
       headers: {
         Authorization: session ? `Token ${session.backendToken}` : '',
       },

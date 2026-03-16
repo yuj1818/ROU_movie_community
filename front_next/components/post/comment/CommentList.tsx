@@ -11,7 +11,7 @@ import {
 import { useParams } from 'next/navigation';
 import CommentInfo from './CommentInfo';
 import CommentTextarea from './CommentTextarea';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { PaginatedResponse } from '@/types/common';
@@ -104,7 +104,10 @@ export default function CommentList() {
       </div>
       <div className="w-full flex flex-col gap-2">
         {comments.map((comment: Comment) => (
-          <CommentInfo key={comment.id} {...comment} />
+          <React.Fragment key={comment.id}>
+            <CommentInfo {...comment} />
+            <Separator className="bg-muted-foreground" />
+          </React.Fragment>
         ))}
         {hasNextPage && <div ref={observerRef} className="h-1" />}
         {isFetchingNextPage && <div>Loading...</div>}
