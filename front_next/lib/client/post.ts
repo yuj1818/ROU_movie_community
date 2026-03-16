@@ -98,3 +98,18 @@ export const createComment = async (
 
   return res.json();
 };
+
+export const editComment = async (
+  reviewId: number | string,
+  commentId: number | string,
+  data: { content: string },
+) => {
+  const res = await fetch(`${URL}/comment/${reviewId}/${commentId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error('댓글 작성 실패');
+
+  return res.json();
+};

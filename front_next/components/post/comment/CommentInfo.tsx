@@ -4,8 +4,14 @@ import { CircleX, CornerDownRight, Heart, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import CommentTextarea from './CommentTextarea';
+import { Button } from '@/components/ui/button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
+import { editComment } from '@/lib/client/post';
 
 export default function CommentInfo({
+  id,
   content,
   comment_writor,
   commented,
@@ -14,12 +20,34 @@ export default function CommentInfo({
   like_count,
   depth = 0,
 }: Comment & { depth?: number }) {
+  const params = useParams();
+  const reviewId = Number(params.reviewId);
   const session = useSession();
+  const queryClient = useQueryClient();
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
+
+  const mutation = useMutation({
+    mutationFn: ({
+      content,
+      commentId,
+    }: {
+      content: string;
+      commentId: number;
+    }) => {
+      return editComment(reviewId, commentId, { content });
+    },
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({
+        queryKey: ['post', reviewId, 'comments'],
+      });
+      setIsEdit(false);
+    },
+  });
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col gap-2 p-2">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
@@ -37,7 +65,10 @@ export default function CommentInfo({
                 {isEdit ? (
                   <CircleX
                     className="cursor-pointer size-4"
-                    onClick={() => setIsEdit(false)}
+                    onClick={() => {
+                      setEditedContent(content);
+                      setIsEdit(false);
+                    }}
                   />
                 ) : (
                   <Pencil
@@ -57,18 +88,39 @@ export default function CommentInfo({
             )}
           </div>
         </div>
-        <div className="flex gap-2 items-center">
-          <span className="flex-1 text-sm whitespace-pre-line">{content}</span>
-          <div className="flex gap-1 items-center">
-            <Heart
-              className={cn(
-                'cursor-pointer size-4',
-                isLike ? 'fill-primary' : '',
-              )}
+        {isEdit ? (
+          <div className="flex gap-2">
+            <CommentTextarea
+              rows={3}
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
             />
-            <span className="text-xs text-muted-foreground">{like_count}</span>
+            <Button
+              className="h-full"
+              disabled={editedContent.trim() === ''}
+              onClick={() =>
+                mutation.mutate({ content: editedContent, commentId: id })
+              }
+            >
+              댓글 수정
+            </Button>
           </div>
-        </div>
+        ) : (
+          <div className="flex gap-2 items-center">
+            <span className="flex-1 whitespace-pre-line">{content}</span>
+            <div className="flex gap-1 items-center">
+              <Heart
+                className={cn(
+                  'cursor-pointer size-4',
+                  isLike ? 'fill-primary' : '',
+                )}
+              />
+              <span className="text-xs text-muted-foreground">
+                {like_count}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
       {commented.map((recomment) => (
         <div
