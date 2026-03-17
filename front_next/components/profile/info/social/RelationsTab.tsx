@@ -1,5 +1,9 @@
 import { TabsContent } from '@/components/ui/tabs';
-import { follow, getRelations } from '@/lib/client/profile';
+import {
+  follow,
+  getRecommendedFriends,
+  getRelations,
+} from '@/lib/client/profile';
 import { User } from '@/types/profile';
 import {
   useInfiniteQuery,
@@ -11,6 +15,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import UserInfo from './UserInfo';
 import { LoaderCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { PaginatedResponse } from '@/types/common';
 
 export default function RelationsTab({ type }: { type: string }) {
   const session = useSession();
@@ -23,9 +28,20 @@ export default function RelationsTab({ type }: { type: string }) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useInfiniteQuery({
       queryKey: ['profile', userId, 'relations', type],
-      queryFn: ({ pageParam }) => getRelations(userId, type, pageParam),
+      queryFn: ({ pageParam }) => {
+        if (type === 'recommend') {
+          return getRecommendedFriends().then((data) => ({
+            results: data,
+            next: null,
+            previous: null,
+          }));
+        } else {
+          return getRelations(userId, type, pageParam);
+        }
+      },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
+        if (type === 'recommend') return undefined;
         if (!lastPage.next) return undefined;
         const url = new URL(lastPage.next);
         const nextPage = url.searchParams.get('page');
@@ -42,32 +58,36 @@ export default function RelationsTab({ type }: { type: string }) {
         queryKey: ['profile', userId, 'relations', type],
       });
 
-      queryClient.setQueryData(
-        ['profile', userId, 'relations', type],
-        (old: any) => {
-          if (!old) return old;
+      queryClient.setQueryData<{
+        pages: PaginatedResponse<User>[];
+        pageParams: (number | undefined)[];
+      }>(['profile', userId, 'relations', type], (old) => {
+        if (!old) return old;
 
-          if (isMine && type !== 'followers' && isFollowing) {
-            return {
-              ...old,
-              pages: old.pages.map((page: any) => ({
-                ...page,
-                results: page.results.filter((u: User) => u.id !== targetId),
-              })),
-            };
-          }
-
+        if (
+          isMine &&
+          (type === 'followings' || type === 'friends') &&
+          isFollowing
+        ) {
           return {
             ...old,
-            pages: old.pages.map((page: any) => ({
+            pages: old.pages.map((page) => ({
               ...page,
-              results: page.results.map((u: User) =>
-                u.id === targetId ? { ...u, isFollowing: !u.isFollowing } : u,
-              ),
+              results: page.results.filter((u) => u.id !== targetId),
             })),
           };
-        },
-      );
+        }
+
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            results: page.results.map((u) =>
+              u.id === targetId ? { ...u, isFollowing: !u.isFollowing } : u,
+            ),
+          })),
+        };
+      });
     },
     onSettled: () => {
       if (isMine) {
@@ -93,7 +113,7 @@ export default function RelationsTab({ type }: { type: string }) {
   );
 
   useEffect(() => {
-    if (!observerRef.current) return;
+    if (!observerRef.current || type === 'recommend') return;
 
     const option = { root: null, rootMargin: '0px', threshold: 0.1 };
     const observer = new IntersectionObserver(handleObserver, option);
