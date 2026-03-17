@@ -8,14 +8,13 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ reviewId: string; commentId: string }> },
 ) {
-  const { reviewId, commentId } = await params;
+  const { commentId } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
 
   try {
-    const pathname = req.nextUrl.pathname;
     const res = await fetch(`${URL}/${commentId}/like/`, {
       method: 'POST',
       headers: {
