@@ -8,6 +8,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Post } from '@/types/post';
 import { createPost, editPostInfo, getPostInfo } from '@/lib/client/post';
+import Title from '../common/Title';
 
 interface FormValues {
   title: string;
@@ -86,11 +87,11 @@ export default function PostCreationForm({
       className="w-full flex flex-col justify-center gap-4"
       onSubmit={onSubmit}
     >
-      {isReview && (
-        <h3 className="flex items-end gap-2">
-          <span className="text-2xl font-semibold">{`"${movie?.title}"`}</span>
-          <span className="text-xl">리뷰 {isEdit ? '수정' : '작성'}</span>
-        </h3>
+      {(isReview || (isEdit && post?.review_movie!!)) && (
+        <Title size="lg">
+          <span>{`"${movie?.title || post?.review_movie?.title}"`}</span>
+          <span className="text-xl ml-2">리뷰 {isEdit ? '수정' : '작성'}</span>
+        </Title>
       )}
       <div className="w-full flex flex-col gap-2">
         <input

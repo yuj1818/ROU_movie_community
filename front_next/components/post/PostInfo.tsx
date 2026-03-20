@@ -12,6 +12,7 @@ import { MEDIA_BASE_URL } from '@/constants/url';
 import ReactionToggle from './ReactionToggle';
 import { Button } from '../ui/button';
 import { useModalContext } from '@/contexts/ModalContext';
+import Title from '../common/Title';
 
 export default function PostInfo() {
   const queryClient = useQueryClient();
@@ -58,7 +59,9 @@ export default function PostInfo() {
     <div className="w-full flex flex-col justify-center gap-4 rounded p-6 border border-white">
       <div className="flex justify-between w-full">
         <div className="flex flex-col gap-2">
-          <h2 className="font-bold text-2xl">{post.title}</h2>
+          <Title size="lg" weight="bold">
+            {post.title}
+          </Title>
           <div className="flex gap-2 text-sm">
             {status === 'authenticated' ? (
               <span

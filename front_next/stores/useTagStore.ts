@@ -9,7 +9,7 @@ interface TagState {
   registerSection: (id: number, el: HTMLElement | null) => void;
 }
 
-export const useTagStore = create<TagState>()((set, get) => ({
+export const useTagStore = create<TagState>((set, get) => ({
   isTagOpen: false,
   selectedTag: 20,
   sectionRefs: {},

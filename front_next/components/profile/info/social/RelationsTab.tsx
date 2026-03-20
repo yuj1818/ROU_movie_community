@@ -64,6 +64,7 @@ export default function RelationsTab({ type }: { type: string }) {
       }>(['profile', userId, 'relations', type], (old) => {
         if (!old) return old;
 
+        // 내 프로필의 팔로잉 목록이나 친구 목록에서 unfollow을 할 경우, 목록에서 바로 사라져야 함
         if (
           isMine &&
           (type === 'followings' || type === 'friends') &&
@@ -142,7 +143,9 @@ export default function RelationsTab({ type }: { type: string }) {
         )),
       )}
       {status === 'pending' && (
-        <LoaderCircle className="max-md:col-span-2 md:col-span-3 xl:col-span-5 flex items-center justify-center size-5 text-muted-foreground animate-spin" />
+        <div className="max-md:col-span-2 md:col-span-3 xl:col-span-5 flex justify-center items-center">
+          <LoaderCircle className="size-5 text-muted-foreground animate-spin" />
+        </div>
       )}
     </TabsContent>
   );
