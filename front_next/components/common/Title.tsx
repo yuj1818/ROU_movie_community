@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 
-const titleVariants = cva('font-semibold', {
+const titleVariants = cva('font-sans', {
   variants: {
     size: {
       sm: 'text-lg',
@@ -14,10 +14,15 @@ const titleVariants = cva('font-semibold', {
       black: 'text-black',
       primary: 'text-primary',
     },
+    weight: {
+      default: 'font-semibold',
+      bold: 'font-bold',
+    },
   },
   defaultVariants: {
     size: 'default',
     color: 'default',
+    weight: 'default',
   },
 });
 
@@ -26,9 +31,10 @@ export default function Title({
   children,
   size = 'default',
   color = 'default',
+  weight = 'default',
 }: React.ComponentProps<'h3'> & VariantProps<typeof titleVariants>) {
   return (
-    <h3 className={cn(titleVariants({ size, color }), className)}>
+    <h3 className={cn(titleVariants({ size, color, weight }), className)}>
       {children}
     </h3>
   );

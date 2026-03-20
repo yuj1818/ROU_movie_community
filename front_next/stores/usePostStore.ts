@@ -10,7 +10,7 @@ interface PostState {
   setSort: (v: SortKey) => void;
 }
 
-export const usePostStore = create<PostState>()((set, get) => ({
+export const usePostStore = create<PostState>((set) => ({
   page: 1,
   sort: 'recent',
   setPage: (v) => set({ page: v }),
