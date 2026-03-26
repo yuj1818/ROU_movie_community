@@ -16,6 +16,7 @@ import {
   Home,
   MessageSquareText,
   LogIn,
+  SmilePlus,
 } from 'lucide-react';
 import SidebarMenuItem from './SidebarMenuItem';
 import LogoutBtn from './LogoutBtn';
@@ -39,20 +40,34 @@ export default async function AppSideBar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="gap-4">
-              <SidebarMenuItem icon={<Home />} title="Home" href="/" />
-              <SidebarMenuItem
-                icon={<MessageSquareText />}
-                title="Community"
-                href="/post"
-              />
-              {isLoggedIn && (
+              {session?.user.is_staff ? (
+                <SidebarMenuItem
+                  icon={SmilePlus}
+                  title="Quiz +"
+                  href="/quiz/create"
+                />
+              ) : (
                 <>
+                  <SidebarMenuItem icon={Home} title="Home" href="/" />
                   <SidebarMenuItem
-                    icon={<CircleUser />}
-                    title="My"
-                    href={`/profile/${session.user.id}`}
+                    icon={MessageSquareText}
+                    title="Community"
+                    href="/post"
                   />
-                  <SidebarMenuItem icon={<Balloon />} title="Quiz" href="/" />
+                  {isLoggedIn && (
+                    <>
+                      <SidebarMenuItem
+                        icon={CircleUser}
+                        title="My"
+                        href={`/profile/${session.user.id}`}
+                      />
+                      <SidebarMenuItem
+                        icon={Balloon}
+                        title="Quiz"
+                        href="/quiz"
+                      />
+                    </>
+                  )}
                 </>
               )}
             </SidebarMenu>
@@ -60,11 +75,10 @@ export default async function AppSideBar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu></SidebarMenu>
         {isLoggedIn ? (
           <LogoutBtn />
         ) : (
-          <SidebarMenuItem icon={<LogIn />} title="Login" href="/login" />
+          <SidebarMenuItem icon={LogIn} title="Login" href="/login" />
         )}
       </SidebarFooter>
     </Sidebar>

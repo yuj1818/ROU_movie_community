@@ -22,7 +22,7 @@ export default function ProfileBox() {
     queryKey: ['profile', userId],
     queryFn: () => getProfileInfo(userId),
   });
-  const isMine = session.data?.user.id === userId;
+  const isMine = session.data?.user.id == userId;
   const { open } = useModalContext();
 
   const mutation = useMutation({
