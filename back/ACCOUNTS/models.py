@@ -17,9 +17,9 @@ class User(AbstractUser):
         default="https://img.icons8.com/color/48/medal2-third-place--v1.png",
     )
     score = models.IntegerField(default=0)
-    region = models.CharField(max_length=100)
-    birth = models.DateField()
-    nickname = models.TextField(max_length=20, default="nickname")
+    region = models.CharField(max_length=100, blank=True)
+    birth = models.DateField(blank=True, null=True)
+    nickname = models.CharField(max_length=20, default="nickname")
 
     @property
     def friends_queryset(self):

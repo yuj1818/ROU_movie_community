@@ -125,7 +125,15 @@ class LikeGenreSerializer(serializers.ModelSerializer):
         )
 
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "username", "is_staff")
+
+
 class TokenSerializer(serializers.ModelSerializer):
+    user = UserInfoSerializer(read_only=True)
+
     class Meta:
         model = Token
         fields = ("key", "user")
