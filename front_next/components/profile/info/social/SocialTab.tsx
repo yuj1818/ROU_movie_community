@@ -23,7 +23,7 @@ export default function SocialTab() {
           <TabsTrigger value="followers">팔로워</TabsTrigger>
           <TabsTrigger value="followings">팔로잉</TabsTrigger>
           <TabsTrigger value="friends">친구</TabsTrigger>
-          {session.data?.user.id === userId && (
+          {session.data?.user.id == userId && (
             <TabsTrigger value="recommend">추천</TabsTrigger>
           )}
         </TabsList>

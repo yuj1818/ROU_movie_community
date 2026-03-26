@@ -4,6 +4,7 @@ import { getToken } from 'next-auth/jwt';
 
 const AUTH_PAGES = ['/login', '/register'];
 const PROTECTED_PAGES = ['/quiz', '/post/create', '/profile'];
+const ADMIN_ONLY_PAGES = ['/quiz/create'];
 
 function startsWithAny(pathname: string, paths: string[]) {
   return paths.some(
@@ -17,6 +18,7 @@ export async function proxy(req: NextRequest) {
 
   const isEditPage = pathname.endsWith('/edit');
   const isLoggedIn = !!token;
+  const isAdmin = token?.is_staff;
 
   if (isLoggedIn && startsWithAny(pathname, AUTH_PAGES)) {
     return NextResponse.redirect(new URL('/', req.url));
@@ -24,6 +26,10 @@ export async function proxy(req: NextRequest) {
 
   if (!isLoggedIn && (startsWithAny(pathname, PROTECTED_PAGES) || isEditPage)) {
     return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  if (startsWithAny(pathname, ADMIN_ONLY_PAGES) && (!isLoggedIn || !isAdmin)) {
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   return NextResponse.next();

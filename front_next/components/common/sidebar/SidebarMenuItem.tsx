@@ -2,16 +2,17 @@ import {
   SidebarMenuItem as MenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
+import { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface SidebarMenuProps {
-  icon: React.ReactNode;
+  icon: LucideIcon;
   title: string;
   href: string;
 }
 
 export default function SidebarMenuItem({
-  icon,
+  icon: Icon,
   title,
   href,
 }: SidebarMenuProps) {
@@ -19,7 +20,7 @@ export default function SidebarMenuItem({
     <MenuItem>
       <SidebarMenuButton asChild tooltip={title}>
         <Link href={href}>
-          {icon}
+          <Icon />
           <span className="font-display">{title}</span>
         </Link>
       </SidebarMenuButton>

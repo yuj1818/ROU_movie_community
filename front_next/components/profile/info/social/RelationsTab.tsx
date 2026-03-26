@@ -21,7 +21,7 @@ export default function RelationsTab({ type }: { type: string }) {
   const session = useSession();
   const params = useParams<{ userId: string }>();
   const userId = Number(params.userId);
-  const isMine = session.data?.user.id === userId;
+  const isMine = session.data?.user.id == userId;
   const observerRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
 
