@@ -1,17 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
+import { getServerSession } from 'next-auth';
+import { NextRequest, NextResponse } from 'next/server';
 
 const URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
+  if (!session)
+    return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
+
   try {
     const pathname = req.nextUrl.pathname;
     const res = await fetch(`${URL}${pathname}/`, {
       headers: {
-        Authorization: session ? `Token ${session.backendToken}` : '',
+        Authorization: `Token ${session.backendToken}`,
       },
     });
 
@@ -22,30 +25,27 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
-  const { userId } = await params;
+export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
-  if (userId != session?.user.id)
+  if (!session)
     return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
 
-  const formData = await req.formData();
-
   try {
+    const body = await req.json();
     const pathname = req.nextUrl.pathname;
     const res = await fetch(`${URL}${pathname}/`, {
-      method: 'PUT',
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
-        Authorization: session ? `Token ${session.backendToken}` : '',
+        Authorization: `Token ${session.backendToken}`,
+        'Content-Type': 'application/json',
       },
-      body: formData,
     });
 
     const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
+
+    return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }

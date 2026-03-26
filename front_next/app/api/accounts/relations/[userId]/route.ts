@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const type = req.nextUrl.searchParams.get('type');
     const page = req.nextUrl.searchParams.get('page');
     const pathname = req.nextUrl.pathname;
-    const res = await fetch(`${URL}${pathname}?type=${type}&page=${page}`, {
+    const res = await fetch(`${URL}${pathname}/?type=${type}&page=${page}`, {
       headers: {
         Authorization: session ? `Token ${session.backendToken}` : '',
       },
