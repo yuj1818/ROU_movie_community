@@ -30,7 +30,9 @@ export const authOptions: NextAuthOptions = {
         const data = await res.json();
 
         return {
-          id: data.user,
+          id: String(data.user.id),
+          username: data.user.username,
+          is_staff: data.user.is_staff,
           backendToken: data.key,
         };
       },
@@ -50,16 +52,22 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
+      if (user && 'backendToken' in user) {
         token.userId = user.id;
         token.backendToken = user.backendToken;
+        token.is_staff = user.is_staff;
+        token.username = user.username;
       }
 
       return token;
     },
 
     async session({ session, token }) {
-      session.user.id = token.userId as string;
+      if (session.user) {
+        session.user.id = token.userId as string;
+        session.user.is_staff = token.is_staff;
+        session.user.username = token.username;
+      }
       session.backendToken = token.backendToken as string;
       return session;
     },
@@ -77,11 +85,15 @@ export const authOptions: NextAuthOptions = {
           },
         );
 
+        if (!res.ok) return false;
+
         const data = await res.json();
 
         if (res.status === 200) {
           // 기존 유저 정보 저장
-          user.id = data.user;
+          user.id = String(data.user.id);
+          user.is_staff = data.user.is_staff;
+          user.username = data.user.username;
           user.backendToken = data.key;
           return true;
         }
@@ -106,15 +118,13 @@ export const authOptions: NextAuthOptions = {
           },
         );
 
-        if (!res.ok) {
-          const data = await res.json();
-          console.log(data);
-          return false;
-        }
+        if (!res.ok) return false;
 
         const data = await res.json();
 
-        user.id = data.user;
+        user.id = String(data.user.id);
+        user.is_staff = data.user.is_staff;
+        user.username = data.user.username;
         user.backendToken = data.key;
         return true;
       }

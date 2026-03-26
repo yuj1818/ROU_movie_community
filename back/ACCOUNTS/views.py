@@ -184,54 +184,55 @@ def user_friend(request):
             {"error": "로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED
         )
 
+    base_queryset = User.objects.exclude(pk=user.pk).exclude(is_staff=True)
+
     # 1차 추천 (사용자와 좋아하는 장르가 50% 이상 겹치는 유저들을 조회)
     user_like_genres = user.like_genres.all()
-    min_common_genres = max(1, len(user_like_genres) // 2)
-    potential_users = (
-        User.objects.exclude(pk=user.pk)
-        .annotate(
+    min_common_genres = max(1, user_like_genres.count() // 2)
+
+    primary_qs = (
+        base_queryset.annotate(
             common_genres=Count(
-                "like_genres", filter=Q(like_genres__in=user_like_genres)
+                "like_genres", filter=Q(like_genres__in=user_like_genres), distinct=True
             )
         )
         .filter(common_genres__gte=min_common_genres)
-        .order_by("-common_genres")
+        .order_by("-common_genres")[:5]
     )
+
+    primary_ids = primary_qs.values_list("pk", flat=True)
+
+    current_year = now().year
 
     # 2차 추천 (같은 지역의 비슷한 나이인 사람 추천)
-    if potential_users.count() < 5:
-        current_year = now().year  # 현재 연도
-
-        additional_users = (
-            User.objects.exclude(pk=user.pk)
-            .filter(region=user.region)
-            .annotate(
-                birth_year=ExtractYear("birth"),
-                age_difference=ExpressionWrapper(
-                    F("birth_year") - current_year, output_field=IntegerField()
+    secondary_qs = (
+        base_queryset.exclude(pk__in=primary_ids)
+        .filter(region=user.region)
+        .annotate(
+            age=ExpressionWrapper(
+                current_year - ExtractYear("birth"), output_field=IntegerField()
+            ),
+            age_diff=ExpressionWrapper(
+                abs(
+                    current_year
+                    - ExtractYear("birth")
+                    - (current_year - user.birth.year)
                 ),
-            )
-            .order_by("age_difference")
+                output_field=IntegerField(),
+            ),
         )
-
-        additional_users = list(additional_users)[:5]
-        potential_users = list(potential_users)  # 리스트 변환
-        filtered_additional_users = [
-            user
-            for user in additional_users
-            if user.pk not in {u.pk for u in potential_users}
-        ][:5]
-        potential_users += filtered_additional_users  # 병합
-
-    serializer = UserSerializer(
-        potential_users, many=True, context={"request": request}
+        .order_by("age_diff")[:5]
     )
 
-    if potential_users:
+    final_qs = list(primary_qs) + list(secondary_qs)
+
+    serializer = UserSerializer(final_qs, many=True, context={"request": request})
+
+    if final_qs:
         return Response(serializer.data)
     else:
         return Response(
-            {"message": "추천 친구가 없습니다."}, status=status.HTTP_204_NO_CONTENT
+            {"message": "추천 친구가 없습니다"}, status=status.HTTP_204_NO_CONTENT
         )
 
 
