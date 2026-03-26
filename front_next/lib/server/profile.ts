@@ -8,7 +8,7 @@ export const getProfileInfo = async (userId: number | string) => {
 
   if (!session) throw new Error('사용자 인증 실패');
 
-  const res = await fetch(`${URL}/profile/${userId}`, {
+  const res = await fetch(`${URL}/profile/${userId}/`, {
     headers: {
       Authorization: `Token ${session?.backendToken}`,
     },

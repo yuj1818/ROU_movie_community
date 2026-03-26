@@ -11,11 +11,14 @@ export async function GET(req: NextRequest) {
     const target = req.nextUrl.searchParams.get('target');
     const page = req.nextUrl.searchParams.get('page');
     const pathname = req.nextUrl.pathname;
-    const res = await fetch(`${URL}${pathname}?target=${target}&page=${page}`, {
-      headers: {
-        Authorization: session ? `Token ${session.backendToken}` : '',
+    const res = await fetch(
+      `${URL}${pathname}/?target=${target}&page=${page}`,
+      {
+        headers: {
+          Authorization: session ? `Token ${session.backendToken}` : '',
+        },
       },
-    });
+    );
 
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });

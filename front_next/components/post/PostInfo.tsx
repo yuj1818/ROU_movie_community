@@ -16,11 +16,10 @@ import Title from '../common/Title';
 
 export default function PostInfo() {
   const queryClient = useQueryClient();
-  const session = useSession();
   const router = useRouter();
   const params = useParams();
   const reviewId = Number(params.reviewId);
-  const { status } = useSession();
+  const { status, data } = useSession();
   const { open, close } = useModalContext();
   const { data: post, isPending } = useQuery<Post>({
     queryKey: ['post', reviewId],
@@ -102,7 +101,7 @@ export default function PostInfo() {
         )}
         <div className="w-3/4 whitespace-pre-line">{post.content}</div>
       </div>
-      {post.review_writor.id == session.data?.user.id && (
+      {post.review_writor.id == data?.user.id && (
         <div className="flex gap-2 justify-end">
           <Button variant="destructive" onClick={onDelete}>
             삭제

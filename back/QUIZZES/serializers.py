@@ -20,6 +20,7 @@ class QuizItemSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer):
     quiz_writor = UserSerializer(read_only=True)
+    quiz_image = serializers.ImageField(use_url=False)
     items = serializers.SerializerMethodField()
 
     class Meta:

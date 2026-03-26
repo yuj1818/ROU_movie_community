@@ -3,7 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 
 import AppSideBar from '@/components/common/sidebar';
-import Header from '@/components/common/header.tsx';
+import Header from '@/components/common/header';
 import Providers from '@/components/common/Providers';
 
 const pretendard = localFont({

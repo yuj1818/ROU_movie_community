@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { InputHTMLAttributes } from 'react';
 
 export default function TextInput(
@@ -7,7 +8,10 @@ export default function TextInput(
     <input
       {...props}
       spellCheck={false}
-      className="h-8 p-4 w-full rounded border border-input outline-none"
+      className={cn(
+        'h-8 p-4 w-full rounded border border-input outline-none',
+        props.className,
+      )}
     />
   );
 }
