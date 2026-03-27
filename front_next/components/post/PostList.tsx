@@ -6,8 +6,8 @@ import { PaginatedResponse } from '@/types/common';
 import { Post } from '@/types/post';
 import { useQuery } from '@tanstack/react-query';
 import { useShallow } from 'zustand/shallow';
-import PostInfo from './PostInfo';
 import PostItem from './PostItem';
+import { Skeleton } from '../ui/skeleton';
 
 export default function PostList() {
   const { page, sort } = usePostStore(
@@ -24,6 +24,15 @@ export default function PostList() {
   });
 
   const posts = data?.results ?? [];
+
+  if (isPending)
+    return (
+      <div className="w-full flex flex-col gap-4">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <Skeleton className="w-full h-20" />
+        ))}
+      </div>
+    );
 
   return (
     <div className="w-full flex flex-col gap-4">

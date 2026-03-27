@@ -9,6 +9,7 @@ import Title from '@/components/common/Title';
 import { useParams, useRouter } from 'next/navigation';
 import PostItem from '@/components/post/PostItem';
 import { Post } from '@/types/post';
+import ReviewListSkeleton from './ReviewListSkeleton';
 
 export default function ReviewList() {
   const params = useParams();
@@ -20,6 +21,10 @@ export default function ReviewList() {
     queryKey: ['reviews', movieId],
     queryFn: () => getMovieReviewList(movieId),
   });
+
+  if (isPending) {
+    return <ReviewListSkeleton />;
+  }
 
   return (
     <div className="flex flex-col w-full gap-2">

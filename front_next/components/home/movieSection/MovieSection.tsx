@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { useShallow } from 'zustand/shallow';
 import MovieCard from '@/components/common/MovieCard';
 import Title from '@/components/common/Title';
+import MovieCardSkeleton from '@/components/common/MovieCardSkeleton';
 
 interface MovieSectionsProps {
   id: number;
@@ -55,6 +56,12 @@ export default function MovieSection({
     registerSection(id, ref.current);
   }, [id]);
 
+  useEffect(() => {
+    if (!isPending && !!movies) {
+      slider.current?.update();
+    }
+  }, [isPending]);
+
   return (
     <section
       ref={ref}
@@ -66,19 +73,19 @@ export default function MovieSection({
       <Title className="w-11/12">{label}</Title>
       <div className="w-full relative flex justify-center items-center">
         <div className="w-11/12">
-          {isPending ? (
-            <>Loading...</>
-          ) : (
-            <ul ref={sliderRef} className="keen-slider">
-              {(movies ?? []).map((movie) => (
-                <MovieCard
-                  key={movie.movie_id}
-                  className="keen-slider__slide"
-                  {...movie}
-                />
-              ))}
-            </ul>
-          )}
+          <ul ref={sliderRef} className="keen-slider">
+            {isPending
+              ? Array.from({ length: 10 }).map((_, i) => (
+                  <MovieCardSkeleton key={i} className="keen-slider__slide" />
+                ))
+              : movies!.map((movie) => (
+                  <MovieCard
+                    key={movie.movie_id}
+                    className="keen-slider__slide"
+                    {...movie}
+                  />
+                ))}
+          </ul>
         </div>
         {slider.current && (
           <>

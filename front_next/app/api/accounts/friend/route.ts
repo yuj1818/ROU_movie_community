@@ -12,9 +12,10 @@ export async function GET(req: NextRequest) {
 
   try {
     const pathname = req.nextUrl.pathname;
-    const res = await fetch(`${URL}${pathname}/`, {
+    const page = req.nextUrl.searchParams.get('page');
+    const res = await fetch(`${URL}${pathname}/?page=${page}`, {
       headers: {
-        Authorization: session ? `Token ${session.backendToken}` : '',
+        Authorization: `Token ${session.backendToken}`,
       },
     });
 

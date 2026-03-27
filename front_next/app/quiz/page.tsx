@@ -1,26 +1,22 @@
 'use client';
 
-import Title from '@/components/common/Title';
 import QuizDetailBox from '@/components/quiz/QuizDetailBox';
 import QuizFinalResultBox from '@/components/quiz/QuizFinalResultBox';
 import { Button } from '@/components/ui/button';
 import { getQuizzes } from '@/lib/client/quiz';
 import { useQuizStore } from '@/stores/useQuizStore';
-import { Quiz } from '@/types/quiz';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/shallow';
 
 export default function QuizPage() {
-  const { quizStatus, quizIdx, curQuizStatus, setLimit, setQuizStatus } =
-    useQuizStore(
-      useShallow((state) => ({
-        quizStatus: state.quizStatus,
-        quizIdx: state.quizIdx,
-        curQuizStatus: state.curQuizStatus,
-        setLimit: state.setLimit,
-        setQuizStatus: state.setQuizStatus,
-      })),
-    );
+  const { quizStatus, quizIdx, setLimit, setQuizStatus } = useQuizStore(
+    useShallow((state) => ({
+      quizStatus: state.quizStatus,
+      quizIdx: state.quizIdx,
+      setLimit: state.setLimit,
+      setQuizStatus: state.setQuizStatus,
+    })),
+  );
 
   const { mutate, data, isPending } = useMutation({
     mutationFn: (limit: number) => getQuizzes(limit),
@@ -40,6 +36,7 @@ export default function QuizPage() {
                 key={n}
                 className="text-base"
                 size="lg"
+                disabled={isPending}
                 onClick={() => {
                   setLimit(n);
                   mutate(n);

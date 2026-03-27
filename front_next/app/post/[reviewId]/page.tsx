@@ -17,7 +17,7 @@ export default async function PostDetailPage({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['post', reviewId],
+    queryKey: ['post', Number(reviewId)],
     queryFn: () => getPostInfo(reviewId),
   });
 

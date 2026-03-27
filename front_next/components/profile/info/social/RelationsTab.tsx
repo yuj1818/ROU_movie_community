@@ -13,9 +13,17 @@ import {
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 import UserInfo from './UserInfo';
-import { LoaderCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { PaginatedResponse } from '@/types/common';
+import UserInfoSkeleton from './UserInfoSkeleton';
+import { Contact } from 'lucide-react';
+
+const TYPE_MAP = {
+  followers: '팔로워',
+  followings: '팔로잉',
+  friends: '친구',
+  recommend: '추천',
+};
 
 export default function RelationsTab({ type }: { type: string }) {
   const session = useSession();
@@ -25,16 +33,12 @@ export default function RelationsTab({ type }: { type: string }) {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['profile', userId, 'relations', type],
       queryFn: ({ pageParam }) => {
         if (type === 'recommend') {
-          return getRecommendedFriends().then((data) => ({
-            results: data,
-            next: null,
-            previous: null,
-          }));
+          return getRecommendedFriends(pageParam);
         } else {
           return getRelations(userId, type, pageParam);
         }
@@ -125,9 +129,35 @@ export default function RelationsTab({ type }: { type: string }) {
     };
   }, [handleObserver]);
 
+  if (!data) {
+    return (
+      <TabsContent
+        value={type}
+        className="p-4 w-full grid grid-flow-col overflow-hidden auto-cols-[50%] md:auto-cols-[33.33%] xl:auto-cols-[20%] max-sm:gap-1 sm:gap-2"
+      >
+        {Array.from({ length: 5 }).map((_, i) => (
+          <UserInfoSkeleton key={i} />
+        ))}
+      </TabsContent>
+    );
+  }
+
+  if (data.pages.flatMap((page) => page.results).length === 0) {
+    return (
+      <TabsContent
+        value={type}
+        className="w-full h-full flex flex-col gap-4 justify-center items-center"
+      >
+        <Contact className="size-10 text-muted-foreground" />
+        <span className="text-muted-foreground text-sm">
+          {TYPE_MAP[type as keyof typeof TYPE_MAP]} 회원이 없습니다
+        </span>
+      </TabsContent>
+    );
+  }
+
   return (
     <TabsContent
-      ref={observerRef}
       value={type}
       className="p-4 w-full h-full overflow-y-auto grid max-md:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 max-sm:gap-1 sm:gap-2"
     >
@@ -142,11 +172,14 @@ export default function RelationsTab({ type }: { type: string }) {
           />
         )),
       )}
-      {status === 'pending' && (
-        <div className="max-md:col-span-2 md:col-span-3 xl:col-span-5 flex justify-center items-center">
-          <LoaderCircle className="size-5 text-muted-foreground animate-spin" />
+      {isFetchingNextPage && (
+        <div className="col-span-full grid grid-flow-col auto-cols-[50%] md:auto-cols-[33.33%] xl:auto-cols-[20%] max-sm:gap-1 sm:gap-2 overflow-hidden">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <UserInfoSkeleton key={i} />
+          ))}
         </div>
       )}
+      {hasNextPage && <div ref={observerRef} className="col-span-full h-1" />}
     </TabsContent>
   );
 }

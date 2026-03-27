@@ -82,6 +82,10 @@ export default function PostCreationForm({
     }
   }, [post]);
 
+  if (isEdit && !post) {
+    return <div className="w-full text-center py-10">불러오는 중...</div>;
+  }
+
   return (
     <form
       className="w-full flex flex-col justify-center gap-4"
