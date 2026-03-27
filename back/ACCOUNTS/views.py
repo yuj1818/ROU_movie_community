@@ -9,7 +9,7 @@ from .serializers import *
 from MOVIES.models import Genre
 from django.http import JsonResponse
 from django.db.models import Count, Q, F, ExpressionWrapper, IntegerField
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractYear, Abs
 from django.utils.timezone import now
 import requests
 from django.conf import settings
@@ -184,6 +184,12 @@ def user_friend(request):
             {"error": "로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED
         )
 
+    if user.is_staff:
+        return Response(
+            {"count": 0, "next": None, "previous": None, "results": []},
+            status=status.HTTP_200_OK,
+        )
+
     base_queryset = User.objects.exclude(pk=user.pk).exclude(is_staff=True)
 
     # 1차 추천 (사용자와 좋아하는 장르가 50% 이상 겹치는 유저들을 조회)
@@ -208,32 +214,18 @@ def user_friend(request):
     secondary_qs = (
         base_queryset.exclude(pk__in=primary_ids)
         .filter(region=user.region)
-        .annotate(
-            age=ExpressionWrapper(
-                current_year - ExtractYear("birth"), output_field=IntegerField()
-            ),
-            age_diff=ExpressionWrapper(
-                abs(
-                    current_year
-                    - ExtractYear("birth")
-                    - (current_year - user.birth.year)
-                ),
-                output_field=IntegerField(),
-            ),
-        )
+        .annotate(age_diff=Abs(ExtractYear("birth") - user.birth.year))
         .order_by("age_diff")[:5]
     )
 
     final_qs = list(primary_qs) + list(secondary_qs)
 
-    serializer = UserSerializer(final_qs, many=True, context={"request": request})
+    paginator = RelationPagination()
+    page = paginator.paginate_queryset(final_qs, request)
 
-    if final_qs:
-        return Response(serializer.data)
-    else:
-        return Response(
-            {"message": "추천 친구가 없습니다"}, status=status.HTTP_204_NO_CONTENT
-        )
+    serializer = UserSerializer(page, many=True, context={"request": request})
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
