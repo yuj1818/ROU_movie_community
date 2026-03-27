@@ -9,6 +9,8 @@ import { Image as ImageIcon } from 'lucide-react';
 import { useModalContext } from '@/contexts/ModalContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfileInfo } from '@/lib/client/profile';
+import { withdraw } from '@/lib/client/auth';
+import { signOut } from 'next-auth/react';
 
 export default function ProfileEditForm({
   nickname,
@@ -18,7 +20,7 @@ export default function ProfileEditForm({
   id,
 }: UserInfo) {
   const queryClient = useQueryClient();
-  const { close } = useModalContext();
+  const { open, close } = useModalContext();
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
   const [formValues, setFormValues] = useState({
     nickname: nickname,
@@ -63,6 +65,27 @@ export default function ProfileEditForm({
     data.append('birth', formValues.birth);
 
     mutation.mutate(data);
+  };
+
+  const withdrawMutation = useMutation({
+    mutationFn: withdraw,
+    onSuccess: () => signOut(),
+  });
+
+  const onClickWithdraw = () => {
+    open({
+      title: '회원 탈퇴하시겠습니까?',
+      content: (
+        <span className="text-sm text-destructive">
+          탈퇴 후에는 해당 계정을 통해 작성했던 게시글이 모두 삭제됩니다.
+        </span>
+      ),
+      rightBtnLabel: '회원 탈퇴',
+      buttonVariant: 'destructive',
+      onRightBtnClick: () => withdrawMutation.mutate(),
+      leftBtnLabel: '취소',
+      onLeftBtnClick: () => close(),
+    });
   };
 
   useEffect(() => {
@@ -142,6 +165,12 @@ export default function ProfileEditForm({
         </Button>
         <Button>저장</Button>
       </div>
+      <span
+        className="text-destructive underline underline-offset-2 text-xs cursor-pointer"
+        onClick={onClickWithdraw}
+      >
+        회원 탈퇴
+      </span>
     </form>
   );
 }
