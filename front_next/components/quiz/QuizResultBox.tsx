@@ -70,7 +70,7 @@ export default function QuizResultBox({
         <span className="font-display text-4xl tracking-widest">
           {is_correct ? '정답입니다!' : '틀렸습니다!'}
         </span>
-        <span className="text-xl text-primary px-4 py-2 rounded font-semibold text-shadow-[1px_1px_1px_rgba(255, 255, 255, 0.8)]">
+        <span className="text-center text-xl text-primary px-4 py-2 rounded font-semibold text-shadow-[1px_1px_1px_rgba(255, 255, 255, 0.8)]">
           "{correct_answer}"
         </span>
         <Button className="text-base px-4 py-3" onClick={onClickNext}>

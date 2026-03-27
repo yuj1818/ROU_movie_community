@@ -43,7 +43,7 @@ export default function MovieInfo() {
     });
   };
 
-  if (!movie) return <div>Loading...</div>;
+  if (!movie) return;
 
   return (
     <div className="w-full flex gap-4 items-start">

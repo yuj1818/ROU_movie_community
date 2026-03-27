@@ -11,6 +11,7 @@ import { LoaderCircle } from 'lucide-react';
 import { Movie } from '@/types/movie';
 import { MEDIA_BASE_URL } from '@/constants/url';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '../ui/skeleton';
 
 export default function MovieCarousel() {
   const router = useRouter();
@@ -52,9 +53,7 @@ export default function MovieCarousel() {
   return (
     <div className="w-[90%] mb-12">
       {isPending ? (
-        <div className="w-full aspect-video border animate-pulse">
-          <LoaderCircle className="size-8 animate-spin text-muted-foreground" />
-        </div>
+        <Skeleton className="w-full aspect-video" />
       ) : (
         <div className="keen-slider w-full" ref={sliderRef}>
           {(movies ?? []).map((movie) => (

@@ -7,6 +7,7 @@ import { getMovieInfo, getRecommendMovieList } from '@/lib/client/movie';
 import { useSession } from 'next-auth/react';
 import MovieCard from '../common/MovieCard';
 import { useParams } from 'next/navigation';
+import MovieCardSkeleton from '../common/MovieCardSkeleton';
 
 export default function RecommendList() {
   const params = useParams();
@@ -17,21 +18,27 @@ export default function RecommendList() {
     queryFn: () => getMovieInfo(movieId),
   });
 
-  if (!movie) return <div>Loading...</div>;
+  if (!movie) return;
 
-  const { data: movies } = useQuery<Movie[]>({
+  const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['recommend', movieId],
     queryFn: () => getRecommendMovieList(movie.title),
     enabled: !!movie && status === 'authenticated',
   });
 
+  const isLoading =
+    status === 'loading' || (status === 'authenticated' && isPending);
+
   return (
     <div className="w-full flex flex-col gap-2">
       <Title>"{movie.title}"와(과) 비슷한 영화</Title>
       <ul className="w-full grid grid-cols-6 gap-2">
-        {status === 'authenticated' ? (
-          movies &&
-          movies.map((movie) => (
+        {isLoading ? (
+          Array.from({ length: 18 }).map((_, i) => (
+            <MovieCardSkeleton key={i} />
+          ))
+        ) : status === 'authenticated' ? (
+          movies?.map((movie) => (
             <MovieCard key={movie.movie_id} className="relative" {...movie} />
           ))
         ) : (

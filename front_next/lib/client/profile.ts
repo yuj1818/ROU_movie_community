@@ -74,8 +74,8 @@ export const getMovieList = async (
   return res.json();
 };
 
-export const getRecommendedFriends = async () => {
-  const res = await fetch(`${URL}/friend`);
+export const getRecommendedFriends = async (page: number) => {
+  const res = await fetch(`${URL}/friend?page=${page}`);
 
   if (!res.ok) throw new Error(`추천 친구 목록 조회 실패`);
 

@@ -21,7 +21,7 @@ export default function PostInfo() {
   const reviewId = Number(params.reviewId);
   const { status, data } = useSession();
   const { open, close } = useModalContext();
-  const { data: post, isPending } = useQuery<Post>({
+  const { data: post } = useQuery<Post>({
     queryKey: ['post', reviewId],
     queryFn: () => getPostInfo(reviewId),
   });

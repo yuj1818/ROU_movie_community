@@ -13,24 +13,17 @@ export default function WatchToggle() {
 
   const mutation = useMutation({
     mutationFn: () => toggleWatch(movieId),
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['movie', movieId] });
-
-      const prev = queryClient.getQueryData<MovieDetail>(['movie', movieId]);
-
-      queryClient.setQueryData<MovieDetail>(
+    onSuccess: (data) => {
+      queryClient.setQueryData(
         ['movie', movieId],
-        (old) =>
-          old && {
-            ...old,
-            isWatch: !old.isWatch,
-          },
+        (old: MovieDetail | undefined) =>
+          old
+            ? {
+                ...old,
+                ...data,
+              }
+            : old,
       );
-
-      return { prev };
-    },
-    onError: (_, __, context) => {
-      queryClient.setQueryData(['movie', movieId], context?.prev);
     },
   });
 

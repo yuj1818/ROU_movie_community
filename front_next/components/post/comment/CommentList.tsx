@@ -14,7 +14,7 @@ import CommentTextarea from './CommentTextarea';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { PaginatedResponse } from '@/types/common';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CommentList() {
   const session = useSession();
@@ -109,8 +109,8 @@ export default function CommentList() {
             <Separator className="bg-muted-foreground" />
           </React.Fragment>
         ))}
+        {isFetchingNextPage && <Skeleton className="w-full h-15" />}
         {hasNextPage && <div ref={observerRef} className="h-1" />}
-        {isFetchingNextPage && <div>Loading...</div>}
       </div>
     </div>
   );

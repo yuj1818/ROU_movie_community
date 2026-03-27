@@ -33,7 +33,7 @@ export default async function MovieDetailPage({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="w-5/6 py-8 flex flex-col gap-8">
         <MovieInfo />
-        <CastInfo actors={movie.actors} />
+        <CastInfo />
         <ReviewList />
         <RecommendList />
       </div>

@@ -12,6 +12,7 @@ import PreferenceBox from './preference/PreferenceBox';
 import { useModalContext } from '@/contexts/ModalContext';
 import ProfileEditForm from './ProfileEditForm';
 import { useParams } from 'next/navigation';
+import ProfileBoxSkeleton from './ProfileBoxSkeleton';
 
 export default function ProfileBox() {
   const session = useSession();
@@ -51,7 +52,7 @@ export default function ProfileBox() {
     });
   };
 
-  if (!profileInfo) return <div>Loading...</div>;
+  if (!profileInfo || isPending) return <ProfileBoxSkeleton />;
 
   return (
     <div className="w-full flex flex-col gap-4 items-center md:h-full md:min-h-0">
@@ -81,6 +82,7 @@ export default function ProfileBox() {
           <Button
             size="sm"
             variant={profileInfo.isFollowing ? 'secondary' : 'default'}
+            disabled={mutation.isPending}
             onClick={() => mutation.mutate(profileInfo.id)}
           >
             {profileInfo.isFollowing ? '팔로잉' : '팔로우'}
