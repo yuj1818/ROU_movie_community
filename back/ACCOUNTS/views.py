@@ -33,7 +33,7 @@ class RelationPagination(PageNumberPagination):
     max_page_size = 100
 
 
-@api_view(["POST"])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete(request):
     request.user.delete()
@@ -249,15 +249,13 @@ def google_login(request):
         user = User.objects.get(email=email)
         Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
+        serializer = TokenSerializer(token)
+
         return Response(
-            {
-                "is_new": False,
-                "key": token.key,
-                "user": user.id,
-            },
+            {"is_new": False, **serializer.data},
             status=status.HTTP_200_OK,
         )
-    except Exception:
+    except User.DoesNotExist:
         return Response(
             {
                 "message": "추가 정보 입력이 필요합니다.",
