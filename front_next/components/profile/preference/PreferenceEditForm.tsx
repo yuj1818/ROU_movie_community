@@ -51,7 +51,7 @@ export default function PreferenceEditForm({
     onSuccess: (updated: Partial<UserInfo>) => {
       if (!session.data?.user) return;
       queryClient.setQueryData(
-        ['profile', session.data?.user.id],
+        ['profile', Number(session.data?.user.id)],
         (old: UserInfo) =>
           old
             ? {
