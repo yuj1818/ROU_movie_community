@@ -23,3 +23,9 @@ export const logout = async () => {
     method: 'POST',
   });
 };
+
+export const withdraw = async () => {
+  return fetch(`${URL}/delete`, {
+    method: 'DELETE',
+  });
+};
