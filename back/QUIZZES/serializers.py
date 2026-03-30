@@ -5,40 +5,44 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-      model = User
-      fields = ('id', 'username', 'nickname')
+        model = User
+        fields = ("id", "username", "nickname")
+
 
 class QuizItemSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = QuizItem
-    fields = ('id', 'choice_text')
-    
+    class Meta:
+        model = QuizItem
+        fields = ("id", "choice_text")
+
+
 class QuizSerializer(serializers.ModelSerializer):
-  quiz_writor = UserSerializer(read_only=True)
-  items = serializers.SerializerMethodField()
+    quiz_writor = UserSerializer(read_only=True)
+    quiz_image = serializers.ImageField(use_url=False)
+    items = serializers.SerializerMethodField()
 
-  class Meta:
-    model = Quiz
-    fields = '__all__'
+    class Meta:
+        model = Quiz
+        fields = "__all__"
 
-  def create(self, validated_data):
-    request = self.context.get('request')
-    items_data = request.data.get('items', '[]')
+    def create(self, validated_data):
+        request = self.context.get("request")
+        items_data = request.data.get("items", "[]")
 
-    quiz = Quiz.objects.create(**validated_data, quiz_writor=request.user)
-    
-    try:
-      items_list = json.loads(items_data)
-      for item in items_list:
-        QuizItem.objects.create(quiz=quiz, **item)
-    except json.JSONDecodeError:
-      raise serializers.ValidationError({"items data": "Invalid JSON format"})
-    
-    return quiz
-  
-  def get_items(self, obj):
-    items = list(obj.items.all())
-    random.shuffle(items)
-    return QuizItemSerializer(items, many=True).data
+        quiz = Quiz.objects.create(**validated_data, quiz_writor=request.user)
+
+        try:
+            items_list = json.loads(items_data)
+            for item in items_list:
+                QuizItem.objects.create(quiz=quiz, **item)
+        except json.JSONDecodeError:
+            raise serializers.ValidationError({"items data": "Invalid JSON format"})
+
+        return quiz
+
+    def get_items(self, obj):
+        items = list(obj.items.all())
+        random.shuffle(items)
+        return QuizItemSerializer(items, many=True).data

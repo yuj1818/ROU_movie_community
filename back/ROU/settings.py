@@ -18,136 +18,127 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(DEBUG=(bool, True))
 
-environ.Env.read_env(
-  env_file = BASE_DIR / '.env'
-)
+environ.Env.read_env(env_file=BASE_DIR / ".env")
 
-API_KEY = env('API_KEY')
+API_KEY = env("API_KEY")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-za5#y(3wa^vb_byl_lcdh=x4=ca&6n@&b)^e6_59h$g%9=q(dc'
+SECRET_KEY = "django-insecure-za5#y(3wa^vb_byl_lcdh=x4=ca&6n@&b)^e6_59h$g%9=q(dc"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-  'localhost',
-  '127.0.0.1',
-  'localhost:5173'
-]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "localhost:5173"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'MOVIES',
-    'ACCOUNTS',
-    'COMMUNITY',
-    'QUIZZES',
-
-    'rest_framework',
-    'rest_framework.authtoken',
-    'django_extensions',
-    'corsheaders',
-    'drf_yasg',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
-    'django.contrib.sites',
-
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "MOVIES",
+    "ACCOUNTS",
+    "COMMUNITY",
+    "QUIZZES",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django_extensions",
+    "corsheaders",
+    "drf_yasg",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "django.contrib.sites",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
 REST_FRAMEWORK = {
     # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication"
     ],
     # Permission
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
     # Pagination
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CORS_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CORS_ORIGINS_WHITELIST = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
-ROOT_URLCONF = 'ROU.urls'
+ROOT_URLCONF = "ROU.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'ROU.wsgi.application'
+WSGI_APPLICATION = "ROU.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -157,16 +148,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -174,9 +165,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'ko-KR'
+LANGUAGE_CODE = "ko-KR"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -186,59 +177,49 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
-MEDIA_URL = 'media/'
+MEDIA_URL = "media/"
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
 
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
-SOCIAL_AUTH_GOOGLE_SECRET = env('GOOGLE_SECRET_KEY')
-OAUTH2_REDIRECT_URI = 'http://localhost:5173/social/google-callback'
-SOCIAL_AUTH_KAKAO_CLIENT_ID = env('KAKAO_CLIENT_SECRET')
-KAKAO_REDIRECT_URI = 'http://localhost:5173/social/kakao-callback'
-
-AUTH_USER_MODEL = 'ACCOUNTS.User'
+AUTH_USER_MODEL = "ACCOUNTS.User"
 
 REST_AUTH = {
-    'REGISTER_SERIALIZER': 'ACCOUNTS.serializers.CustomRegisterSerializer',
-    'USER_DETAILS_SERIALIZER': 'ACCOUNTS.serializers.ProfileSerializer',
-    'TOKEN_SERIALIZER': 'ACCOUNTS.serializers.TokenSerializer'
+    "REGISTER_SERIALIZER": "ACCOUNTS.serializers.CustomRegisterSerializer",
+    "USER_DETAILS_SERIALIZER": "ACCOUNTS.serializers.ProfileSerializer",
+    "TOKEN_SERIALIZER": "ACCOUNTS.serializers.TokenSerializer",
 }
 
-ACCOUNT_ADAPTER = 'ACCOUNTS.adapters.CustomAccountsAdapter'
+ACCOUNT_ADAPTER = "ACCOUNTS.adapters.CustomAccountsAdapter"
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'DRF Token': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-        }
+    "SECURITY_DEFINITIONS": {
+        "DRF Token": {"type": "apiKey", "name": "Authorization", "in": "header"}
     }
 }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'django_cache',
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
     }
 }
