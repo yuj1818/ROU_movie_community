@@ -33,7 +33,7 @@ export default function PostItem({
         height={48}
       />
       <div className="flex-1 min-w-0 flex flex-col gap-2">
-        <span className="text-base overflow-hidden text-ellipsis max-w-full">
+        <span className="text-base overflow-hidden text-ellipsis max-w-full line-clamp-1">
           {title}
         </span>
         <div className="text-sm font-extralight overflow-hidden text-ellipsis max-w-full whitespace-pre-line line-clamp-1">
