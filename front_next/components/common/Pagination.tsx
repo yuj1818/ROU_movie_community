@@ -5,11 +5,10 @@ import {
   ChevronsRight,
 } from 'lucide-react';
 import {
-  Pagination,
+  Pagination as PaginationWrapper,
   PaginationButton,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
 } from '../ui/pagination';
 
 interface PaginationProps {
@@ -20,7 +19,7 @@ interface PaginationProps {
   onPageChange: (p: number) => void;
 }
 
-export default function PaginationWrapper({
+export default function Pagination({
   currentPage,
   totalPages,
   prev,
@@ -40,7 +39,7 @@ export default function PaginationWrapper({
   const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   return (
-    <Pagination>
+    <PaginationWrapper>
       <PaginationContent>
         <PaginationItem>
           <PaginationButton
@@ -82,6 +81,6 @@ export default function PaginationWrapper({
           </PaginationButton>
         </PaginationItem>
       </PaginationContent>
-    </Pagination>
+    </PaginationWrapper>
   );
 }
