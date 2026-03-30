@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useShallow } from 'zustand/shallow';
 import PostItem from './PostItem';
 import { Skeleton } from '../ui/skeleton';
-import PaginationWrapper from '../common/PaginationWrapper';
+import Pagination from '../common/Pagination';
 import { NotebookPen } from 'lucide-react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -59,7 +59,7 @@ export default function PostList() {
         <PostItem key={post.id} {...post} />
       ))}
       {data && data.count > 0 && (
-        <PaginationWrapper
+        <Pagination
           currentPage={page}
           totalPages={Math.ceil(data?.count / 10)}
           prev={prevPage}
