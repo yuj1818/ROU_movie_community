@@ -22,21 +22,19 @@ export default async function PostListPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="w-4/5 py-12 h-fit flex gap-6">
-        <div className="flex-1 min-w-0 flex flex-col gap-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-semibold">ROU 커뮤니티</h1>
-            <div className="flex gap-4 items-center">
-              <SortSelect />
-              {session?.user && (
-                <Button>
-                  <Link href="/post/create">새글 작성</Link>
-                </Button>
-              )}
-            </div>
+      <div className="w-4/5 py-12 h-full flex flex-col gap-8">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-semibold">ROU 커뮤니티</h1>
+          <div className="flex gap-4 items-center">
+            <SortSelect />
+            {session?.user && (
+              <Button>
+                <Link href="/post/create">새글 작성</Link>
+              </Button>
+            )}
           </div>
-          <PostList />
         </div>
+        <PostList />
       </div>
     </HydrationBoundary>
   );
