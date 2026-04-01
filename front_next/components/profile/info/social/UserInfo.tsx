@@ -29,8 +29,9 @@ export default function UserInfo({
           className="object-cover"
           src={profile_image ? `/api/media/${profile_image}` : '/profile.png'}
           fill
-          sizes="300px"
+          sizes="48px"
           alt={`profile_img_${id}`}
+          loading="eager"
         />
       </div>
       <span

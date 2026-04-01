@@ -15,7 +15,8 @@ export default function MovieCard({
   movie_id,
   className = '',
   priority = false,
-}: Movie & { className?: string; priority?: boolean }) {
+  sizes = '(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 16.6vw',
+}: Movie & { className?: string; priority?: boolean; sizes?: string }) {
   const [loaded, setLoaded] = useState(false);
 
   const router = useRouter();
@@ -34,8 +35,8 @@ export default function MovieCard({
           alt={`${title}_포스터`}
           fill
           priority={priority}
-          sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 16.6vw"
-          onLoadingComplete={() => setLoaded(true)}
+          sizes={sizes}
+          onLoad={() => setLoaded(true)}
           className={cn(
             'object-cover transition-opacity duration-300',
             loaded ? 'opacity-100' : 'opacity-0',

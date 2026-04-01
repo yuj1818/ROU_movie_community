@@ -78,11 +78,15 @@ export default function MoviesTab({ target }: { target: string }) {
   return (
     <TabsContent
       value={target}
-      className="w-full h-full overflow-y-auto grid max-md:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-2 content-start"
+      className="w-full h-full overflow-y-auto grid max-sm:grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 gap-2 content-start"
     >
       {data.pages.map((page) =>
         page.results.map((movie: Movie) => (
-          <MovieCard key={movie.movie_id} {...movie} />
+          <MovieCard
+            key={movie.movie_id}
+            sizes="(max-width: 639px) 50vw, (max-width: 767px) 25vw, (max-width: 1279px) 16.65vw, 11.1vw"
+            {...movie}
+          />
         )),
       )}
       {isFetchingNextPage && (
