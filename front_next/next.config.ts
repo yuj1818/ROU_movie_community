@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
+  reactCompiler: true,
   images: {
     formats: ['image/avif', 'image/webp'],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -14,21 +16,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'image.tmdb.org',
-        pathname: '/t/p/w300/**',
+        pathname: '/t/p/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'image.tmdb.org',
-        pathname: '/t/p/original/**',
-      },
-      // {
-      //   protocol: 'http',
-      //   hostname: '127.0.0.1',
-      //   port: '8000',
-      //   pathname: '/media/**',
-      // },
     ],
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);
