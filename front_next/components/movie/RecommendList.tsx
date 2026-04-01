@@ -32,17 +32,22 @@ export default function RecommendList() {
   return (
     <div className="w-full flex flex-col gap-2">
       <Title>"{movie.title}"와(과) 비슷한 영화</Title>
-      <ul className="w-full grid grid-cols-6 gap-2">
+      <ul className="w-full grid max-sm:grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2">
         {isLoading ? (
           Array.from({ length: 18 }).map((_, i) => (
             <MovieCardSkeleton key={i} />
           ))
         ) : status === 'authenticated' ? (
           movies?.map((movie) => (
-            <MovieCard key={movie.movie_id} className="relative" {...movie} />
+            <MovieCard
+              key={movie.movie_id}
+              className="relative"
+              sizes="(max-width: 639px) 41.6vw, (max-width: 767px) 20.83vw, (max-width: 1279) 13.83vw"
+              {...movie}
+            />
           ))
         ) : (
-          <span className="col-span-6 w-full py-5 text-muted-foreground text-center">
+          <span className="col-span-full w-full py-5 text-muted-foreground text-center">
             회원 전용 서비스입니다
           </span>
         )}
