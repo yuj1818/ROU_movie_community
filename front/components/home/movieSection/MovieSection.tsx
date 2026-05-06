@@ -33,23 +33,31 @@ export default function MovieSection({
     loop: true,
     align: 'start',
   });
+
   const { registerSection, isTagOpen } = useTagStore(
     useShallow((state) => ({
       isTagOpen: state.isTagOpen,
       registerSection: state.registerSection,
     })),
   );
+
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['movies', id, dayjs().format('YYYY-MM-DD')],
     queryFn: () =>
       type === 'genre' ? getGenreMovieList(id) : getSortedMovieList(sortKey!),
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
     registerSection(id, ref.current);
   }, [id]);
+
+  useEffect(() => {
+    if (!isPending && !!movies) {
+      emblaApi?.reInit();
+    }
+  }, [isPending]);
 
   useEffect(() => {
     if (!isPending && !!movies) {

@@ -23,8 +23,8 @@ export default function MovieCarousel() {
   const { data: movies, isPending } = useQuery<Movie[]>({
     queryKey: ['trendMovies', dayjs().format('YYYY-MM-DD')],
     queryFn: () => getTrendMovieList(),
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
@@ -44,14 +44,14 @@ export default function MovieCarousel() {
   return (
     <div className="w-[90%] mb-12">
       {isPending ? (
-        <Skeleton className="w-full aspect-video" />
+        <Skeleton className="w-full max-lg:aspect-video lg:aspect-2/1" />
       ) : (
         <div className="w-full overflow-x-hidden" ref={emblaRef}>
           <div className="w-full flex">
             {(movies ?? []).map((movie, idx) => (
               <div
                 key={movie.movie_id}
-                className="flex-[0_0_100%] min-w-0 flex items-center justify-center rounded-md overflow-hidden relative aspect-video cursor-pointer"
+                className="flex-[0_0_100%] min-w-0 flex items-center justify-center rounded-md overflow-hidden relative max-lg:aspect-video lg:aspect-2/1 cursor-pointer"
                 onMouseEnter={() => {
                   setHoveredId(movie.movie_id);
                   setIsPlaying(false);

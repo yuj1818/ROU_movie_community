@@ -1,15 +1,19 @@
 import { MovieDetail } from '@/types/movie';
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleFavorite } from '@/lib/client/movie';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getMovieInfo, toggleFavorite } from '@/lib/client/movie';
 import { useParams } from 'next/navigation';
 
 export default function FavoriteToggle() {
   const params = useParams();
   const movieId = Number(params.movieId);
   const queryClient = useQueryClient();
-  const movie = queryClient.getQueryData<MovieDetail>(['movie', movieId]);
+
+  const { data: movie } = useQuery<MovieDetail>({
+    queryKey: ['movie', movieId],
+    queryFn: async () => getMovieInfo(movieId),
+  });
 
   const mutation = useMutation({
     mutationFn: () => toggleFavorite(movieId),

@@ -14,7 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <ModalContext>
-          <SidebarProvider defaultOpen={false}>{children}</SidebarProvider>
+          <SidebarProvider>{children}</SidebarProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </ModalContext>
       </QueryClientProvider>
