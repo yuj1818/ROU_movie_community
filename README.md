@@ -80,26 +80,27 @@ ROU는 영화 정보를 공유하고,
 
 ## ⚙️ Getting Started
 
-### 1. Backend
+### 1. 프로젝트 설정
+```bash
+./setup_pjt.sh
+```
 
+### 2. 환경 변수 설정 (필수)
+아래 파일을 열어 값을 입력하세요:
+- back/.env
+- front/.ev
+
+### 3. Backend 서버 실행
 ```bash
 cd back
-pip install -r requirements.txt
-python manage.py migrate
-# 초기 데이터 로딩 선택 1
-python manage.py seed_movies
-# 초기 데이터 로딩 선택 2
-python manage.py loaddata init_data.json
 python manage.py runserver
 ```
 
-### 2. Frontend
-
+### 4. Frontend 서버 실행
 ```bash
 cd front
-npm install
 npm run dev
-```
+``` 
 
 ## 🧠 What I Learned
 
