@@ -2,6 +2,20 @@ set -e
 
 echo "🚀 전체 프로젝트 초기 설정 시작"
 
+echo "📄 환경 변수 파일 설정"
+
+# backend
+if [ ! -f "back/.env" ]; then
+  cp back/.env.example back/.env
+  echo "⚠️ back/.env 생성됨 → 값 수정 필요"
+fi
+
+# frontend
+if [ ! -f "front/.env" ]; then
+  cp front/.env.example front/.env
+  echo "⚠️ front/.env 생성됨 → 값 수정 필요"
+fi
+
 ##################################
 # 🧩 BACKEND SETUP
 ##################################
@@ -47,3 +61,9 @@ cd ..
 
 echo ""
 echo "✅ 전체 환경 설정 완료!"
+
+echo ""
+echo "❗ 중요: 환경 변수 설정 필요"
+echo "👉 back/.env 파일을 열어서 API_KEY 등을 입력하세요"
+echo "👉 front/.env도 필요 시 수정하세요"
+echo ""
